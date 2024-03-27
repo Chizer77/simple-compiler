@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.22)
+if(" ${CMAKE_SOURCE_DIR}" STREQUAL " ${CMAKE_BINARY_DIR}")
+    message(FATAL_ERROR "
+FATAL: In-source builds are not allowed.
+	You should create a separete directory for build files.
+")
+endif()
+project(simple-compiler)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 17)
+file(GLOB_RECURSE INC_SRC "include/*.h")
+file(GLOB_RECURSE DIR_SRC  "src/*.cpp")
+file(GLOB_RECURSE Compiler.cpp)
+include_directories("include")
+
+add_compile_options(-g3 -std=c++17  -Wno-shadow)
+add_executable (compiler ${INC_SRC} ${DIR_SRC} Compiler.cpp)
+
+
+
+
+
+
