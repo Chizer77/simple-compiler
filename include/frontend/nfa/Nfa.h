@@ -19,7 +19,7 @@
  */
 class Nfa {
 
-private:
+public:
     static int NODE_ID;
     static std::stack<Nfa> OP_STACK;
     std::set<int> s;

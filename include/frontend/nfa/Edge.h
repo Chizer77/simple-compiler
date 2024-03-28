@@ -25,5 +25,9 @@ public:
         if (start == e.start) return target < e.target;
         return start < e.start;
     }
+    bool operator == (const Edge & e) const {
+        if (start == e.start && target == e.target && alpha == e.alpha) return true;
+        return false;
+    }
 };
 #endif //SIMPLE_COMPILER_EDGE_H

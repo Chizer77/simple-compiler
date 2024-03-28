@@ -14,9 +14,9 @@ Nfa Nfa::NfaGeneration(const std::string& exp) {
     }
     if(OP_STACK.empty()) exit(1);
 
-    Nfa *nfa = &OP_STACK.top();
+    Nfa nfa = OP_STACK.top();
     OP_STACK.pop();
-    return *nfa;
+    return nfa;
 }
 
 void Nfa::Kleene() {

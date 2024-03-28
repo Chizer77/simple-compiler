@@ -1,7 +1,7 @@
 #ifndef SIMPLE_COMPILER_INIT_H
 #define SIMPLE_COMPILER_INIT_H
 
-#include "../frontend/nfa/Nfa.h"
+#include "frontend/nfa/Nfa.h"
 
 int Nfa::NODE_ID = 0;
 
