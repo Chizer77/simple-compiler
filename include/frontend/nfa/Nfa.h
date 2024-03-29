@@ -28,6 +28,16 @@ public:
     std::set<int> target;
     std::set<Edge> edges;
 
+    Nfa();
+    ~Nfa();
+
+    /**
+     * 生成最终的NFA
+     * @param exp 初始正规式
+     * @return 生成的Nfa
+     */
+    static Nfa NfaGeneration(const std::string& exp);
+
     /**
      * TODO:对栈顶一个元素进行闭包^操作，并插入栈顶
      */
@@ -48,16 +58,5 @@ public:
      */
     static void NfaInit(char c);
 
-public:
-    Nfa();
-
-    /**
-     * 生成最终的NFA
-     * @param exp 初始正规式
-     * @return 生成的Nfa
-     */
-    static Nfa NfaGeneration(const std::string& exp);
-
-    ~Nfa();
 };
 #endif //SIMPLE_COMPILER_NfA_H
