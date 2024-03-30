@@ -1,5 +1,9 @@
 /.idea/
+/.vs/
+/.vscode/
+/out/
 /cmake-build-debug/
+/cmake-build-debug-coverage/
 
 # Prerequisites
 *.d
