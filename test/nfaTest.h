@@ -20,7 +20,7 @@ public:
     static void run() {
         nfaInitTest01();
         unionTest01();
-       parseUtilTest();
+        parseUtilTest();
     };
 };
 

@@ -33,7 +33,7 @@ void nfaTest::nfaInitTest01() {
 }
 
 void nfaTest::unionTest01() {
-    Nfa opa = Nfa::NfaGeneration("ab|");
+    Nfa opa = Nfa::NfaGeneration("a|b");
 
     assert(opa.s.size() == 6);
 
