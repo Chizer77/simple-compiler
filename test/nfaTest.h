@@ -15,10 +15,12 @@ public:
      */
     static void unionTest01();
 
+    static void parseUtilTest();
 
     static void run() {
         nfaInitTest01();
         unionTest01();
+       parseUtilTest();
     };
 };
 

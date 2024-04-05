@@ -1,8 +1,11 @@
 #include "nfaTest.h"
 #include "frontend/nfa/Nfa.h"
+#include "util/ParseUtil.h"
+#include <iostream>
 #include <cassert>
 #include <vector>
 #include <set>
+#include <algorithm>
 
 void nfaTest::nfaInitTest01() {
     Nfa opa = Nfa::NfaGeneration("a");
@@ -57,4 +60,21 @@ void nfaTest::unionTest01() {
     es.insert(*(new Edge(v[3], v[5], '@')));
 
     assert(es == opa.edges);
+}
+
+void nfaTest::parseUtilTest() {
+    std::string str1 = ParseUtil::toSuffix("a|(a|b)^cd");
+    assert(str1 == "aab|^cd**|");
+
+    str1 = ParseUtil::toSuffix("(a|b)^(cd)");
+    assert(str1 == "ab|^cd**");
+
+    str1 = ParseUtil::toSuffix("a|bc^d");
+    assert(str1 == "abc^d**|");
+
+    str1 = ParseUtil::toSuffix("a(bc)d");
+    assert(str1 == "abc*d**");
+
+    str1 = ParseUtil::toSuffix("(a|b)^^(c^d^)^");
+    assert(str1 == "ab|^^c^d^*^*");
 }
