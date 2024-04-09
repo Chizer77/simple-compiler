@@ -3,7 +3,6 @@
 #include "util/ParseUtil.h"
 #include <cassert>
 #include <vector>
-#include <set>
 #include <algorithm>
 
 void NfaTest::nfaInitTest01() {
