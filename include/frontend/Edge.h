@@ -29,5 +29,11 @@ public:
         if (start == e.start && target == e.target && alpha == e.alpha) return true;
         return false;
     }
+
+    struct EdgeHasher final {
+        unsigned long long operator()(const Edge& e) const{
+            return std::hash<int>()(e.start) ^ std::hash<int>()(e.target) ^ std::hash<int>()(e.alpha);
+        }
+    };
 };
 #endif //SIMPLE_COMPILER_EDGE_H

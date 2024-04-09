@@ -1,17 +1,17 @@
 #ifndef SIMPLE_COMPILER_GRAPH_H
 #define SIMPLE_COMPILER_GRAPH_H
 
-#include "set"
+#include "unordered_set"
 #include "Edge.h"
 
 class Graph {
 public:
     static int NODE_ID;
-    std::set<int> s;
-    std::set<char> alpha;
+    std::unordered_set<int> s;
+    std::unordered_set<char> alpha;
     int s0{};
-    std::set<int> target;
-    std::set<Edge> edges;
+    std::unordered_set<int> target;
+    std::unordered_set<Edge, Edge::EdgeHasher> edges;
 
     Graph() = default;
     ~Graph() {

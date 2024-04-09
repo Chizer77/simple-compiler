@@ -12,8 +12,8 @@ void NfaTest::nfaInitTest01() {
     assert(opa.s.size() == 2);
 
     auto beg = opa.s.begin();
-    int id0 = *(beg)++;
     int id1 = *(beg)++;
+    int id0 = *(beg)++;
 
     assert(opa.alpha.size() == 1);
     assert(opa.alpha.find('a') != opa.alpha.end());
@@ -38,6 +38,7 @@ void NfaTest::unionTest01() {
 
     std::vector<int> v;
     for(int ts: opa.s) v.emplace_back(ts);
+    sort(v.begin(), v.end());
 
     assert(opa.alpha.size() == 3);
     assert(opa.alpha.find('@') != opa.alpha.end());
@@ -50,7 +51,7 @@ void NfaTest::unionTest01() {
     assert(opa.target.find(v[5]) != opa.target.end());
 
     assert(opa.edges.size() == 6);
-    std::set<Edge> es;
+    std::unordered_set<Edge, Edge::EdgeHasher> es;
     es.insert(*(new Edge(v[4], v[0], '@')));
     es.insert(*(new Edge(v[4], v[2], '@')));
     es.insert(*(new Edge(v[0], v[1], 'a')));
