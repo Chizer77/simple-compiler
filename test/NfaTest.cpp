@@ -1,4 +1,4 @@
-#include "nfaTest.h"
+#include "NfaTest.h"
 #include "frontend/Nfa.h"
 #include "util/ParseUtil.h"
 #include <cassert>
@@ -6,7 +6,7 @@
 #include <set>
 #include <algorithm>
 
-void nfaTest::nfaInitTest01() {
+void NfaTest::nfaInitTest01() {
     Nfa opa = Nfa::NfaGeneration("a");
 
     assert(opa.s.size() == 2);
@@ -31,7 +31,7 @@ void nfaTest::nfaInitTest01() {
     assert(se.alpha == 'a');
 }
 
-void nfaTest::unionTest01() {
+void NfaTest::unionTest01() {
     Nfa opa = Nfa::NfaGeneration("a|b");
 
     assert(opa.s.size() == 6);
@@ -61,19 +61,19 @@ void nfaTest::unionTest01() {
     assert(es == opa.edges);
 }
 
-void nfaTest::parseUtilTest() {
+void NfaTest::parseUtilTest() {
     std::string str1 = ParseUtil::toSuffix("a|(a|b)^cd");
-    assert(str1 == "aab|^cd**|");
+    assert(str1 == "aab|^cd&&|");
 
     str1 = ParseUtil::toSuffix("(a|b)^(cd)");
-    assert(str1 == "ab|^cd**");
+    assert(str1 == "ab|^cd&&");
 
     str1 = ParseUtil::toSuffix("a|bc^d");
-    assert(str1 == "abc^d**|");
+    assert(str1 == "abc^d&&|");
 
     str1 = ParseUtil::toSuffix("a(bc)d");
-    assert(str1 == "abc*d**");
+    assert(str1 == "abc&d&&");
 
     str1 = ParseUtil::toSuffix("(a|b)^^(c^d^)^");
-    assert(str1 == "ab|^^c^d^*^*");
+    assert(str1 == "ab|^^c^d^&^&");
 }

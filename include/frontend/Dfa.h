@@ -11,14 +11,14 @@ public:
      * @param NFA
      * @return DFA
      */
-    static Dfa DfaMinimize(Dfa dfa);
+    static Dfa DfaMinimize(Dfa* dfa);
 
     /**
      * TODO: NFA转DFA
      * @param NFA
      * @return DFA
      */
-    static Dfa Nfa2Dfa(Nfa nfa);
+    static Dfa Nfa2Dfa(Nfa* nfa);
 };
 
 #endif //SIMPLE_COMPILER_DFA_H

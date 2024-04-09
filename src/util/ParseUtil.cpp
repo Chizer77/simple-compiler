@@ -7,7 +7,7 @@
 
 const std::unordered_map<char, int> ParseUtil::priority = {
         {'^', 0},
-        {'*', 1},
+        {'&', 1},
         {'|', 2},
         {'(', 3}
 };
@@ -29,12 +29,12 @@ std::string ParseUtil::format(const std::string& exp) {
         char cPre = str[i-1];
         if (c == '(') {
             if (std::islower(cPre) || cPre == '^') {
-                str.insert(i, "*");
+                str.insert(i, "&");
                 i++;
             }
         } else if (std::islower(c)) {
             if (std::islower(cPre) || cPre == ')' || cPre == '^') {
-                str.insert(i, "*");
+                str.insert(i, "&");
                 i++;
             }
         }

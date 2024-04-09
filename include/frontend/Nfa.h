@@ -34,7 +34,7 @@ public:
     static void Kleene();
 
     /**
-     * TODO:对栈顶两个元素进行连接*操作，并插入栈顶
+     * TODO:对栈顶两个元素进行连接&操作，并插入栈顶
      */
     static void Concatenation();
 

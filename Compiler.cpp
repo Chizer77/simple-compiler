@@ -1,10 +1,12 @@
 #include "iostream"
 #include "util/Init.h"
-#include "nfaTest.h"
+#include "NfaTest.h"
+#include "DfaTest.h"
 
 
 int main() {
     std::cout << "hello world" << std::endl;
 
-    nfaTest::run();
+    NfaTest::run();
+    DfaTest::run();
 }

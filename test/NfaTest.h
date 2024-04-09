@@ -2,7 +2,7 @@
 #define SIMPLE_COMPILER_NFATEST_H
 
 
-class nfaTest {
+class NfaTest {
 public:
 
     /**

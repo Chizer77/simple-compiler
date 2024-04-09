@@ -7,7 +7,7 @@ Nfa Nfa::NfaGeneration(const std::string& exp) {
     for(char c : parseExp) {
         switch (c) {
             case '^': Kleene();break;
-            case '*': Concatenation();break;
+            case '&': Concatenation();break;
             case '|': Union();break;
             default: NfaInit(c);
         }
