@@ -1,4 +1,4 @@
-#include "frontend/nfa/Nfa.h"
+#include "frontend/Nfa.h"
 #include "util/ParseUtil.h"
 #include "string"
 

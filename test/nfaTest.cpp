@@ -1,7 +1,6 @@
 #include "nfaTest.h"
-#include "frontend/nfa/Nfa.h"
+#include "frontend/Nfa.h"
 #include "util/ParseUtil.h"
-#include <iostream>
 #include <cassert>
 #include <vector>
 #include <set>

@@ -1,10 +1,9 @@
 #ifndef SIMPLE_COMPILER_Nfa_H
 #define SIMPLE_COMPILER_Nfa_H
 
-#include "set"
 #include "string"
-#include "Edge.h"
 #include "stack"
+#include "Graph.h"
 
 /**
  * NFA对象
@@ -17,16 +16,10 @@
  * 终态集合 target
  * 边集合 edges
  */
-class Nfa {
+class Nfa : public Graph{
 
 public:
-    static int NODE_ID;
     static std::stack<Nfa> OP_STACK;
-    std::set<int> s;
-    std::set<char> alpha;
-    int s0{};
-    std::set<int> target;
-    std::set<Edge> edges;
 
     Nfa();
     ~Nfa();
