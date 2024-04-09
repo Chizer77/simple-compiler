@@ -21,9 +21,6 @@ class Nfa : public Graph{
 public:
     static std::stack<Nfa> OP_STACK;
 
-    Nfa();
-    ~Nfa();
-
     /**
      * 生成最终的NFA
      * @param exp 初始正规式

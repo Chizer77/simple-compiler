@@ -133,14 +133,4 @@ void Nfa::NfaInit(char c) {
     free(a);
 }
 
-Nfa::Nfa() = default;
-
-Nfa::~Nfa() {
-    s.clear();
-    alpha.clear();
-    s0 = 0;
-    target.clear();
-    edges.clear();
-}
-
 
