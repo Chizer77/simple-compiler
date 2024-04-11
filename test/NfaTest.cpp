@@ -83,7 +83,7 @@ void NfaTest::concatenationTest01() {
     std::unordered_set<Edge, Edge::EdgeHasher> es;
     es.insert(*(new Edge(v[0], v[1], 'a')));
     es.insert(*(new Edge(v[1], v[2], '@')));
-    es.insert(*(new Edge(v[2], v[3], '@')));
+    es.insert(*(new Edge(v[2], v[3], 'b')));
 
     assert(es == opa.edges);
 }

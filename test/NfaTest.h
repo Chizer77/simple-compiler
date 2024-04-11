@@ -11,6 +11,15 @@ public:
     static void nfaInitTest01();
 
     /**
+     * 闭包^操作测试
+     */
+    static void kleeneTest01();
+
+    /**
+     * 连接&操作测试
+     */
+     static void concatenationTest01();
+    /**
      * 或|操作测试
      */
     static void unionTest01();
@@ -22,6 +31,8 @@ public:
 
     static void run() {
         nfaInitTest01();
+        kleeneTest01();
+        concatenationTest01();
         unionTest01();
         parseUtilTest();
     };

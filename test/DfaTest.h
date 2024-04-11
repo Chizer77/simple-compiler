@@ -4,10 +4,13 @@
 
 class DfaTest {
 public:
+    static void DfaMinimizeTest01();
 
+    static void DfaMinimizeTest02();
 
     static void run() {
-
+        DfaMinimizeTest01();
+        DfaMinimizeTest02();
     }
 };
 
