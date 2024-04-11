@@ -102,7 +102,32 @@ Dfa Dfa::DfaMinimize(Dfa& dfa) {
     return *minDfa;
 }
 
+// 计算NFA状态集合的空闭包
+std::unordered_set<int> epsilonClosure(const NFA& nfa, const std::unordered_set<int>& states) {
+    std::unordered_set<int> closure = states;
+    std::stack<int> stack;
 
+    for (int state : states) {
+        stack.push(state);
+    }
+
+    while (!stack.empty()) {
+        int current_state = stack.top();
+        stack.pop();
+
+        for (const Edge& edge : nfa.edges) {
+            if (edge.start == current_state && edge.alpha == '@') {
+                int next_state = edge.target;
+                if (closure.find(next_state) == closure.end()) {
+                    closure.insert(next_state);
+                    stack.push(next_state);
+                }
+            }
+        }
+    }
+
+    return closure;
+}
 
 // 通过符号在NFA中进行状态转移
 std::unordered_set<int> move(const NFA& nfa, const std::unordered_set<int>& states, char symbol) {
