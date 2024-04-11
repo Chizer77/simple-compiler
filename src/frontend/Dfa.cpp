@@ -58,7 +58,7 @@ Dfa Dfa::DfaMinimize(Dfa& dfa) {
     // 检查死状态
     //1. 删除自身不是终态，但所有边都指向自身的状态
     //2. 从初态开始dfs，删除不可到达的状态和其所包含边
-    //3. 直接将state设置为-1，在之后构造最小集时选择不插入
+    //3. 直接将visit设置为-1，在之后构造最小集时选择不插入
     std::unordered_map<int, int> visit;
     std::stack<int> checkStack;
     checkStack.push(preDfa->s0);

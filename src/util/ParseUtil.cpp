@@ -13,7 +13,7 @@ const std::unordered_map<char, int> ParseUtil::priority = {
 };
 
 /**
- * 将正规式转换为后缀正规式，例：a|(a|b)^cd ---> aab|^cd**|
+ * 将正规式转换为后缀正规式，例：a|(a|b)^cd ---> aab|^cd&&|
  * @param exp 初始正规式
  * @return 转换为后缀正规式
  */
