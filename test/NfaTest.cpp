@@ -30,6 +30,64 @@ void NfaTest::nfaInitTest01() {
     assert(se.alpha == 'a');
 }
 
+void NfaTest::kleeneTest01() {
+    Nfa opa = Nfa::NfaGeneration("a^");
+
+    assert(opa.s.size() == 4);
+
+    std::vector<int> v;
+    for(int ts: opa.s) v.emplace_back(ts);
+    sort(v.begin(), v.end());
+
+    assert(opa.alpha.size() == 2);
+    assert(opa.alpha.find('@') != opa.alpha.end());
+    assert(opa.alpha.find('a') != opa.alpha.end());
+
+    assert(opa.s0 == v[2]);
+
+    assert(opa.target.size() == 1);
+    assert(opa.target.find(v[3]) != opa.target.end());
+
+    assert(opa.edges.size() == 5);
+    std::unordered_set<Edge, Edge::EdgeHasher> es;
+    es.insert(*(new Edge(v[0], v[1], 'a')));
+    es.insert(*(new Edge(v[1], v[0], '@')));
+    es.insert(*(new Edge(v[1], v[3], '@')));
+    es.insert(*(new Edge(v[2], v[3], '@')));
+    es.insert(*(new Edge(v[2], v[0], '@')));
+
+    assert(es == opa.edges);
+}
+
+
+void NfaTest::concatenationTest01() {
+    Nfa opa = Nfa::NfaGeneration("a&b");
+
+    assert(opa.s.size() == 4);
+
+    std::vector<int> v;
+    for(int ts: opa.s) v.emplace_back(ts);
+    sort(v.begin(), v.end());
+
+    assert(opa.alpha.size() == 3);
+    assert(opa.alpha.find('@') != opa.alpha.end());
+    assert(opa.alpha.find('a') != opa.alpha.end());
+    assert(opa.alpha.find('b') != opa.alpha.end());
+
+    assert(opa.s0 == v[0]);
+
+    assert(opa.target.size() == 1);
+    assert(opa.target.find(v[3]) != opa.target.end());
+
+    assert(opa.edges.size() == 3);
+    std::unordered_set<Edge, Edge::EdgeHasher> es;
+    es.insert(*(new Edge(v[0], v[1], 'a')));
+    es.insert(*(new Edge(v[1], v[2], '@')));
+    es.insert(*(new Edge(v[2], v[3], '@')));
+
+    assert(es == opa.edges);
+}
+
 void NfaTest::unionTest01() {
     Nfa opa = Nfa::NfaGeneration("a|b");
 
