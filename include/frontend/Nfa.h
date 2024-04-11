@@ -29,12 +29,12 @@ public:
     static Nfa NfaGeneration(const std::string& exp);
 
     /**
-     * TODO:对栈顶一个元素进行闭包^操作，并插入栈顶
+     * 对栈顶一个元素进行闭包^操作，并插入栈顶
      */
     static void Kleene();
 
     /**
-     * TODO:对栈顶两个元素进行连接&操作，并插入栈顶
+     * 对栈顶两个元素进行连接&操作，并插入栈顶
      */
     static void Concatenation();
 
