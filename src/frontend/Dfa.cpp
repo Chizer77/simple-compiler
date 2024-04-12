@@ -180,7 +180,7 @@ Dfa Dfa::Nfa2Dfa(Nfa& nfa) {
             }
         }
 
-        // 设置DFA的目标状态
+        //判断是否为终结
         for (const auto& state : dfa_states) {
             for (int target_state : nfa.target) {
                 if (state.find(target_state) != state.end()) {
