@@ -116,7 +116,7 @@ std::unordered_set<int> epsilonClosure(const Nfa& nfa, const std::unordered_set<
         stack.pop();
 
         for (const Edge& edge : nfa.edges) {
-            if (edge.start == current_state && edge.alpha == '@') {
+            if (edge.start == current_state && edge.alpha == Nfa::Empty_STATE) {
                 int next_state = edge.target;
                 if (closure.find(next_state) == closure.end()) {
                     closure.insert(next_state);
@@ -188,7 +188,7 @@ Dfa Dfa::Nfa2Dfa(Nfa& nfa) {
             state_queue.pop();
 
             for (char symbol : dfa.alpha) {
-                if(symbol == '@') continue;
+                if(symbol == Nfa::Empty_STATE) continue;
                 std::unordered_set<int> next_state = move(nfa, current_state, symbol);
                 next_state = epsilonClosure(nfa, next_state);
                 int next_id = Dfa::newId();
