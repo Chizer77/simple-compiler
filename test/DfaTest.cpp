@@ -5,15 +5,15 @@
 
 void DfaTest::DfaMinimizeTest01() {
     Dfa *dfa = new Dfa();
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
 
     std::vector<int> v(dfa->s.begin(), dfa->s.end());
     std::sort(v.begin(), v.end());
@@ -65,13 +65,13 @@ void DfaTest::DfaMinimizeTest01() {
 
 void DfaTest::DfaMinimizeTest02() {
     Dfa *dfa = new Dfa();
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
-    dfa->s.insert(Dfa::NODE_ID++);
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
+    dfa->s.insert(Dfa::newId());
 
     std::vector<int> v(dfa->s.begin(), dfa->s.end());
     std::sort(v.begin(), v.end());

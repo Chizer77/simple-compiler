@@ -5,8 +5,9 @@
 #include "Edge.h"
 
 class Graph {
-public:
+private:
     static int NODE_ID;
+public:
     std::unordered_set<int> s;
     std::unordered_set<char> alpha;
     int s0{};
@@ -20,6 +21,10 @@ public:
         s0 = 0;
         target.clear();
         edges.clear();
+    }
+
+    static int newId() {
+        return NODE_ID++;
     }
 };
 

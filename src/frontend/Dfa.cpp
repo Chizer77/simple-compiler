@@ -172,7 +172,7 @@ Dfa Dfa::Nfa2Dfa(Nfa& nfa) {
         // 计算NFA初始状态的ε闭包
         std::unordered_set<int> initial_state_closure = epsilonClosure(nfa, {nfa.s0});
 
-        dfa.s0 = Graph::NODE_ID++;
+        dfa.s0 = Dfa::newId();
         dfa.s.insert(dfa.s0);
         for(char c: nfa.alpha) dfa.alpha.insert(c);
 
@@ -191,7 +191,7 @@ Dfa Dfa::Nfa2Dfa(Nfa& nfa) {
                 if(symbol == '@') continue;
                 std::unordered_set<int> next_state = move(nfa, current_state, symbol);
                 next_state = epsilonClosure(nfa, next_state);
-                int next_id = Graph::NODE_ID++;
+                int next_id = Dfa::newId();
                 if (!next_state.empty()) {
                     auto st = dfa_states.find({next_id, next_state});
                     //next_state为新状态

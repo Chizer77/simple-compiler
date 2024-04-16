@@ -36,7 +36,7 @@ public:
     /**
      * 对栈顶两个元素进行连接&操作，并插入栈顶
      */
-    static void Concatenation();
+    static void Connection();
 
     /**
      * 对栈顶两个元素进行或|操作，并插入栈顶

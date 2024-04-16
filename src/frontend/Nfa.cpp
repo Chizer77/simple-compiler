@@ -7,7 +7,7 @@ Nfa Nfa::NfaGeneration(const std::string& exp) {
     for(char c : parseExp) {
         switch (c) {
             case '^': Kleene();break;
-            case '&': Concatenation();break;
+            case '&': Connection();break;
             case '|': Union();break;
             default: NfaInit(c);
         }
@@ -24,8 +24,8 @@ void Nfa::Kleene() {
     Nfa n = OP_STACK.top();
     OP_STACK.pop();
 
-    int s = NODE_ID++;
-    int t = NODE_ID++;
+    int s = Nfa::newId();
+    int t = Nfa::newId();
 
     Nfa *nnfa = new Nfa();
 
@@ -49,7 +49,7 @@ void Nfa::Kleene() {
     free(nnfa);
 }
 
-void Nfa::Concatenation() {
+void Nfa::Connection() {
     if (OP_STACK.empty()) exit(1);
     Nfa n1 = OP_STACK.top();    //先出来的是后面的那个
     OP_STACK.pop();
@@ -88,8 +88,8 @@ void Nfa::Union() {
     Nfa a2 = OP_STACK.top();
     OP_STACK.pop();
 
-    int s = NODE_ID++;
-    int t = NODE_ID++;
+    int s = Nfa::newId();
+    int t = Nfa::newId();
 
     Nfa *fina = new Nfa();
     for(int as: a1.s) fina->s.insert(as);
@@ -119,8 +119,8 @@ void Nfa::Union() {
 void Nfa::NfaInit(char c) {
     Nfa *a = new Nfa();
 
-    int s = NODE_ID++;
-    int t = NODE_ID++;
+    int s = Nfa::newId();
+    int t = Nfa::newId();
 
     a->s.insert(s);
     a->s.insert(t);
