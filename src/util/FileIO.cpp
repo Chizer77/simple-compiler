@@ -1,5 +1,7 @@
+#include "iostream"
 #include <io.h>
 #include <regex>
+#include "cassert"
 #include "util/FileIO.h"
 
 void FileIO::read(const char *filename) {

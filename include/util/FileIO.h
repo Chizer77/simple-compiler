@@ -2,9 +2,6 @@
 #define SIMPLE_COMPILER_FILEIO_H
 
 
-#include <iostream>
-#include <cassert>
-
 class FileIO {
 public:
     /***

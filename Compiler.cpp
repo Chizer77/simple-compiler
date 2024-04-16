@@ -2,7 +2,7 @@
 #include "include/util/Init.h"
 #include <cstring>
 
-//读取程序
+//输入文件input_file, 目标文件target_file
 std::string input_file, target_file;
 
 /***
