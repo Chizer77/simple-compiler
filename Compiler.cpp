@@ -6,9 +6,10 @@
 std::string input_file, target_file;
 
 /***
- * 首先进行编译：g++ compiler.cpp
+ * 首先进行编译：g++ compiler.cpp -o "compiler"
  *
  * 使用Terminal命令分析文件 compiler -S -o <target_file> <input_file>
+ * 例：.\compiler -S -o "out.txt" "test/example.txt"
  * @param argc
  * @param argv
  */
@@ -23,7 +24,7 @@ void parse_args(int argc, char *argv[]) {
     }
     if (input_file.empty()) {
         //输出到标准错误的ostream对象
-        std::cerr << "error: need input file." << std::endl;
+        std::cerr << "error: can not find a input file." << std::endl;
         exit(1);
     }
 }
