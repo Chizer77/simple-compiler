@@ -6,9 +6,9 @@ Nfa Nfa::NfaGeneration(const std::string& exp) {
     std::string parseExp = ParseUtil::toSuffix(exp);
     for(char c : parseExp) {
         switch (c) {
-            case '^': Kleene();break;
-            case '&': Connection();break;
-            case '|': Union();break;
+            case KLEENE_STATE: Kleene();break;
+            case CONNECTION_STATE: Connection();break;
+            case UNION_STATE: Union();break;
             default: NfaInit(c);
         }
     }
@@ -33,18 +33,19 @@ void Nfa::Kleene() {
     nnfa->s.insert(s);
     nnfa->s.insert(t);
 
+    char empty_state = Empty_STATE;
     for(char c: n.alpha) nnfa->alpha.insert(c);
-    nnfa->alpha.insert('@');
+    nnfa->alpha.insert(empty_state);
 
     nnfa->s0 = s;
 
     nnfa->target.insert(t);
 
     for(Edge e: n.edges) nnfa->edges.insert(e);
-    nnfa->edges.insert(*(new Edge(s, n.s0, '@')));
-    nnfa->edges.insert(*(new Edge(s, t, '@')));
-    for(int tar: n.target) nnfa->edges.insert(*(new Edge(tar, t, '@')));
-    for(int tar: n.target) nnfa->edges.insert(*(new Edge(tar, n.s0, '@')));
+    nnfa->edges.insert(*(new Edge(s, n.s0, empty_state)));
+    nnfa->edges.insert(*(new Edge(s, t, empty_state)));
+    for(int tar: n.target) nnfa->edges.insert(*(new Edge(tar, t, empty_state)));
+    for(int tar: n.target) nnfa->edges.insert(*(new Edge(tar, n.s0, empty_state)));
     OP_STACK.push(*nnfa);
     free(nnfa);
 }
@@ -64,7 +65,8 @@ void Nfa::Connection() {
 
     for(char c: n1.alpha) nnfa->alpha.insert(c);
     for(char c: n2.alpha) nnfa->alpha.insert(c);
-    nnfa->alpha.insert('@');
+    char empty_state = Empty_STATE;
+    nnfa->alpha.insert(empty_state);
 
     nnfa->s0 = n2.s0;
 
@@ -73,7 +75,7 @@ void Nfa::Connection() {
     for(Edge e: n1.edges) nnfa->edges.insert(e);
     for(Edge e: n2.edges) nnfa->edges.insert(e);
     for(int tar:n2.target) {
-        nnfa->edges.insert(*(new Edge(tar,n1.s0, '@')));
+        nnfa->edges.insert(*(new Edge(tar,n1.s0, empty_state)));
     }
 
     OP_STACK.push(*nnfa);
@@ -99,7 +101,8 @@ void Nfa::Union() {
 
     for(char ap: a1.alpha) fina->alpha.insert(ap);
     for(char ap: a2.alpha) fina->alpha.insert(ap);
-    fina->alpha.insert('@');
+    char empty_state = Empty_STATE;
+    fina->alpha.insert(empty_state);
 
     fina->s0 = s;
 
@@ -107,11 +110,11 @@ void Nfa::Union() {
 
     for(Edge e: a1.edges) fina->edges.insert(e);
     for(Edge e: a2.edges) fina->edges.insert(e);
-    fina->edges.insert(*(new Edge(s, a1.s0, '@')));
-    fina->edges.insert(*(new Edge(s, a2.s0, '@')));
+    fina->edges.insert(*(new Edge(s, a1.s0, empty_state)));
+    fina->edges.insert(*(new Edge(s, a2.s0, empty_state)));
 
-    for(int tar: a1.target) fina->edges.insert(*(new Edge(tar, t, '@')));
-    for(int tar: a2.target) fina->edges.insert(*(new Edge(tar, t, '@')));
+    for(int tar: a1.target) fina->edges.insert(*(new Edge(tar, t, empty_state)));
+    for(int tar: a2.target) fina->edges.insert(*(new Edge(tar, t, empty_state)));
     OP_STACK.push(*fina);
     free(fina);
 }

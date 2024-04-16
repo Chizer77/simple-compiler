@@ -40,7 +40,8 @@ void NfaTest::kleeneTest01() {
     sort(v.begin(), v.end());
 
     assert(opa.alpha.size() == 2);
-    assert(opa.alpha.find('@') != opa.alpha.end());
+    char empty_state = Nfa::Empty_STATE;
+    assert(opa.alpha.find(empty_state) != opa.alpha.end());
     assert(opa.alpha.find('a') != opa.alpha.end());
 
     assert(opa.s0 == v[2]);
@@ -51,10 +52,10 @@ void NfaTest::kleeneTest01() {
     assert(opa.edges.size() == 5);
     std::unordered_set<Edge, Edge::EdgeHasher> es;
     es.insert(*(new Edge(v[0], v[1], 'a')));
-    es.insert(*(new Edge(v[1], v[0], '@')));
-    es.insert(*(new Edge(v[1], v[3], '@')));
-    es.insert(*(new Edge(v[2], v[3], '@')));
-    es.insert(*(new Edge(v[2], v[0], '@')));
+    es.insert(*(new Edge(v[1], v[0], empty_state)));
+    es.insert(*(new Edge(v[1], v[3], empty_state)));
+    es.insert(*(new Edge(v[2], v[3], empty_state)));
+    es.insert(*(new Edge(v[2], v[0], empty_state)));
 
     assert(es == opa.edges);
 }
@@ -69,8 +70,9 @@ void NfaTest::concatenationTest01() {
     for(int ts: opa.s) v.emplace_back(ts);
     sort(v.begin(), v.end());
 
+    char empty_state = Nfa::Empty_STATE;
     assert(opa.alpha.size() == 3);
-    assert(opa.alpha.find('@') != opa.alpha.end());
+    assert(opa.alpha.find(empty_state) != opa.alpha.end());
     assert(opa.alpha.find('a') != opa.alpha.end());
     assert(opa.alpha.find('b') != opa.alpha.end());
 
@@ -82,7 +84,7 @@ void NfaTest::concatenationTest01() {
     assert(opa.edges.size() == 3);
     std::unordered_set<Edge, Edge::EdgeHasher> es;
     es.insert(*(new Edge(v[0], v[1], 'a')));
-    es.insert(*(new Edge(v[1], v[2], '@')));
+    es.insert(*(new Edge(v[1], v[2], empty_state)));
     es.insert(*(new Edge(v[2], v[3], 'b')));
 
     assert(es == opa.edges);
@@ -97,8 +99,9 @@ void NfaTest::unionTest01() {
     for(int ts: opa.s) v.emplace_back(ts);
     sort(v.begin(), v.end());
 
+    char empty_state = Nfa::Empty_STATE;
     assert(opa.alpha.size() == 3);
-    assert(opa.alpha.find('@') != opa.alpha.end());
+    assert(opa.alpha.find(empty_state) != opa.alpha.end());
     assert(opa.alpha.find('a') != opa.alpha.end());
     assert(opa.alpha.find('b') != opa.alpha.end());
 
@@ -109,12 +112,12 @@ void NfaTest::unionTest01() {
 
     assert(opa.edges.size() == 6);
     std::unordered_set<Edge, Edge::EdgeHasher> es;
-    es.insert(*(new Edge(v[4], v[0], '@')));
-    es.insert(*(new Edge(v[4], v[2], '@')));
+    es.insert(*(new Edge(v[4], v[0], empty_state)));
+    es.insert(*(new Edge(v[4], v[2], empty_state)));
     es.insert(*(new Edge(v[0], v[1], 'a')));
     es.insert(*(new Edge(v[2], v[3], 'b')));
-    es.insert(*(new Edge(v[1], v[5], '@')));
-    es.insert(*(new Edge(v[3], v[5], '@')));
+    es.insert(*(new Edge(v[1], v[5], empty_state)));
+    es.insert(*(new Edge(v[3], v[5], empty_state)));
 
     assert(es == opa.edges);
 }

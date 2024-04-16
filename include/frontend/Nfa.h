@@ -17,9 +17,15 @@
  * 边集合 edges
  */
 class Nfa : public Graph{
+private:
+    static std::stack<Nfa> OP_STACK;
 
 public:
-    static std::stack<Nfa> OP_STACK;
+
+    static const char KLEENE_STATE = '^';
+    static const char CONNECTION_STATE = '&';
+    static const char UNION_STATE = '|';
+    static const char Empty_STATE = '@';
 
     /**
      * 生成最终的NFA

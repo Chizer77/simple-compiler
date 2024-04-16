@@ -1,14 +1,15 @@
 #include <algorithm>
 #include "string"
 #include "util/ParseUtil.h"
+#include "frontend/Nfa.h"
 #include "unordered_map"
 #include "stack"
 
 
 const std::unordered_map<char, int> ParseUtil::priority = {
-        {'^', 0},
-        {'&', 1},
-        {'|', 2},
+        {Nfa::KLEENE_STATE, 0},
+        {Nfa::CONNECTION_STATE, 1},
+        {Nfa::UNION_STATE, 2},
         {'(', 3}
 };
 
@@ -28,13 +29,13 @@ std::string ParseUtil::format(const std::string& exp) {
         char c = str[i];
         char cPre = str[i-1];
         if (c == '(') {
-            if (std::islower(cPre) || cPre == '^') {
-                str.insert(i, "&");
+            if (std::islower(cPre) || cPre == Nfa::KLEENE_STATE) {
+                str.insert(i, 1, Nfa::CONNECTION_STATE);
                 i++;
             }
         } else if (std::islower(c)) {
-            if (std::islower(cPre) || cPre == ')' || cPre == '^') {
-                str.insert(i, "&");
+            if (std::islower(cPre) || cPre == ')' || cPre == Nfa::KLEENE_STATE) {
+                str.insert(i, 1, Nfa::CONNECTION_STATE);
                 i++;
             }
         }
