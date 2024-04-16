@@ -1,23 +1,36 @@
 #include "iostream"
-#include "util/Init.h"
-#include "NfaTest.h"
-#include "DfaTest.h"
-#include <ctime>
+#include "include/util/Init.h"
+#include <cstring>
 
-void log(void (*func)()) {
-    timespec start{}, end{};
-    clock_gettime(CLOCK_MONOTONIC, &start);
-    (*func)();
-    clock_gettime(CLOCK_MONOTONIC, &end);
-    double duration = ((double)(end.tv_nsec-start.tv_nsec) / ((double) 1e9) + (double)(end.tv_sec-start.tv_sec)) * 1000;
-    std::cout << "Completed in " << duration << "ms." << std::endl;
-    std::cout << "--------------------------" << std::endl;
+//读取程序
+std::string input_file, target_file;
+
+/***
+ * 首先进行编译：g++ compiler.cpp
+ *
+ * 使用Terminal命令分析文件 compiler -S -o <target_file> <input_file>
+ * @param argc
+ * @param argv
+ */
+void parse_args(int argc, char *argv[]) {
+    for (int i = 1; i < argc; i++) {
+        if (i + 2 < argc && strcmp(argv[i], "-S") == 0 && strcmp(argv[i + 1], "-o") == 0) {
+            target_file.assign(argv[i + 2]);
+            i += 2;
+            continue;
+        }
+        input_file.assign(argv[i]);
+    }
+    if (input_file.empty()) {
+        //输出到标准错误的ostream对象
+        std::cerr << "error: need input file." << std::endl;
+        exit(1);
+    }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+    parse_args(argc, argv);
     std::cout << "hello world" << std::endl;
-    std::cout << "NfaTest runs..." << std::endl;
-    log(NfaTest::run);
-    std::cout << "DfaTest runs..." << std::endl;
-    log(DfaTest::run);
+    FileReader::reader(input_file.c_str());
+
 }

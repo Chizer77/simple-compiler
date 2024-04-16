@@ -1,0 +1,10 @@
+#ifndef SIMPLE_COMPILER_LEXER_H
+#define SIMPLE_COMPILER_LEXER_H
+
+
+class Lexer {
+
+};
+
+
+#endif //SIMPLE_COMPILER_LEXER_H
