@@ -110,4 +110,9 @@ void DfaTest::DfaMinimizeTest02() {
 
 }
 
+void DfaTest::Nfa2DfaTest01() {
+    Nfa nfa = Nfa::NfaGeneration("(a|b)^b");
+    Dfa dfa = Dfa::Nfa2Dfa(nfa);
+}
+
 

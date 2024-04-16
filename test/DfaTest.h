@@ -8,9 +8,12 @@ public:
 
     static void DfaMinimizeTest02();
 
+    static void Nfa2DfaTest01();
+
     static void run() {
         DfaMinimizeTest01();
         DfaMinimizeTest02();
+        Nfa2DfaTest01();
     }
 };
 

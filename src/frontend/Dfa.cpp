@@ -103,7 +103,7 @@ Dfa Dfa::DfaMinimize(Dfa& dfa) {
 }
 
 // 计算NFA状态集合的空闭包
-std::unordered_set<int> epsilonClosure(const NFA& nfa, const std::unordered_set<int>& states) {
+std::unordered_set<int> epsilonClosure(const Nfa& nfa, const std::unordered_set<int>& states) {
     std::unordered_set<int> closure = states;
     std::stack<int> stack;
 
@@ -130,52 +130,80 @@ std::unordered_set<int> epsilonClosure(const NFA& nfa, const std::unordered_set<
 }
 
 // 通过符号在NFA中进行状态转移
-std::unordered_set<int> move(const NFA& nfa, const std::unordered_set<int>& states, char symbol) {
+std::unordered_set<int> move(const Nfa& nfa, const std::unordered_set<int>& states, char symbol) {
     std::unordered_set<int> next_states;
 
-    for (int state : states) {
-        for (const Edge& edge : nfa.edges) {
-            if (edge.start == state && edge.alpha == symbol) {
-                next_states.insert(edge.target);
-            }
+    for(const Edge& edge: nfa.edges) {
+        if(states.find(edge.start) != states.end() && edge.alpha == symbol) {
+            next_states.insert(edge.target);
         }
     }
 
     return next_states;
 }
 
+struct Dfa_State {
+public:
+    int id;
+    std::unordered_set<int> s;
+
+    bool operator == (const Dfa_State & ds) const {
+        for(int t: ds.s) {
+            if(s.find(t) == s.end()) return false;
+        }
+        return true;
+    }
+
+    struct Dfa_State_Hasher final {
+        unsigned long long operator()(const Dfa_State& d) const{
+            unsigned long long hash = 0;
+            for(int t: d.s) {
+                hash ^= std::hash<int>()(t);
+            }
+            return hash;
+        }
+    };
+
+};
+
 Dfa Dfa::Nfa2Dfa(Nfa& nfa) {
-        DFA dfa;
+        Dfa dfa;
 
         // 计算NFA初始状态的ε闭包
         std::unordered_set<int> initial_state_closure = epsilonClosure(nfa, {nfa.s0});
 
-        dfa.s.insert(Graph::NODE_ID++);
-        dfa.s0 = Graph::NODE_ID - 1;
+        dfa.s0 = Graph::NODE_ID++;
+        dfa.s.insert(dfa.s0);
+        for(char c: nfa.alpha) dfa.alpha.insert(c);
 
-        std::unordered_set<std::unordered_set<int>> dfa_states;
-        std::queue<std::unordered_set<int>> state_queue;
+        std::unordered_set<Dfa_State, Dfa_State::Dfa_State_Hasher> dfa_states;
+        std::queue<Dfa_State> state_queue;
 
-        dfa_states.insert(initial_state_closure);
-        state_queue.push(initial_state_closure);
+        dfa_states.insert({dfa.s0, initial_state_closure});
+        state_queue.push({dfa.s0, initial_state_closure});
 
         while (!state_queue.empty()) {
-            std::unordered_set<int> current_state = state_queue.front();
+            std::unordered_set<int> current_state = state_queue.front().s;
+            int current_id = state_queue.front().id;
             state_queue.pop();
 
             for (char symbol : dfa.alpha) {
+                if(symbol == '@') continue;
                 std::unordered_set<int> next_state = move(nfa, current_state, symbol);
                 next_state = epsilonClosure(nfa, next_state);
-
-                if (!next_state.empty() && dfa_states.find(next_state) == dfa_states.end()) {
-                    dfa_states.insert(next_state);
-                    dfa.s.insert(Graph::NODE_ID++);
-                    state_queue.push(next_state);
-                }
-
-                // 在DFA中添加从当前状态到下一个状态的符号转移
+                int next_id = Graph::NODE_ID++;
                 if (!next_state.empty()) {
-                    dfa.edges.insert(Edge(*current_state.begin(), *next_state.begin(), symbol));
+                    auto st = dfa_states.find({next_id, next_state});
+                    //next_state为新状态
+                    if(st == dfa_states.end()) {
+                        dfa_states.insert({next_id, next_state});
+                        dfa.s.insert(next_id);
+                        state_queue.push({next_id, next_state});
+                        dfa.edges.insert(Edge(current_id, next_id, symbol));
+                    }else { //next_state为旧状态
+                        next_id = (*st).id;
+                        dfa.edges.insert(Edge(current_id, next_id, symbol));
+                    }
                 }
             }
         }
@@ -183,8 +211,8 @@ Dfa Dfa::Nfa2Dfa(Nfa& nfa) {
         //判断是否为终结
         for (const auto& state : dfa_states) {
             for (int target_state : nfa.target) {
-                if (state.find(target_state) != state.end()) {
-                    dfa.target.insert(*state.begin());
+                if (state.s.find(target_state) != state.s.end()) {
+                    dfa.target.insert(state.id);
                     break;
                 }
             }
@@ -192,5 +220,3 @@ Dfa Dfa::Nfa2Dfa(Nfa& nfa) {
 
         return dfa;
 }
-
-
