@@ -3,14 +3,14 @@
 
 #include "../frontend/Graph.h"
 #include "../frontend/Nfa.h"
-#include "FileReader.h"
+#include "FileIO.h"
 
 int Graph::NODE_ID = 0;
 
 std::stack<Nfa> Nfa::OP_STACK;
 
-FILE *FileReader::input;
-FILE *FileReader::output;
-char *FileReader::fileStr;
+FILE *FileIO::input;
+FILE *FileIO::output;
+char *FileIO::fileStr;
 
 #endif //SIMPLE_COMPILER_INIT_H

@@ -30,8 +30,17 @@ void parse_args(int argc, char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
+    argc = 5;
+    argv[0] = ".\\compiler";
+    argv[1] = "-S";
+    argv[2] = "-o";
+    //由于idea将编译后文件放在cmke-buile-debug中，因此需要出该文件夹
+    argv[3] = "../output/out.txt";
+    argv[4] = "../test/example.txt";
     parse_args(argc, argv);
     std::cout << "hello world" << std::endl;
-    FileReader::reader(input_file.c_str());
-
+    FileIO::read(input_file.c_str());
+    FileIO::write(target_file.c_str(), FileIO::fileStr);
+    FileIO::close();
+    std::cout << FileIO::fileStr << std::endl;
 }
