@@ -4,7 +4,7 @@
 #include "cassert"
 #include "util/FileIO.h"
 
-void FileIO::read(const char *filename) {
+char* FileIO::read(const char *filename) {
     input = fopen(filename, "r");
     assert(input != nullptr);
     //读入文件开头至结尾的字符
@@ -13,10 +13,11 @@ void FileIO::read(const char *filename) {
     //将input指针置于文件开头
     rewind(input);
     // () 初始化内存
-    fileStr = new char[fileSize + 1]();
+    char *fileStr = new char[fileSize + 1]();
     //读入内存
     fread(fileStr, 1, fileSize, input);
-    fileStr[fileSize] = 0;
+//    fileStr[fileSize] = 0;
+    return fileStr;
 }
 
 void FileIO::write(const char *filename, const std::string& s) {

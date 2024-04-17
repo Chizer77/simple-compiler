@@ -5,17 +5,16 @@
 class FileIO {
 public:
     /***
-     * 输入流input，输出流output，文件内容fileStr
+     * 输入流input，输出流output
      */
     static FILE* input;
     static FILE* output;
-    static char* fileStr;
 
     /**
      * 读取文件路径filename内字符，存入fileStr中，文件路径需存在
      * @param filename 文件路径
      */
-    static void read(const char *filename);
+    static char* read(const char *filename);
 
     /**
      * 将s写入文件filename

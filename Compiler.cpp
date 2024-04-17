@@ -39,8 +39,7 @@ int main(int argc, char *argv[]) {
     argv[4] = "../test/example.txt";
     parse_args(argc, argv);
     std::cout << "hello world" << std::endl;
-    FileIO::read(input_file.c_str());
-    FileIO::write(target_file.c_str(), FileIO::fileStr);
+    char* fileStr = FileIO::read(input_file.c_str());
+    FileIO::write(target_file.c_str(), fileStr);
     FileIO::close();
-    std::cout << FileIO::fileStr << std::endl;
 }
