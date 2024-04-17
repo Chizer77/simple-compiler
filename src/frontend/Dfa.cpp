@@ -99,6 +99,7 @@ Dfa Dfa::DfaMinimize(Dfa& dfa) {
             minDfa->alpha.insert(e.alpha);
         }
     }
+    free(preDfa);
     return *minDfa;
 }
 
