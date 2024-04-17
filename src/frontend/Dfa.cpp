@@ -2,6 +2,14 @@
 #include "frontend/Dfa.h"
 #include <queue>
 
+
+Dfa Dfa::Generation(const std::string& exp) {
+    Nfa nfa = Nfa::Generation(exp);
+    Dfa dfa = Dfa::Nfa2Dfa(nfa);
+    dfa = Dfa::DfaMinimize(dfa);
+    return dfa;
+}
+
 Dfa Dfa::DfaMinimize(Dfa& dfa) {
     //定义各结点状态
     std::unordered_map<int, int> state;

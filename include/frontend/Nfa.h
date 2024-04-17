@@ -20,23 +20,9 @@ class Nfa : public Graph{
 private:
     static std::stack<Nfa> OP_STACK;
 
-public:
-
-    static const char KLEENE_STATE = '^';
-    static const char CONNECTION_STATE = '&';
-    static const char UNION_STATE = '|';
-    static const char Empty_STATE = '@';
-
     /**
-     * 生成最终的NFA
-     * @param exp 初始正规式
-     * @return 生成的Nfa
-     */
-    static Nfa NfaGeneration(const std::string& exp);
-
-    /**
-     * 对栈顶一个元素进行闭包^操作，并插入栈顶
-     */
+ * 对栈顶一个元素进行闭包^操作，并插入栈顶
+ */
     static void Kleene();
 
     /**
@@ -53,6 +39,20 @@ public:
      * 对边c创建NFA，并插入栈顶
      */
     static void NfaInit(char c);
+
+public:
+
+    static const char KLEENE_STATE = '^';
+    static const char CONNECTION_STATE = '&';
+    static const char UNION_STATE = '|';
+    static const char Empty_STATE = '@';
+
+    /**
+     * 生成最终的NFA
+     * @param exp 初始正规式
+     * @return 生成的Nfa
+     */
+    static Nfa Generation(const std::string& exp);
 
 };
 #endif //SIMPLE_COMPILER_NfA_H

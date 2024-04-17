@@ -2,7 +2,7 @@
 #include "util/ParseUtil.h"
 #include "string"
 
-Nfa Nfa::NfaGeneration(const std::string& exp) {
+Nfa Nfa::Generation(const std::string& exp) {
     std::string parseExp = ParseUtil::toSuffix(exp);
     for(char c : parseExp) {
         switch (c) {

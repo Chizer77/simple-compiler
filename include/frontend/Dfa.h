@@ -19,6 +19,13 @@ public:
      * @return DFA
      */
     static Dfa Nfa2Dfa(Nfa& nfa);
+
+    /**
+     * 给定exp生成最小化dfa
+     * @param exp 初始正规式
+     * @return 最小化dfa
+     */
+    static Dfa Generation(const std::string& exp);
 };
 
 #endif //SIMPLE_COMPILER_DFA_H

@@ -6,7 +6,7 @@
 #include <algorithm>
 
 void NfaTest::nfaInitTest01() {
-    Nfa opa = Nfa::NfaGeneration("a");
+    Nfa opa = Nfa::Generation("a");
 
     assert(opa.s.size() == 2);
 
@@ -31,7 +31,7 @@ void NfaTest::nfaInitTest01() {
 }
 
 void NfaTest::kleeneTest01() {
-    Nfa opa = Nfa::NfaGeneration("a^");
+    Nfa opa = Nfa::Generation("a^");
 
     assert(opa.s.size() == 4);
 
@@ -62,7 +62,7 @@ void NfaTest::kleeneTest01() {
 
 
 void NfaTest::concatenationTest01() {
-    Nfa opa = Nfa::NfaGeneration("a&b");
+    Nfa opa = Nfa::Generation("a&b");
 
     assert(opa.s.size() == 4);
 
@@ -91,7 +91,7 @@ void NfaTest::concatenationTest01() {
 }
 
 void NfaTest::unionTest01() {
-    Nfa opa = Nfa::NfaGeneration("a|b");
+    Nfa opa = Nfa::Generation("a|b");
 
     assert(opa.s.size() == 6);
 
