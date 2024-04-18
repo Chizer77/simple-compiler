@@ -4,14 +4,16 @@
 #include <unordered_map>
 
 
-Dfa Dfa::Generation(const std::string& exp) {
-    Nfa nfa = Nfa::Generation(exp);
-    Dfa dfa = Dfa::Nfa2Dfa(nfa);
-    dfa = Dfa::DfaMinimize(dfa);
-    return dfa;
+Dfa* Dfa::Generation(const std::string& exp) {
+    Nfa *nfa = Nfa::Generation(exp);
+    Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
+    delete nfa;
+    Dfa *minDfa = Dfa::DfaMinimize(*dfa);
+    delete dfa;
+    return minDfa;
 }
 
-Dfa Dfa::DfaMinimize(Dfa& dfa) {
+Dfa* Dfa::DfaMinimize(const Dfa& dfa) {
     //定义各结点状态
     std::unordered_map<int, int> state;
     int ps = 0;
@@ -109,7 +111,7 @@ Dfa Dfa::DfaMinimize(Dfa& dfa) {
         }
     }
     free(preDfa);
-    return *minDfa;
+    return minDfa;
 }
 
 // 计算NFA状态集合的空闭包
@@ -176,28 +178,28 @@ public:
 
 };
 
-Dfa Dfa::Nfa2Dfa(Nfa& nfa) {
-        Dfa dfa;
+Dfa* Dfa::Nfa2Dfa(const Nfa& nfa) {
+        Dfa *dfa = new Dfa();
 
         // 计算NFA初始状态的ε闭包
         std::unordered_set<int> initial_state_closure = epsilonClosure(nfa, {nfa.s0});
 
-        dfa.s0 = Dfa::newId();
-        dfa.s.insert(dfa.s0);
-        for(char c: nfa.alpha) dfa.alpha.insert(c);
+        dfa->s0 = Dfa::newId();
+        dfa->s.insert(dfa->s0);
+        for(char c: nfa.alpha) dfa->alpha.insert(c);
 
         std::unordered_set<Dfa_State, Dfa_State::Dfa_State_Hasher> dfa_states;
         std::queue<Dfa_State> state_queue;
 
-        dfa_states.insert({dfa.s0, initial_state_closure});
-        state_queue.push({dfa.s0, initial_state_closure});
+        dfa_states.insert({dfa->s0, initial_state_closure});
+        state_queue.push({dfa->s0, initial_state_closure});
 
         while (!state_queue.empty()) {
             std::unordered_set<int> current_state = state_queue.front().s;
             int current_id = state_queue.front().id;
             state_queue.pop();
 
-            for (char symbol : dfa.alpha) {
+            for (char symbol : dfa->alpha) {
                 if(symbol == Nfa::Empty_STATE) continue;
                 std::unordered_set<int> next_state = move(nfa, current_state, symbol);
                 next_state = epsilonClosure(nfa, next_state);
@@ -207,12 +209,12 @@ Dfa Dfa::Nfa2Dfa(Nfa& nfa) {
                     //next_state为新状态
                     if(st == dfa_states.end()) {
                         dfa_states.insert({next_id, next_state});
-                        dfa.s.insert(next_id);
+                        dfa->s.insert(next_id);
                         state_queue.push({next_id, next_state});
-                        dfa.edges.insert(Edge(current_id, next_id, symbol));
+                        dfa->edges.insert(Edge(current_id, next_id, symbol));
                     }else { //next_state为旧状态
                         next_id = (*st).id;
-                        dfa.edges.insert(Edge(current_id, next_id, symbol));
+                        dfa->edges.insert(Edge(current_id, next_id, symbol));
                     }
                 }
             }
@@ -222,7 +224,7 @@ Dfa Dfa::Nfa2Dfa(Nfa& nfa) {
         for (const auto& state : dfa_states) {
             for (int target_state : nfa.target) {
                 if (state.s.find(target_state) != state.s.end()) {
-                    dfa.target.insert(state.id);
+                    dfa->target.insert(state.id);
                     break;
                 }
             }

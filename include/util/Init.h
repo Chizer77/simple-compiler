@@ -8,7 +8,7 @@
 
 int Graph::NODE_ID = 0;
 
-std::stack<Nfa> Nfa::OP_STACK;
+std::stack<Nfa*> Nfa::OP_STACK;
 
 FILE *FileIO::input;
 FILE *FileIO::output;

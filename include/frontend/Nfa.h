@@ -18,7 +18,7 @@
  */
 class Nfa : public Graph {
 private:
-    static std::stack<Nfa> OP_STACK;
+    static std::stack<Nfa*> OP_STACK;
 
     /**
      * 对栈顶一个元素进行闭包^操作，并插入栈顶
@@ -50,9 +50,9 @@ public:
     /**
      * 生成最终的NFA
      * @param exp 初始正规式
-     * @return 生成的Nfa
+     * @return 生成的Nfa对象
      */
-    static Nfa Generation(const std::string& exp);
+    static Nfa* Generation(const std::string& exp);
 
     ~Nfa() {
         s.clear();

@@ -59,8 +59,9 @@ void DfaTest::DfaMinimizeTest01() {
     dfa->edges.insert(*(new Edge(h, d, 'a')));
     dfa->edges.insert(*(new Edge(h, f, 'b')));
 
-    Dfa opa = Dfa::DfaMinimize(*dfa);
+    Dfa *opa = Dfa::DfaMinimize(*dfa);
 
+    free(opa);
 }
 
 void DfaTest::DfaMinimizeTest02() {
@@ -106,13 +107,17 @@ void DfaTest::DfaMinimizeTest02() {
     dfa->edges.insert(*(new Edge(i5, i5, 'b')));
     dfa->edges.insert(*(new Edge(i6, i5, 'b')));
 
-    Dfa opa = Dfa::DfaMinimize(*dfa);
+    Dfa *opa = Dfa::DfaMinimize(*dfa);
 
+    free(opa);
 }
 
 void DfaTest::Nfa2DfaTest01() {
-    Nfa nfa = Nfa::Generation("(a|b)^b");
-    Dfa dfa = Dfa::Nfa2Dfa(nfa);
+    Nfa *nfa = Nfa::Generation("(a|b)^b");
+    Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
+    free(nfa);
+
+    free(dfa);
 }
 
 
