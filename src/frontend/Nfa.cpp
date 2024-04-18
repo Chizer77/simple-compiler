@@ -42,10 +42,10 @@ void Nfa::Kleene() {
     nnfa->target.insert(t);
 
     for(Edge e: n.edges) nnfa->edges.insert(e);
-    nnfa->edges.insert(*(new Edge(s, n.s0, empty_state)));
-    nnfa->edges.insert(*(new Edge(s, t, empty_state)));
-    for(int tar: n.target) nnfa->edges.insert(*(new Edge(tar, t, empty_state)));
-    for(int tar: n.target) nnfa->edges.insert(*(new Edge(tar, n.s0, empty_state)));
+    nnfa->edges.insert(Edge(s, n.s0, empty_state));
+    nnfa->edges.insert(Edge(s, t, empty_state));
+    for(int tar: n.target) nnfa->edges.insert(Edge(tar, t, empty_state));
+    for(int tar: n.target) nnfa->edges.insert(Edge(tar, n.s0, empty_state));
     OP_STACK.push(*nnfa);
     free(nnfa);
 }
@@ -75,7 +75,7 @@ void Nfa::Connection() {
     for(Edge e: n1.edges) nnfa->edges.insert(e);
     for(Edge e: n2.edges) nnfa->edges.insert(e);
     for(int tar:n2.target) {
-        nnfa->edges.insert(*(new Edge(tar,n1.s0, empty_state)));
+        nnfa->edges.insert(Edge(tar,n1.s0, empty_state));
     }
 
     OP_STACK.push(*nnfa);
@@ -110,11 +110,11 @@ void Nfa::Union() {
 
     for(Edge e: a1.edges) fina->edges.insert(e);
     for(Edge e: a2.edges) fina->edges.insert(e);
-    fina->edges.insert(*(new Edge(s, a1.s0, empty_state)));
-    fina->edges.insert(*(new Edge(s, a2.s0, empty_state)));
+    fina->edges.insert(Edge(s, a1.s0, empty_state));
+    fina->edges.insert(Edge(s, a2.s0, empty_state));
 
-    for(int tar: a1.target) fina->edges.insert(*(new Edge(tar, t, empty_state)));
-    for(int tar: a2.target) fina->edges.insert(*(new Edge(tar, t, empty_state)));
+    for(int tar: a1.target) fina->edges.insert(Edge(tar, t, empty_state));
+    for(int tar: a2.target) fina->edges.insert(Edge(tar, t, empty_state));
     OP_STACK.push(*fina);
     free(fina);
 }
@@ -130,7 +130,7 @@ void Nfa::NfaInit(char c) {
     a->alpha.insert(c);
     a->s0 = s;
     a->target.insert(t);
-    a->edges.insert(*(new Edge(s, t, c)));
+    a->edges.insert(Edge(s, t, c));
 
     OP_STACK.push(*a);
     free(a);

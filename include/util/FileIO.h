@@ -2,6 +2,8 @@
 #define SIMPLE_COMPILER_FILEIO_H
 
 
+#include <string>
+
 class FileIO {
 public:
     /***

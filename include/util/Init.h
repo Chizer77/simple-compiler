@@ -3,8 +3,8 @@
 
 #include "../frontend/Graph.h"
 #include "../frontend/Nfa.h"
-#include "FileIO.h"
 #include "../frontend/Token.h"
+#include "../util/FileIO.h"
 
 int Graph::NODE_ID = 0;
 

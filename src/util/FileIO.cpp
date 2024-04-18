@@ -1,12 +1,15 @@
-#include "iostream"
-#include <io.h>
-#include <regex>
-#include "cassert"
 #include "util/FileIO.h"
+#include "iostream"
+#include <regex>
+#include <direct.h>
 
 char* FileIO::read(const char *filename) {
     input = fopen(filename, "r");
-    assert(input != nullptr);
+    if (input == nullptr) {
+        //输出到标准错误的ostream对象
+        std::cerr << "error: can not read input file." << std::endl;
+        exit(1);
+    }
     //读入文件开头至结尾的字符
     fseek(input, SEEK_SET, SEEK_END);
     unsigned int fileSize = ftell(input) + 1;
@@ -23,7 +26,7 @@ char* FileIO::read(const char *filename) {
 void FileIO::write(const char *filename, const std::string& s) {
     //拆分文件路径
     std::match_results<std::string::const_iterator> names;
-    std::regex Pattern("(^.+?\/)(.+).", std::regex_constants::extended);
+    std::regex Pattern("[^.+\/][.+].", std::regex_constants::extended);
     std::string fileString = std::string(filename);
     bool state = std::regex_search(fileString, names, Pattern);
     if(state) {

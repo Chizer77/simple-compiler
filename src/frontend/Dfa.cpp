@@ -1,6 +1,7 @@
 #include <algorithm>
 #include "frontend/Dfa.h"
 #include <queue>
+#include <unordered_map>
 
 
 Dfa Dfa::Generation(const std::string& exp) {
@@ -58,7 +59,7 @@ Dfa Dfa::DfaMinimize(Dfa& dfa) {
     preDfa->s0 = state[dfa.s0];
     for(int tar: dfa.target) preDfa->target.insert(state[tar]);
     for(Edge e: dfa.edges) {
-        preDfa->edges.insert(*(new Edge(state[e.start], state[e.target], e.alpha)));
+        preDfa->edges.insert(Edge(state[e.start], state[e.target], e.alpha));
     }
     // 重新映射preDfa各边
     edgesMap.clear();
@@ -103,7 +104,7 @@ Dfa Dfa::DfaMinimize(Dfa& dfa) {
     }
     for(Edge e: preDfa->edges) {
         if(visit[e.start] == 1 && visit[e.target] == 1) {
-            minDfa->edges.insert(*(new Edge(e.start, e.target, e.alpha)));
+            minDfa->edges.insert(Edge(e.start, e.target, e.alpha));
             minDfa->alpha.insert(e.alpha);
         }
     }

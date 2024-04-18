@@ -26,6 +26,14 @@ public:
      * @return 最小化dfa
      */
     static Dfa Generation(const std::string& exp);
+
+    ~Dfa() {
+        s.clear();
+        alpha.clear();
+        s0 = 0;
+        target.clear();
+        edges.clear();
+    }
 };
 
 #endif //SIMPLE_COMPILER_DFA_H

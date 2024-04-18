@@ -16,13 +16,13 @@
  * 终态集合 target
  * 边集合 edges
  */
-class Nfa : public Graph{
+class Nfa : public Graph {
 private:
     static std::stack<Nfa> OP_STACK;
 
     /**
- * 对栈顶一个元素进行闭包^操作，并插入栈顶
- */
+     * 对栈顶一个元素进行闭包^操作，并插入栈顶
+     */
     static void Kleene();
 
     /**
@@ -54,5 +54,12 @@ public:
      */
     static Nfa Generation(const std::string& exp);
 
+    ~Nfa() {
+        s.clear();
+        alpha.clear();
+        s0 = 0;
+        target.clear();
+        edges.clear();
+    }
 };
 #endif //SIMPLE_COMPILER_NfA_H
