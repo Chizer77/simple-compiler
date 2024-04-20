@@ -170,7 +170,7 @@ void DfaTest::DfaMinimizeTest001() {
 void DfaTest::DfaMinimizeTest002() {
     Graph::resetId();
     printf("DfaMinimizeTest002\n");
-    Nfa *nfa = Nfa::Generation("(a|)^(aa|bb)(a|b)^");
+    Nfa *nfa = Nfa::Generation("(a|b)^(aa|bb)(a|b)^");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     Dfa *sdfa = Dfa::DfaMinimize(*dfa);
     int i = 0;
