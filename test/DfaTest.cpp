@@ -118,7 +118,7 @@ void DfaTest::Nfa2DfaTest01() {
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     int i = 0;
     for (Edge edge : dfa->edges) {
-        printf("edge%d start:%d target:%d alpha:%c\n", i, edge.start, edge.target, edge.alpha);
+        printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
     free(nfa);
     free(dfa);
@@ -130,7 +130,7 @@ void DfaTest::Nfa2DfaTest02() {
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     int i = 0;
     for (Edge edge : dfa->edges) {
-        printf("edge%d start:%d target:%d alpha:%c\n", i, edge.start, edge.target, edge.alpha);
+        printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
     free(nfa);
     free(dfa);
@@ -142,7 +142,7 @@ void DfaTest::Nfa2DfaTest03() {
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     int i = 0;
     for (Edge edge : dfa->edges) {
-        printf("edge%d start:%d target:%d alpha:%c\n", i, edge.start, edge.target, edge.alpha);
+        printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
     free(nfa);
     free(dfa);
@@ -155,7 +155,7 @@ void DfaTest::DfaMinimizeTest001() {
     Dfa *sdfa = Dfa::DfaMinimize(*dfa);
     int i = 0;
     for (Edge edge : sdfa->edges) {
-        printf("edge%d start:%d target:%d alpha:%c\n", i, edge.start, edge.target, edge.alpha);
+        printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
     free(nfa);
     free(dfa);
@@ -168,7 +168,7 @@ void DfaTest::DfaMinimizeTest002() {
     Dfa *sdfa = Dfa::DfaMinimize(*dfa);
     int i = 0;
     for (Edge edge : sdfa->edges) {
-        printf("edge%d start:%d target:%d alpha:%c\n", i, edge.start, edge.target, edge.alpha);
+        printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
     free(nfa);
     free(dfa);
@@ -182,7 +182,7 @@ void DfaTest::DfaMinimizeTest003() {
     Dfa *sdfa = Dfa::DfaMinimize(*dfa);
     int i = 0;
     for (Edge edge : sdfa->edges) {
-        printf("edge%d start:%d target:%d alpha:%c\n", i, edge.start, edge.target, edge.alpha);
+        printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
     free(nfa);
     free(dfa);
