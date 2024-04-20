@@ -123,6 +123,7 @@ void DfaTest::Nfa2DfaTest01() {
     for (Edge edge : dfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
+    printf("初态：%d   ", dfa->s0);
     printf("终态：");
     for (int target : dfa->target) {
         printf("%d、", target);
@@ -140,6 +141,7 @@ void DfaTest::Nfa2DfaTest02() {
     for (Edge edge : dfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
+    printf("初态：%d   ", dfa->s0);
     printf("终态：");
     for (int target : dfa->target) {
         printf("%d、", target);
@@ -157,6 +159,7 @@ void DfaTest::Nfa2DfaTest03() {
     for (Edge edge : dfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
+    printf("初态：%d   ", dfa->s0);
     printf("终态：");
     for (int target : dfa->target) {
         printf("%d、", target);
@@ -175,12 +178,14 @@ void DfaTest::DfaMinimizeTest001() {
     for (Edge edge : sdfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
+    printf("初态：%d   ", sdfa->s0);
     printf("终态：");
-    for (int target : dfa->target) {
+    for (int target : sdfa->target) {
         printf("%d、", target);
     }
     free(nfa);
     free(dfa);
+    free(sdfa);
 }
 
 void DfaTest::DfaMinimizeTest002() {
@@ -193,8 +198,9 @@ void DfaTest::DfaMinimizeTest002() {
     for (Edge edge : sdfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
+    printf("初态：%d   ", sdfa->s0);
     printf("终态：");
-    for (int target : dfa->target) {
+    for (int target : sdfa->target) {
         printf("%d、", target);
     }
     free(nfa);
@@ -212,8 +218,9 @@ void DfaTest::DfaMinimizeTest003() {
     for (Edge edge : sdfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
+    printf("初态：%d   ", sdfa->s0);
     printf("终态：");
-    for (int target : dfa->target) {
+    for (int target : sdfa->target) {
         printf("%d、", target);
     }
     free(nfa);
