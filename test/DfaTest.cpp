@@ -116,12 +116,16 @@ void DfaTest::DfaMinimizeTest02() {
 
 void DfaTest::Nfa2DfaTest01() {
     Graph::resetId();
-    printf("Nfa2DfaTest01\n");
+    printf("\nNfa2DfaTest01\n");
     Nfa *nfa = Nfa::Generation("(a|b)^b");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     int i = 0;
     for (Edge edge : dfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
+    }
+    printf("终态：");
+    for (int target : dfa->target) {
+        printf("%d、", target);
     }
     free(nfa);
     free(dfa);
@@ -129,12 +133,16 @@ void DfaTest::Nfa2DfaTest01() {
 
 void DfaTest::Nfa2DfaTest02() {
     Graph::resetId();
-    printf("Nfa2DfaTest02\n");
+    printf("\nNfa2DfaTest02\n");
     Nfa *nfa = Nfa::Generation("(a|b)^(aa|bb)(a|b)^");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     int i = 0;
     for (Edge edge : dfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
+    }
+    printf("终态：");
+    for (int target : dfa->target) {
+        printf("%d、", target);
     }
     free(nfa);
     free(dfa);
@@ -142,12 +150,16 @@ void DfaTest::Nfa2DfaTest02() {
 
 void DfaTest::Nfa2DfaTest03() {
     Graph::resetId();
-    printf("Nfa2DfaTest03\n");
+    printf("\nNfa2DfaTest03\n");
     Nfa *nfa = Nfa::Generation("a^(a|b)b^");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     int i = 0;
     for (Edge edge : dfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
+    }
+    printf("终态：");
+    for (int target : dfa->target) {
+        printf("%d、", target);
     }
     free(nfa);
     free(dfa);
@@ -155,7 +167,7 @@ void DfaTest::Nfa2DfaTest03() {
 
 void DfaTest::DfaMinimizeTest001() {
     Graph::resetId();
-    printf("DfaMinimizeTest001\n");
+    printf("\nDfaMinimizeTest001\n");
     Nfa *nfa = Nfa::Generation("(a|b)^b");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     Dfa *sdfa = Dfa::DfaMinimize(*dfa);
@@ -163,19 +175,27 @@ void DfaTest::DfaMinimizeTest001() {
     for (Edge edge : sdfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
+    printf("终态：");
+    for (int target : dfa->target) {
+        printf("%d、", target);
+    }
     free(nfa);
     free(dfa);
 }
 
 void DfaTest::DfaMinimizeTest002() {
     Graph::resetId();
-    printf("DfaMinimizeTest002\n");
+    printf("\nDfaMinimizeTest002\n");
     Nfa *nfa = Nfa::Generation("(a|b)^(aa|bb)(a|b)^");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     Dfa *sdfa = Dfa::DfaMinimize(*dfa);
     int i = 0;
     for (Edge edge : sdfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
+    }
+    printf("终态：");
+    for (int target : dfa->target) {
+        printf("%d、", target);
     }
     free(nfa);
     free(dfa);
@@ -184,13 +204,17 @@ void DfaTest::DfaMinimizeTest002() {
 
 void DfaTest::DfaMinimizeTest003() {
     Graph::resetId();
-    printf("DfaMinimizeTest003\n");
+    printf("\nDfaMinimizeTest003\n");
     Nfa *nfa = Nfa::Generation("a^(a|b)b^");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     Dfa *sdfa = Dfa::DfaMinimize(*dfa);
     int i = 0;
     for (Edge edge : sdfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
+    }
+    printf("终态：");
+    for (int target : dfa->target) {
+        printf("%d、", target);
     }
     free(nfa);
     free(dfa);
