@@ -33,6 +33,7 @@ public:
         s0 = 0;
         target.clear();
         edges.clear();
+        Graph::resetId();
     }
 };
 
