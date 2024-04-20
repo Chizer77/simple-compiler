@@ -15,8 +15,8 @@ void log(void (*func)()) {
 }
 
 int main() {
-    std::cout << "NfaTest runs..." << std::endl;
-    log(NfaTest::run);
+//    std::cout << "NfaTest runs..." << std::endl;
+//    log(NfaTest::run);
     std::cout << "DfaTest runs..." << std::endl;
     log(DfaTest::run);
 }

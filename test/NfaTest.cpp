@@ -32,7 +32,9 @@ void NfaTest::nfaInitTest01() {
 }
 
 void NfaTest::kleeneTest01() {
-    Nfa *opa = Nfa::Generation("a^");
+    std::string s = "a";
+    s += Nfa::KLEENE_STATE;
+    Nfa *opa = Nfa::Generation(s);
 
     assert(opa->s.size() == 4);
 
@@ -64,7 +66,10 @@ void NfaTest::kleeneTest01() {
 
 
 void NfaTest::concatenationTest01() {
-    Nfa *opa = Nfa::Generation("a&b");
+    std::string s = "a";
+    s += Nfa::CONNECTION_STATE;
+    s += "b";
+    Nfa *opa = Nfa::Generation(s);
 
     assert(opa->s.size() == 4);
 
@@ -93,7 +98,10 @@ void NfaTest::concatenationTest01() {
 }
 
 void NfaTest::unionTest01() {
-    Nfa *opa = Nfa::Generation("a|b");
+    std::string s = "a";
+    s += Nfa::UNION_STATE;
+    s += "b";
+    Nfa *opa = Nfa::Generation(s);
 
     assert(opa->s.size() == 6);
 
@@ -126,8 +134,31 @@ void NfaTest::unionTest01() {
 }
 
 void NfaTest::parseUtilTest() {
-    std::string str1 = ParseUtil::toSuffix("a|(a|b)^cd");
-    assert(str1 == "aab|^cd&&|");
+    // a|(a|b)^cd
+    std::string s = "a";
+    s += Nfa::UNION_STATE;
+    s += Nfa::LPARENT_STATE;
+    s += "a";
+    s += Nfa::UNION_STATE;
+    s += "b";
+    s += Nfa::RPARENT_STATE;
+    s += Nfa::KLEENE_STATE;
+    s += "c";
+    s += "d";
+    std::string str1 = ParseUtil::toSuffix(s);
+    // aab|^cd&&|
+    std::string res = "aab";
+    res += Nfa::UNION_STATE;
+    res += Nfa::KLEENE_STATE;
+    res += "cd";
+    res += Nfa::CONNECTION_STATE;
+    res += Nfa::CONNECTION_STATE;
+    res += Nfa::UNION_STATE;
+    assert(str1 == res);
+
+    // (a|b)^(cd)
+    s = "";
+    s += Nfa::LPARENT_STATE;
 
     str1 = ParseUtil::toSuffix("(a|b)^(cd)");
     assert(str1 == "ab|^cd&&");

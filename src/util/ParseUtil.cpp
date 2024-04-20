@@ -10,7 +10,7 @@ const std::unordered_map<char, int> ParseUtil::priority = {
         {Nfa::KLEENE_STATE, 0},
         {Nfa::CONNECTION_STATE, 1},
         {Nfa::UNION_STATE, 2},
-        {'(', 3}
+        {Nfa::LPARENT_STATE, 3}
 };
 
 /**
@@ -22,19 +22,23 @@ std::string ParseUtil::toSuffix(const std::string& exp) {
     return toSuffixR(format(exp));
 }
 
+bool isVaild(char c) {
+//    return c > 31 && c < 127;
+    return (c > 45 && c < 58) || (c > 96 && c < 123);
+}
+
 std::string ParseUtil::format(const std::string& exp) {
     std::string str = exp;
-    str.erase(std::remove_if(str.begin(), str.end(), [](char c) { return c == ' '; }), str.end());
     for (size_t i = 1; i < str.length(); i++) {
         char c = str[i];
         char cPre = str[i-1];
-        if (c == '(') {
-            if (std::islower(cPre) || cPre == Nfa::KLEENE_STATE) {
+        if (c == Nfa::LPARENT_STATE) {
+            if (isVaild(cPre) || cPre == Nfa::KLEENE_STATE || cPre == Nfa::RPARENT_STATE) {
                 str.insert(i, 1, Nfa::CONNECTION_STATE);
                 i++;
             }
-        } else if (std::islower(c)) {
-            if (std::islower(cPre) || cPre == ')' || cPre == Nfa::KLEENE_STATE) {
+        } else if (isVaild(c)) {
+            if (isVaild(cPre) || cPre == Nfa::RPARENT_STATE || cPre == Nfa::KLEENE_STATE) {
                 str.insert(i, 1, Nfa::CONNECTION_STATE);
                 i++;
             }
@@ -47,12 +51,12 @@ std::string ParseUtil::toSuffixR(const std::string& exp) {
     std::stack<char> stack;
     std::string res;
     for (char c : exp) {
-        if (std::islower(c)) {
+        if (isVaild(c)) {
             res += c;
-        } else if (c == '(') {
+        } else if (c == Nfa::LPARENT_STATE) {
             stack.push(c);
-        } else if (c == ')') {
-            while (stack.top() != '(') {
+        } else if (c == Nfa::RPARENT_STATE) {
+            while (stack.top() != Nfa::LPARENT_STATE) {
                 res += stack.top();
                 stack.pop();
             }

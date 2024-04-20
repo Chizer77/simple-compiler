@@ -42,10 +42,12 @@ private:
 
 public:
 
-    static const char KLEENE_STATE = '^';
-    static const char CONNECTION_STATE = '&';
-    static const char UNION_STATE = '|';
-    static const char Empty_STATE = '@';
+    static const char KLEENE_STATE = '^'; // 28 ^
+    static const char CONNECTION_STATE = '&'; // 29 &
+    static const char UNION_STATE = '|'; // 30 |
+    static const char Empty_STATE = '@'; // 31 @
+    static const char LPARENT_STATE = '(';    // 2 (
+    static const char RPARENT_STATE = ')';    // 3 )
 
     /**
      * 生成最终的NFA

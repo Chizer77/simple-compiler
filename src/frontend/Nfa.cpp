@@ -1,3 +1,4 @@
+#include <iostream>
 #include "frontend/Nfa.h"
 #include "util/ParseUtil.h"
 #include "string"
@@ -6,13 +7,16 @@ Nfa* Nfa::Generation(const std::string& exp) {
     std::string parseExp = ParseUtil::toSuffix(exp);
     for(char c : parseExp) {
         switch (c) {
-            case KLEENE_STATE: Kleene();break;
-            case CONNECTION_STATE: Connection();break;
-            case UNION_STATE: Union();break;
+            case Nfa::KLEENE_STATE: Kleene();break;
+            case Nfa::CONNECTION_STATE: Connection();break;
+            case Nfa::UNION_STATE: Union();break;
             default: NfaInit(c);
         }
     }
-    if(OP_STACK.empty()) exit(1);
+    if(OP_STACK.empty() || OP_STACK.size() > 1) {
+        std::cerr << "Nfa generation Error!\n" << std::endl;
+        exit(1);
+    }
 
     Nfa *nfa = OP_STACK.top();
     OP_STACK.pop();

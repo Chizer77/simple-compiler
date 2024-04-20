@@ -128,6 +128,7 @@ void DfaTest::Nfa2DfaTest01() {
     for (int target : dfa->target) {
         printf("%d、", target);
     }
+    printf("\n");
     free(nfa);
     free(dfa);
 }
@@ -146,6 +147,7 @@ void DfaTest::Nfa2DfaTest02() {
     for (int target : dfa->target) {
         printf("%d、", target);
     }
+    printf("\n");
     free(nfa);
     free(dfa);
 }
@@ -164,6 +166,7 @@ void DfaTest::Nfa2DfaTest03() {
     for (int target : dfa->target) {
         printf("%d、", target);
     }
+    printf("\n");
     free(nfa);
     free(dfa);
 }
@@ -183,6 +186,7 @@ void DfaTest::DfaMinimizeTest001() {
     for (int target : sdfa->target) {
         printf("%d、", target);
     }
+    printf("\n");
     free(nfa);
     free(dfa);
     free(sdfa);
@@ -203,6 +207,7 @@ void DfaTest::DfaMinimizeTest002() {
     for (int target : sdfa->target) {
         printf("%d、", target);
     }
+    printf("\n");
     free(nfa);
     free(dfa);
     free(sdfa);
@@ -223,6 +228,7 @@ void DfaTest::DfaMinimizeTest003() {
     for (int target : sdfa->target) {
         printf("%d、", target);
     }
+    printf("\n");
     free(nfa);
     free(dfa);
     free(sdfa);
