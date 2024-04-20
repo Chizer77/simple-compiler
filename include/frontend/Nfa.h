@@ -60,7 +60,6 @@ public:
         s0 = 0;
         target.clear();
         edges.clear();
-        Graph::resetId();
     }
 };
 #endif //SIMPLE_COMPILER_NfA_H

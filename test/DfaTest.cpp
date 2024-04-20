@@ -4,6 +4,7 @@
 #include "frontend/Dfa.h"
 
 void DfaTest::DfaMinimizeTest01() {
+    Graph::resetId();
     Dfa *dfa = new Dfa();
     dfa->s.insert(Dfa::newId());
     dfa->s.insert(Dfa::newId());
@@ -65,6 +66,7 @@ void DfaTest::DfaMinimizeTest01() {
 }
 
 void DfaTest::DfaMinimizeTest02() {
+    Graph::resetId();
     Dfa *dfa = new Dfa();
     dfa->s.insert(Dfa::newId());
     dfa->s.insert(Dfa::newId());
@@ -113,6 +115,7 @@ void DfaTest::DfaMinimizeTest02() {
 }
 
 void DfaTest::Nfa2DfaTest01() {
+    Graph::resetId();
     printf("Nfa2DfaTest01\n");
     Nfa *nfa = Nfa::Generation("(a|b)^b");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
@@ -125,6 +128,7 @@ void DfaTest::Nfa2DfaTest01() {
 }
 
 void DfaTest::Nfa2DfaTest02() {
+    Graph::resetId();
     printf("Nfa2DfaTest02\n");
     Nfa *nfa = Nfa::Generation("(a|b)^(aa|bb)(a|b)^");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
@@ -137,6 +141,7 @@ void DfaTest::Nfa2DfaTest02() {
 }
 
 void DfaTest::Nfa2DfaTest03() {
+    Graph::resetId();
     printf("Nfa2DfaTest03\n");
     Nfa *nfa = Nfa::Generation("a^(a|b)b^");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
@@ -149,6 +154,7 @@ void DfaTest::Nfa2DfaTest03() {
 }
 
 void DfaTest::DfaMinimizeTest001() {
+    Graph::resetId();
     printf("DfaMinimizeTest001\n");
     Nfa *nfa = Nfa::Generation("(a|b)^b");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
@@ -162,6 +168,7 @@ void DfaTest::DfaMinimizeTest001() {
 }
 
 void DfaTest::DfaMinimizeTest002() {
+    Graph::resetId();
     printf("DfaMinimizeTest002\n");
     Nfa *nfa = Nfa::Generation("(a|)^(aa|bb)(a|b)^");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
@@ -176,6 +183,7 @@ void DfaTest::DfaMinimizeTest002() {
 }
 
 void DfaTest::DfaMinimizeTest003() {
+    Graph::resetId();
     printf("DfaMinimizeTest003\n");
     Nfa *nfa = Nfa::Generation("a^(a|b)b^");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
