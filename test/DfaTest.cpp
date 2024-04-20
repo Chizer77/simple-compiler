@@ -113,11 +113,78 @@ void DfaTest::DfaMinimizeTest02() {
 }
 
 void DfaTest::Nfa2DfaTest01() {
+    printf("Nfa2DfaTest01\n");
     Nfa *nfa = Nfa::Generation("(a|b)^b");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
+    int i = 0;
+    for (Edge edge : dfa->edges) {
+        printf("edge%d start:%d target:%d alpha:%c\n", i, edge.start, edge.target, edge.alpha);
+    }
     free(nfa);
-
     free(dfa);
 }
 
+void DfaTest::Nfa2DfaTest02() {
+    printf("Nfa2DfaTest02\n");
+    Nfa *nfa = Nfa::Generation("(a|b)^(aa|bb)(a|b)^");
+    Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
+    int i = 0;
+    for (Edge edge : dfa->edges) {
+        printf("edge%d start:%d target:%d alpha:%c\n", i, edge.start, edge.target, edge.alpha);
+    }
+    free(nfa);
+    free(dfa);
+}
 
+void DfaTest::Nfa2DfaTest03() {
+    printf("Nfa2DfaTest03\n");
+    Nfa *nfa = Nfa::Generation("a^(a|b)b^");
+    Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
+    int i = 0;
+    for (Edge edge : dfa->edges) {
+        printf("edge%d start:%d target:%d alpha:%c\n", i, edge.start, edge.target, edge.alpha);
+    }
+    free(nfa);
+    free(dfa);
+}
+
+void DfaTest::DfaMinimizeTest001() {
+    printf("DfaMinimizeTest001\n");
+    Nfa *nfa = Nfa::Generation("(a|b)^b");
+    Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
+    Dfa *sdfa = Dfa::DfaMinimize(*dfa);
+    int i = 0;
+    for (Edge edge : sdfa->edges) {
+        printf("edge%d start:%d target:%d alpha:%c\n", i, edge.start, edge.target, edge.alpha);
+    }
+    free(nfa);
+    free(dfa);
+}
+
+void DfaTest::DfaMinimizeTest002() {
+    printf("DfaMinimizeTest002\n");
+    Nfa *nfa = Nfa::Generation("(a|)^(aa|bb)(a|b)^");
+    Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
+    Dfa *sdfa = Dfa::DfaMinimize(*dfa);
+    int i = 0;
+    for (Edge edge : sdfa->edges) {
+        printf("edge%d start:%d target:%d alpha:%c\n", i, edge.start, edge.target, edge.alpha);
+    }
+    free(nfa);
+    free(dfa);
+    free(sdfa);
+}
+
+void DfaTest::DfaMinimizeTest003() {
+    printf("DfaMinimizeTest003\n");
+    Nfa *nfa = Nfa::Generation("a^(a|b)b^");
+    Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
+    Dfa *sdfa = Dfa::DfaMinimize(*dfa);
+    int i = 0;
+    for (Edge edge : sdfa->edges) {
+        printf("edge%d start:%d target:%d alpha:%c\n", i, edge.start, edge.target, edge.alpha);
+    }
+    free(nfa);
+    free(dfa);
+    free(sdfa);
+}
