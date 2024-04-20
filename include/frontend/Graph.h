@@ -21,10 +21,15 @@ public:
         s0 = 0;
         target.clear();
         edges.clear();
+        resetId();
     }
 
     static int newId() {
         return NODE_ID++;
+    }
+
+    static void resetId() {
+        NODE_ID = 0;
     }
 };
 
