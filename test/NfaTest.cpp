@@ -159,16 +159,82 @@ void NfaTest::parseUtilTest() {
     // (a|b)^(cd)
     s = "";
     s += Nfa::LPARENT_STATE;
+    s += "a";
+    s += Nfa::UNION_STATE;
+    s += "b";
+    s += Nfa::RPARENT_STATE;
+    s += Nfa::KLEENE_STATE;
+    s += Nfa::LPARENT_STATE;
+    s += "cd";
+    s += Nfa::RPARENT_STATE;
+    str1 = ParseUtil::toSuffix(s);
+    //ab|^cd&&
+    res = "ab";
+    res += Nfa::UNION_STATE;
+    res += Nfa::KLEENE_STATE;
+    res += "cd";
+    res += Nfa::CONNECTION_STATE;
+    res += Nfa::CONNECTION_STATE;
+    assert(str1 == res);
 
-    str1 = ParseUtil::toSuffix("(a|b)^(cd)");
-    assert(str1 == "ab|^cd&&");
+    //a|bc^d
+    s = "a";
+    s += Nfa::UNION_STATE;
+    s += "bc";
+    s += Nfa::KLEENE_STATE;
+    s += "d";
+    str1 = ParseUtil::toSuffix(s);
+    //abc^d&&|
+    res = "abc";
+    res += Nfa::KLEENE_STATE;
+    res += "d";
+    res += Nfa::CONNECTION_STATE;
+    res += Nfa::CONNECTION_STATE;
+    res += Nfa::UNION_STATE;
+    assert(str1 == res);
 
-    str1 = ParseUtil::toSuffix("a|bc^d");
-    assert(str1 == "abc^d&&|");
+    // a(bc)d
+    s = "a";
+    s += Nfa::LPARENT_STATE;
+    s += "bc";
+    s += Nfa::RPARENT_STATE;
+    s += "d";
+    str1 = ParseUtil::toSuffix(s);
+    //abc&d&&
+    res = "abc";
+    res += Nfa::CONNECTION_STATE;
+    res += "d";
+    res += Nfa::CONNECTION_STATE;
+    res += Nfa::CONNECTION_STATE;
+    assert(str1 == res);
 
-    str1 = ParseUtil::toSuffix("a(bc)d");
-    assert(str1 == "abc&d&&");
-
-    str1 = ParseUtil::toSuffix("(a|b)^^(c^d^)^");
-    assert(str1 == "ab|^^c^d^&^&");
+    // (a|b)^^(c^d^)^
+    s = Nfa::LPARENT_STATE;
+    s += "a";
+    s += Nfa::UNION_STATE;
+    s += "b";
+    s += Nfa::RPARENT_STATE;
+    s += Nfa::KLEENE_STATE;
+    s += Nfa::KLEENE_STATE;
+    s += Nfa::LPARENT_STATE;
+    s += "c";
+    s += Nfa::KLEENE_STATE;
+    s += "d";
+    s += Nfa::KLEENE_STATE;
+    s += Nfa::RPARENT_STATE;
+    s += Nfa::KLEENE_STATE;
+    str1 = ParseUtil::toSuffix(s);
+    // ab|^^c^d^&^&
+    res = "ab";
+    res += Nfa::UNION_STATE;
+    res += Nfa::KLEENE_STATE;
+    res += Nfa::KLEENE_STATE;
+    res += "c";
+    res += Nfa::KLEENE_STATE;
+    res += "d";
+    res += Nfa::KLEENE_STATE;
+    res += Nfa::CONNECTION_STATE;
+    res += Nfa::KLEENE_STATE;
+    res += Nfa::CONNECTION_STATE;
+    assert(str1 == res);
 }
