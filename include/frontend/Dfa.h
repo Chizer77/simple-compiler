@@ -7,14 +7,14 @@
 class Dfa : public Graph{
 public:
     /**
-     * TODO: DFA最小化
+     * DFA最小化
      * @param NFA
      * @return DFA对象
      */
     static Dfa* DfaMinimize(const Dfa& dfa);
 
     /**
-     * TODO: NFA转DFA
+     * NFA转DFA
      * @param NFA
      * @return DFA对象
      */
