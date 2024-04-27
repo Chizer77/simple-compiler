@@ -2,6 +2,7 @@
 #define SIMPLE_COMPILER_CFG_H
 
 #include "unordered_set"
+#include "vector"
 
 /**
  * 产生式 A -> α

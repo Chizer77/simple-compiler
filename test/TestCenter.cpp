@@ -4,6 +4,7 @@
 #include "TestCenter.h"
 #include "NfaTest.h"
 #include "DfaTest.h"
+#include "LLTest.h"
 
 void log(void (*func)()) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -19,4 +20,6 @@ int main() {
     log(NfaTest::run);
     std::cout << "DfaTest runs..." << std::endl;
     log(DfaTest::run);
+    std::cout << "LLTest runs..." << std::endl;
+    log(LLTest::run);
 }

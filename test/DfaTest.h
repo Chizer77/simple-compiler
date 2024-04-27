@@ -10,15 +10,15 @@ public:
 
     static void Nfa2DfaTest01();
 
-    static  void Nfa2DfaTest02();
+    static void Nfa2DfaTest02();
 
-    static  void Nfa2DfaTest03();
+    static void Nfa2DfaTest03();
 
-    static  void DfaMinimizeTest001();
+    static void DfaMinimizeTest001();
 
-    static  void DfaMinimizeTest002();
+    static void DfaMinimizeTest002();
 
-    static  void DfaMinimizeTest003();
+    static void DfaMinimizeTest003();
 
     static void run() {
         DfaMinimizeTest01();
