@@ -52,5 +52,9 @@ public:
     std::unordered_set<int> nonter;
     std::unordered_set<int> ter;
     std::unordered_set<Productions, Productions::ProductionsHasher> products;
+
+    static int newId() {
+        return SYMBOL_ID++;
+    }
 };
 #endif //SIMPLE_COMPILER_CFG_H
