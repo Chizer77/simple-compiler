@@ -5,6 +5,7 @@
 #include "../frontend/Nfa.h"
 #include "../frontend/Token.h"
 #include "../util/FileIO.h"
+#include "../frontend/CFG.h"
 
 int Graph::NODE_ID = 0;
 
@@ -64,5 +65,6 @@ std::string Token::list[45] = {
         "",
 };
 
+int CFG::SYMBOL_ID = (int)Token::list->size() + 1;
 
 #endif //SIMPLE_COMPILER_INIT_H
