@@ -79,7 +79,7 @@ public:
     /**
      * 记号对应类型(字符串形式)
      */
-    static std::string list[45];
+    static std::vector<std::string> list;
 
     Token(TokenType type, std::string cont) : token_type(type), content(std::move(cont)) {}
     ~Token() = default;

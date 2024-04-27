@@ -14,7 +14,7 @@ std::stack<Nfa*> Nfa::OP_STACK;
 FILE *FileIO::input;
 FILE *FileIO::output;
 
-std::string Token::list[45] = {
+std::vector<std::string> Token::list = {
         "IDENT",
         "NUMBER",
 
@@ -65,6 +65,7 @@ std::string Token::list[45] = {
         "",
 };
 
-int CFG::SYMBOL_ID = (int)Token::list->size() + 1;
+int CFG::SYMBOL_ID = (int)Token::list.size() + 10;
+int CFG::UNION_ID = (int)Token::list.size() + 1;
 
 #endif //SIMPLE_COMPILER_INIT_H
