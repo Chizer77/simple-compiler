@@ -14,9 +14,9 @@ public:
     int start;
     std::vector<int> grammar;
 
-    Productions(int s, const std::vector<int>& g) {
+    Productions(int s, std::vector<int>& g) {
         this->start = s;
-        this->grammar = g;
+        g.swap(this->grammar);
     }
     ~Productions() = default;
 
