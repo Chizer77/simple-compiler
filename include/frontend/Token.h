@@ -94,10 +94,11 @@ public:
 };
 
 class TokenList {
-public:
+private:
     // 记号集合tokens
     std::vector<Token *> tokens;
 
+public:
     void append(Token *token) {
         tokens.push_back(token);
     }

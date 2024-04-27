@@ -63,7 +63,7 @@ public:
     TokenList tokenList;
 
     /**
-     * 情空记号表
+     * 清空记号表
      */
     void clear();
 
