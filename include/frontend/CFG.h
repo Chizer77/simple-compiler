@@ -54,6 +54,9 @@ public:
     std::unordered_set<int> ter;
     std::unordered_set<Productions, Productions::ProductionsHasher> products;
 
+    // 并|符号标识
+    static const int UNION_ID = 42;
+
     static int newId() {
         return SYMBOL_ID++;
     }
