@@ -57,6 +57,9 @@ public:
     // 并|符号标识
     static int UNION_ID;
 
+    // 空ε符号标识
+    static int EMPTY_ID;
+
     static int newId() {
         return SYMBOL_ID++;
     }
