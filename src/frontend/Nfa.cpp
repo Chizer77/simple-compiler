@@ -37,7 +37,7 @@ void Nfa::Kleene() {
     nnfa->s.insert(s);
     nnfa->s.insert(t);
 
-    char empty_state = Empty_STATE;
+    char empty_state = EMPTY_STATE;
     for(char c: n->alpha) nnfa->alpha.insert(c);
     nnfa->alpha.insert(empty_state);
 
@@ -69,7 +69,7 @@ void Nfa::Connection() {
 
     for(char c: n1->alpha) nnfa->alpha.insert(c);
     for(char c: n2->alpha) nnfa->alpha.insert(c);
-    char empty_state = Empty_STATE;
+    char empty_state = EMPTY_STATE;
     nnfa->alpha.insert(empty_state);
 
     nnfa->s0 = n2->s0;
@@ -106,7 +106,7 @@ void Nfa::Union() {
 
     for(char ap: a1->alpha) fina->alpha.insert(ap);
     for(char ap: a2->alpha) fina->alpha.insert(ap);
-    char empty_state = Empty_STATE;
+    char empty_state = EMPTY_STATE;
     fina->alpha.insert(empty_state);
 
     fina->s0 = s;

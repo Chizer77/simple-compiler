@@ -43,7 +43,7 @@ void NfaTest::kleeneTest01() {
     sort(v.begin(), v.end());
 
     assert(opa->alpha.size() == 2);
-    char empty_state = Nfa::Empty_STATE;
+    char empty_state = Nfa::EMPTY_STATE;
     assert(opa->alpha.find(empty_state) != opa->alpha.end());
     assert(opa->alpha.find('a') != opa->alpha.end());
 
@@ -77,7 +77,7 @@ void NfaTest::concatenationTest01() {
     for(int ts: opa->s) v.emplace_back(ts);
     sort(v.begin(), v.end());
 
-    char empty_state = Nfa::Empty_STATE;
+    char empty_state = Nfa::EMPTY_STATE;
     assert(opa->alpha.size() == 3);
     assert(opa->alpha.find(empty_state) != opa->alpha.end());
     assert(opa->alpha.find('a') != opa->alpha.end());
@@ -109,7 +109,7 @@ void NfaTest::unionTest01() {
     for(int ts: opa->s) v.emplace_back(ts);
     sort(v.begin(), v.end());
 
-    char empty_state = Nfa::Empty_STATE;
+    char empty_state = Nfa::EMPTY_STATE;
     assert(opa->alpha.size() == 3);
     assert(opa->alpha.find(empty_state) != opa->alpha.end());
     assert(opa->alpha.find('a') != opa->alpha.end());
