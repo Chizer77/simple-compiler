@@ -1,6 +1,5 @@
 #include "frontend/Lexer.h"
 #include "util/LexerUtil.h"
-#include "iostream"
 
 std::unordered_map<std::string, Token::TokenType> Lexer::keyWordSet;
 
