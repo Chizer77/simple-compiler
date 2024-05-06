@@ -4,6 +4,7 @@
 
 #include <string>
 #include <unordered_set>
+#include "unordered_map"
 #include "Token.h"
 #include "Dfa.h"
 
@@ -36,7 +37,7 @@ private:
     /**
      * 关键字(字符串)集合 keyWordSet
      */
-    static std::unordered_set<std::string> keyWordSet;
+    static std::unordered_map<std::string, Token::TokenType> keyWordSet;
 
     /**
      * 语法DFA集合

@@ -67,6 +67,9 @@ public:
 
         //标准字符
         STR_CON, // ""
+
+        //分隔符
+        SPLIT, // 空格 \t \n
     };
 
     /**
@@ -119,6 +122,14 @@ public:
         return tokens.empty();
     }
 
+    std::string toString() {
+        std::string s;
+        for(Token *token: tokens) {
+            s += "<" + Token::list[token->token_type]  + " " + token->content + ">\n";
+        }
+        return s;
+    }
+
     void clear() {
         while (!tokens.empty()) {
             Token *token = tokens.back();
@@ -138,6 +149,14 @@ public:
         }
         tokens.clear();
     }
+
+    /**
+     * 输出记号流
+     * @param ostream
+     * @param token
+     * @return
+     */
+    friend std::ostream &operator<<(std::ostream &ostream, const TokenList &tokenList);
 };
 
 #endif //SIMPLE_COMPILER_TOKEN_H

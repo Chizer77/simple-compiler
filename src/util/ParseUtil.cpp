@@ -23,8 +23,8 @@ std::string ParseUtil::toSuffix(const std::string& exp) {
 }
 
 bool isVaild(char c) {
-//    return c > 31 && c < 127;
-    return (c > 45 && c < 58) || (c > 96 && c < 123);
+    // 包含 空格 \t \n
+    return (c > 31 && c < 127) || c == 9 || c == 10;
 }
 
 std::string ParseUtil::format(const std::string& exp) {
