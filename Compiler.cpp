@@ -47,17 +47,18 @@ int main(int argc, char *argv[]) {
     parse_args(argc, argv);
     std::cout << "hello world" << std::endl;
     char* fileStr = FileIO::read(input_file.c_str());
-    FileIO::write(target_file.c_str(), fileStr);
+
+    std::cout << "Lexer init..." << std::endl;
+    Lexer::init();
+    std::cout << "Lexer init Completed." << std::endl;
+    auto *lexer = new Lexer();
+    lexer->lex(fileStr);
+    std::cout << lexer->tokenList;
+    FileIO::write(target_file.c_str(), lexer->tokenList.toString());
     FileIO::close();
 
-    Lexer::init();
-    Lexer *lexer = new Lexer();
-    lexer->lex(fileStr);
-    lexer->lex(fileStr);
     lexer->clear();
     Lexer::destroy();
-
-
     free(fileStr);
     delete lexer;
 }

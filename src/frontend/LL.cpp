@@ -142,69 +142,89 @@ CFG* LL::LeftRecurElimination(const CFG& cfg) {
 CFG* LL::LeftFactorExtraction(const CFG& cfg) {
      CFG* opg = new CFG();
 
-        opg->start = cfg.start;
-        opg->nonter = cfg.nonter;
-        opg->ter = cfg.ter;
+     opg->start = cfg.start;
+     opg->nonter = cfg.nonter;
+     opg->ter = cfg.ter;
 
-        for (const auto& prod : cfg.products) {
-            int union_id = cfg::UNION_ID;
 
-                std::vector<std::vector<int>> factorizing_productions;
-                std::vector<std::vector<int>> factorized_productions;
-                std::vector<std::vector<int>> factors;
+        bool factor_something = true;
 
-                bool factorized_something = false;
+        while(factor_something)
 
-                    if (find(opg.nonter.begin(),opg.nonter.end(),prod.start)!= opg.nonter.end()){//判断是否为非终结符
+          for (int nonter : cfg.nonter) {
 
-                        for(auto& element : prod.grammar){
-                            if (element == union_id || element == prod.grammar.end()-1){
-                                if (factorized_productions.empty()) {
-                                  factorized_productions.push_back(factorizing_productions);
-                                 } else {
-                                 bool factorized = false;
-                                    size_t min_size = std::min(factorizing_productions.size(), factorized_productions .size());
-                                    size_t matching_elements = 0;
+              std::vector<int> factor;
+              std::vector<std::vector<int>> factored_productions;
+              std::vector<std::vector<int>> factoring_productions;
 
-                                        for (size_t i = 0; i < min_size; ++i) {
-                                            if (factorizing_productions[i] == factorized_productions[i]) {
-                                                matching_elements++;
-                                            } else {
-                                                break;
-                                            }
-                                        }
+               for (const auto& prod1 : cfg.products){
+                    if(prod1.start == nonter){
+                       factoring_productions.push_back(prod1.grammar);
+                    }
+               }
 
-                                        if (matching_elements > 0) {
-                                            factorized = true;
+             bool factor_something = true;
+                    while(factor_something){
+                        int mf = 0;
+                        for (const auto& prod1 : factoring_productions){
+                                for(const auto& prod2 : factoring_productions){
+                                    if(prod1.grammar != prod2.grammar){
+                                          int minLen = std::min(prod1.size(), prod2.size());
 
-                                            newId = cfg.newId();
-                                            factor.insert(factor.end(),factorizing_productions.begin(),factorizing_productions.begin() + matching_elements - 1);
-                                            factor.insert(factor.end(), newId);
+                                          for (int i = 0; i < minLen; i++) {
+                                              if (prod1[i] != prod2[i]) {
+                                                  break;
+                                              }
+                                          }
 
-                                            factorized_productions.insert(factorized_productions.end(), factorizing_productions.begin() + matching_elements, factorizing_productions.end());
-                                            factorized_productions.insert(factorized_productions.end(), union_id);
-                                            factorized_something = true;
-                                        }
+                                          if (i > mf) {
+                                            mf = i ;
+                                             for (int i = 0; i < minLen; i++) {
+                                                  factor.push_back(prod1[i]);
+                                             }
+                                          }
 
-                                        if(!factorized){
-                                            factor.insert(factor.end(),union_id)
-                                            factor.insert(factor.end(),factorizing_productions);
-                                        }
+                                      }
+                                    }
+                            }
 
+                            for (const auto& prod :factoring_productions){
+                                for (int i = 0; i < mf ; i++){
+                                    if (prod[i] != factor[i]) {
+                                        factored_productions.push_back(prod);
+                                        break;
+                                    }
+                                }
+                                if (i == mf){
+                                    int newId = cfg.newID();
+                                    int Empty = CFG::EMPTY_ID;
+
+                                    std::vector<int> new_production;
+                                    new_production.push_back(factor);
+                                    new_production.push_back(newId);
+                                    opg->products.insert(Productions(nonter, new_production));
+                                    //这个因子刚好就是一整个产生式
+                                    if (mf == prod.size()){
+                                       opg->products.insert(Productions(newId, Empty));
+                                    }else{
+                                        new_production.clear();
+                                       new_production.insert(new_production.end(), prod.begin() + mf, prod.end());
+                                    }
+                                }
+                            }
+                            std::swap(factored_productions,factoring_productions);
+                            factored_productions.clear();
+
+                            //剩下无法提取左因子的部分
+                            if (mf == 0){
+                                factor_something = false;
+                                 for (const auto& prod :factoring_productions){
+                                    opg->products.insert(Productions(nonter, prod));
                                  }
-                                factorizing_productions.clear();//清空为什么没有提示？
-                            }else{
-                                factorizing_productions.push_back(element);
                             }
-                            }
-                          if (factorized_something) {
-                                   opg->nonter.insert(opg->nonter.end(),newId)
-                                   opg->products.insert(Productions(newId, factorized_productions ));
-                                   opg->products.insert(Productions(prod.start, factor));
-                            }
-                        }
-                        }
-//存在bug：只能识别与第一个产生式有共同因子的产生式；无法提取多个不同的因子；解决办法：可以设置一个while，在对比玩第一个产生式后删除掉它，直到只剩下一个产生式，但是这样数组不好弄
-        return opg;
 
+                        }
+                    }
+
+          return opg;
 }

@@ -18,25 +18,25 @@ std::vector<std::string> Token::list = {
         "IDENT",
         "NUMBER",
 
-        "VOID",
-        "INT",
-        "FLOAT",
-        "DOUBLE",
-        "CHAR",
+        "void",
+        "int",
+        "float",
+        "double",
+        "char",
 
-        "BREAK",
-        "CONTINUE",
-        "RETURN",
+        "break",
+        "continue",
+        "return",
 
-        "IF",
-        "ELSE",
-        "SWITCH",
-        "CHSE",
-        "DEFAULT",
+        "if",
+        "else",
+        "switch",
+        "case",
+        "default",
 
-        "FOR",
-        "DO",
-        "WHILE",
+        "for",
+        "do",
+        "while",
 
         "&&",
         "||",
@@ -63,6 +63,7 @@ std::vector<std::string> Token::list = {
         "{",
         "}",
         "",
+        "SPLIT",
 };
 
 int CFG::SYMBOL_ID = (int)Token::list.size() + 10;

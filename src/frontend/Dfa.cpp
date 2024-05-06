@@ -2,6 +2,7 @@
 #include "frontend/Dfa.h"
 #include <queue>
 #include <unordered_map>
+#include <iostream>
 
 
 Dfa* Dfa::Generation(const std::string& exp) {
@@ -128,7 +129,7 @@ std::unordered_set<int> epsilonClosure(const Nfa& nfa, const std::unordered_set<
         stack.pop();
 
         for (const Edge& edge : nfa.edges) {
-            if (edge.start == current_state && edge.alpha == Nfa::Empty_STATE) {
+            if (edge.start == current_state && edge.alpha == Nfa::EMPTY_STATE) {
                 int next_state = edge.target;
                 if (closure.find(next_state) == closure.end()) {
                     closure.insert(next_state);
@@ -200,7 +201,7 @@ Dfa* Dfa::Nfa2Dfa(const Nfa& nfa) {
         state_queue.pop();
 
         for (char symbol : dfa->alpha) {
-            if(symbol == Nfa::Empty_STATE) continue;
+            if(symbol == Nfa::EMPTY_STATE) continue;
             std::unordered_set<int> next_state = move(nfa, current_state, symbol);
             next_state = epsilonClosure(nfa, next_state);
             int next_id = Dfa::newId();
