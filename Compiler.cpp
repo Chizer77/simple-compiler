@@ -48,7 +48,9 @@ int main(int argc, char *argv[]) {
     std::cout << "hello world" << std::endl;
     char* fileStr = FileIO::read(input_file.c_str());
 
+    std::cout << "Lexer init..." << std::endl;
     Lexer::init();
+    std::cout << "Lexer init Completed." << std::endl;
     auto *lexer = new Lexer();
     lexer->lex(fileStr);
     std::cout << lexer->tokenList;
