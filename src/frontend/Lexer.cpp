@@ -61,7 +61,7 @@ void Lexer::init() {
     Dfa *letterDfa = Dfa::Generation(lexVariable);
     lexDFASet.insert(new lexDfa(Token::IDENT, letterDfa));
 
-    // +-*/%=(){}!
+    // +-*/%=(){}[]
     Dfa *addDfa = Dfa::Generation("+");
     lexDFASet.insert(new lexDfa(Token::ADD, addDfa));
     Dfa *subDfa = Dfa::Generation("-");
@@ -82,8 +82,10 @@ void Lexer::init() {
     lexDFASet.insert(new lexDfa(Token::LBRACE, lbraceDfa));
     Dfa *rbraceDfa = Dfa::Generation("}");
     lexDFASet.insert(new lexDfa(Token::RBRACE, rbraceDfa));
-    Dfa *notDfa = Dfa::Generation("!");
-    lexDFASet.insert(new lexDfa(Token::NOT, notDfa));
+    Dfa *lbrackDfa = Dfa::Generation("[");
+    lexDFASet.insert(new lexDfa(Token::LBRACK, lbrackDfa));
+    Dfa *rbrackDfa = Dfa::Generation("]");
+    lexDFASet.insert(new lexDfa(Token::RBRACK, rbrackDfa));
 
     // 条件运算符Operator
     // 单目
@@ -91,6 +93,8 @@ void Lexer::init() {
     lexDFASet.insert(new lexDfa(Token::LT, ltDfa));
     Dfa * gtDfa = Dfa::Generation(">");
     lexDFASet.insert(new lexDfa(Token::GT, gtDfa));
+    Dfa *notDfa = Dfa::Generation("!");
+    lexDFASet.insert(new lexDfa(Token::NOT, notDfa));
     // 双目
     Dfa * landDfa = Dfa::Generation("&&");
     lexDFASet.insert(new lexDfa(Token::LAND, landDfa));
@@ -165,6 +169,7 @@ void Lexer::lex(const std::string& fileStr) {
             tokenList.append(new Token(ident->second, maxToken));
             idx += maxLen;
         }else if(maxTokenType == Token::IDENT && maxLen > 32) { // 限定变量长度不超过32个字符
+            tokenList.append(new Token(maxTokenType, maxToken.substr(0, 32)));
             idx += 32;
         }else if(maxTokenType == Token::SPLIT) {
             idx += maxLen;
