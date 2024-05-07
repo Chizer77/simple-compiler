@@ -14,6 +14,7 @@ void LLTest::LeftRecurEliminationTest01() {
     int c = CFG::newId();m.insert({c, "c"});
     int d = CFG::newId();m.insert({d, "d"});
     m.insert({CFG::UNION_ID, "|"});
+    m.insert({CFG::EMPTY_ID, "空集"});
     cfg->start = S;
     cfg->nonter = {S, A};
     cfg->ter = {a, b, c, d};
@@ -22,13 +23,13 @@ void LLTest::LeftRecurEliminationTest01() {
     std::vector<int> p_list_S = {A, a, CFG::UNION_ID, b};
     auto *p_S = new Productions(S, p_list_S);
 
-    // A->Ac|Sd|a
-    std::vector<int> p_list_A = {A, c, CFG::UNION_ID, d, CFG::UNION_ID, a};
+    // A->Ac|Sd
+    std::vector<int> p_list_A = {A, c, CFG::UNION_ID, S, d};
     auto *p_A = new Productions(A, p_list_A);
 
     std::unordered_set<Productions, Productions::ProductionsHasher> products;
-    products.insert(*p_A);
     products.insert(*p_S);
+    products.insert(*p_A);
     cfg->products = products;
     auto cfg_new = LL::LeftRecurElimination(*cfg);
     printf("\n非终结符：\n");
@@ -53,7 +54,7 @@ void LLTest::LeftRecurEliminationTest01() {
         } else {
             printf("%d ", iter->first);
         }
-        printf("->");
+        printf("-> ");
         for (int i : p.grammar) {
             auto iter_2 = m.find(i);
             if (iter_2 != m.end()) {

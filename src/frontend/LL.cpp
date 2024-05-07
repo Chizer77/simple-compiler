@@ -22,15 +22,14 @@ std::unordered_map<int, std::vector<Productions*>>* format(const CFG& cfg) {
     return ans;
 }
 
-
 Productions* reFormat(std::vector<Productions*>& productions_list) {
     auto *list = new std::vector<int>();
     for (int i = 0; i < productions_list.size(); i++) {
         for (int garmmer : productions_list[i]->grammar) {
             list->push_back(garmmer);
-            if (i != productions_list.size()-1) {
-                list->push_back(CFG::UNION_ID);
-            }
+        }
+        if (i != productions_list.size()-1) {
+            list->push_back(CFG::UNION_ID);
         }
     }
     auto *ans = new Productions(productions_list[0]->start, *list);
@@ -48,7 +47,6 @@ CFG* LL::LeftRecurElimination(const CFG& cfg) {
     //     * 消除间接左递归变成
     //     * S -> Aa|b
     //     * A -> Ac|Aad|bd
-
     std::unordered_set<Productions, Productions::ProductionsHasher> ans_1;
     // 记录之前遍历过的 productions
     auto *pre_productions = new std::unordered_map<int, std::vector<Productions*>>();
@@ -57,14 +55,17 @@ CFG* LL::LeftRecurElimination(const CFG& cfg) {
         for (auto *production : productions_pair->second) {
             int rightFirst = production->grammar[0];
             auto it = pre_productions->find(rightFirst);
-            if (it == nullptr) {
+            if (it == pre_productions->end()) {
                 // 没有间接递归
                 entry_productions->push_back(production);
             } else {
                 auto pre_list = it->second;
+                production->grammar.erase(production->grammar.begin());
                 for (auto pre : pre_list) {
-                    production->grammar.erase(production->grammar.begin());
-                    production->grammar.insert(production->grammar.begin(), pre->grammar.begin(), pre->grammar.end());
+                    auto p_vector = new std::vector<int>{production->grammar};
+                    p_vector->insert(p_vector->begin(), pre->grammar.begin(), pre->grammar.end());
+                    auto p_new = new Productions(production->start, *p_vector);
+                    entry_productions->push_back(p_new);
                 }
             }
         }
@@ -79,7 +80,7 @@ CFG* LL::LeftRecurElimination(const CFG& cfg) {
 
     // 2. 消除直接左递归
     CFG *opg2 = new CFG();
-    auto m_productions_2 = format(*opg2);
+    auto m_productions_2 = format(*opg1);
 
     std::unordered_set<Productions, Productions::ProductionsHasher> ans_2;
     for (auto productions_pair = m_productions_2->begin(); productions_pair != m_productions_2->end(); ++productions_pair) {
@@ -95,37 +96,37 @@ CFG* LL::LeftRecurElimination(const CFG& cfg) {
         }
         // 都不包含左递归
         if (left_eliminate_productions.empty()) {
-            Productions *new_productions = reFormat(left_eliminate_productions);
+            Productions *new_productions = reFormat(no_left_eliminate_productions);
             ans_2.insert(*new_productions);
         } else {
-           auto *res_productions = new std::vector<Productions*>();
             // 就是将这种格式  P -> Pa|Pb|Pc|Pd|e|f|g|h
             //     * 转成:
             //     * P -> eP'|fP'|gP'|hP'
             //     * p'-> aP'|bP'|cP'|dP'|ε
             //
             // 1.  // 将原来的 P -> e|f|g|h 变成    P -> eP'|fP'|gP'|hP'
+            auto *res_productions = new std::vector<Productions*>();
             int new_nonter = CFG::newId();
             opg1->nonter.insert(new_nonter);
             for (Productions *productions : no_left_eliminate_productions) {
                 productions->grammar.push_back(new_nonter);
                 res_productions->push_back(productions);
-
             }
+            ans_2.insert(*(reFormat(*res_productions)));
             // 2. 将原来的 P -> Pa|Pb|Pc|Pd 变成 P’ -> aP'|bP'|cP'|dP'|ε
+            auto *new_res_productions = new std::vector<Productions*>();
             for (Productions *productions : left_eliminate_productions) {
                 // 删除左递归第一个
                 productions->grammar.erase(productions->grammar.begin());
                 // 插入新元素
                 productions->grammar.push_back(new_nonter);
                 auto *new_p = new Productions(new_nonter, productions->grammar);
-                res_productions->push_back(productions);
+                new_res_productions->push_back(new_p);
             }
-            std::vector<int> empty_vector(CFG::EMPTY_ID);
+            std::vector<int> empty_vector({CFG::EMPTY_ID});
             auto *empty = new Productions(new_nonter, empty_vector);
-            res_productions->push_back(empty);
-
-            ans_2.insert(*(reFormat(*res_productions)));
+            new_res_productions->push_back(empty);
+            ans_2.insert(*(reFormat(*new_res_productions)));
         }
     }
 
