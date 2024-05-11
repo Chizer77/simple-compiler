@@ -26,7 +26,7 @@ char* FileIO::read(const char *filename) {
 void FileIO::write(const char *filename, const std::string& s) {
     //拆分文件路径
     std::match_results<std::string::const_iterator> names;
-    std::regex Pattern("[^.+\/][.+].", std::regex_constants::extended);
+    std::regex Pattern("(^.+\\/)(.+).", std::regex_constants::extended);
     std::string fileString = std::string(filename);
     bool state = std::regex_search(fileString, names, Pattern);
     if(state) {
