@@ -6,10 +6,13 @@ class LLTest {
 public:
     static void LeftRecurEliminationTest01();
 
+    static void LeftRecurEliminationTest02();
+
     static void LeftFactorExtractionTest01();
 
     static void run() {
         LeftRecurEliminationTest01();
+        LeftRecurEliminationTest02();
         LeftFactorExtractionTest01();
     }
 };
