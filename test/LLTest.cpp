@@ -138,5 +138,38 @@ void LLTest::LeftRecurEliminationTest02() {//发现bug:如果要添加多个左�
 }
 
 void LLTest::LeftFactorExtractionTest01() {
-
+    CFG *cfg = new CFG();
+    int S = CFG::newId();
+    int A = CFG::newId();
+    int B = CFG::newId();
+    int a = CFG::newId();
+    int b = CFG::newId();
+    int c = CFG::newId();
+    int d = CFG::newId();
+    cfg->start = S;
+    cfg->nonter = {S, A, B};
+    cfg->ter = {a, b, c, d};
+    // S->Ab|Abc|bc
+    std::vector<int> prod = {A, b};
+    cfg->products.insert(Productions(S, prod));
+    prod.clear();
+    prod = {A, b, c};
+    cfg->products.insert(Productions(S, prod));
+    prod.clear();
+    prod = {b, c};
+    cfg->products.insert(Productions(S, prod));
+    prod.clear();
+    // A->Bcd|Bd|Bc|ca
+    prod = {B, c, d};
+    cfg->products.insert(Productions(A, prod));
+    prod.clear();
+    prod = {B, d};
+    cfg->products.insert(Productions(A, prod));
+    prod.clear();
+    prod = {B, c};
+    cfg->products.insert(Productions(A, prod));
+    prod.clear();
+    prod = {c, a};
+    cfg->products.insert(Productions(A, prod));
+    CFG *res = LL::LeftFactorExtraction(*cfg);
 }

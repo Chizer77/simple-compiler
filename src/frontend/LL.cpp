@@ -139,89 +139,135 @@ CFG* LL::LeftRecurElimination(const CFG& cfg) {
 }
 
 
+std::vector<std::vector<int>> subExtraction(CFG *cfg, int start, int newId, std::vector<int>& factor, std::vector<std::vector<int>>& factoring_productions) {
+    // <start> -> <maxFactor><newId>
+    std::vector<int> new_production(factor);    // 新产生式右边
+    new_production.push_back(newId);
+    cfg->products.insert(Productions(start, new_production));
+    cfg->nonter.insert(newId);
 
-//CFG* LL::LeftFactorExtraction(const CFG& cfg) {
-//     CFG* opg = new CFG();
-//
-//     opg->start = cfg.start;
-//     opg->nonter = cfg.nonter;
-//     opg->ter = cfg.ter;
-//
-//          for (int nonter : cfg.nonter) {
-//
-//              std::vector<int> factor;
-//              std::vector<std::vector<int>> factored_productions;
-//              std::vector<std::vector<int>> factoring_productions;
-//
-//               for (const auto& prod1 : cfg.products){
-//                    if(prod1.start == nonter){
-//                       factoring_productions.push_back(prod1.grammar);
-//                    }
-//               }
-//
-//             bool factor_something = true;
-//                    while(factor_something){
-//                        int mf = 0;
-//                        for (const auto& prod1 : factoring_productions){
-//                                for(const auto& prod2 : factoring_productions){
-//                                    if(prod1 != prod2){
-//                                          int minLen = std::min(prod1.size(), prod2.size());
-//                                        int i = 0;
-//                                          for (; i < minLen; i++) {
-//                                              if (prod1[i] != prod2[i]) {
-//                                                  break;
-//                                              }
-//                                          }
-//
-//                                          if (i > mf) {
-//                                            mf = i ;
-//                                             for (int k = 0; k < mf; k++) {
-//                                                  factor.push_back(prod1[k]);
-//                                             }
-//                                          }
-//
-//                                      }
-//                                    }
-//                            }
-//
-//                            for (const auto& prod :factoring_productions){
-//                                int j = 0;
-//                                for (; j < mf ; j++){
-//                                    if (prod[j] != factor[j]) {
-//                                        factored_productions.push_back(prod);
-//                                        break;
-//                                    }
-//                                }
-//                                if (j == mf){
-//                                    int newId = cfg.newId();
-//                                    int Empty = CFG::EMPTY_ID;
-//
-//                                    std::vector<int> new_production;
-//                                    new_production = factor;
-//                                    new_production.push_back(newId);
-//                                    opg->products.insert(Productions(nonter, new_production));
-//                                    //这个因子刚好就是一整个产生式
-//                                    if (mf == prod.size()){
-//                                       opg->products.insert(Productions(newId, Empty));
-//                                    }else{
-//                                        new_production.clear();
-//                                        new_production.insert(new_production.end(), prod.begin() + mf, prod.end());
-//                                    }
-//                                }
-//                            }
-//                            std::swap(factored_productions,factoring_productions);
-//                            factored_productions.clear();
-//
-//                            //剩下无法提取左因子的部分
-//                            if (mf == 0){
-//                                factor_something = false;
-//                                 for (const auto& prod :factoring_productions){
-//                                    opg->products.insert(Productions(nonter, prod));
-//                                 }
-//                            }
-//
-//                        }
-//                    }
-//
-//          return opg;
-//}
+    // <newId> -> XXX | XX
+    std::vector<std::vector<int>> newFactoring_prod;
+    for (auto &prod: factoring_productions) {
+        prod.erase(prod.begin(), prod.begin() + (int)factor.size());
+        //这个因子刚好就是一整个产生式
+        if (prod.empty()) {
+            std::vector<int> emptyProd{CFG::EMPTY_ID};
+            cfg->products.insert(Productions(newId, emptyProd));
+        }else {
+            newFactoring_prod.push_back(prod);
+        }
+    }
+    return newFactoring_prod;
+}
+
+void partPrefixExtraction(CFG *cfg, int start, const std::vector<std::vector<int>>& factoring_productions) {
+    std::vector<std::vector<int>> fact_prod(factoring_productions);
+    while (true) {
+        //提取有公共前缀的部分产生式，取尽量包含更多产生式的公共前缀
+        std::vector<std::vector<int>> hasFactor_prod;
+        std::vector<int> hasFactor;    //该公共前缀
+        std::vector<int> hasFactorPos; //该公共前缀在待处理产生式中的下标位置
+        for(const auto& prod1: fact_prod) {
+            for(const auto& prod2: fact_prod) {
+                if(prod1 == prod2) continue;
+                int len = prod1.size() <= prod2.size() ? (int)prod2.size() : (int)prod1.size();
+                int idx = 0;
+                while(idx < len) {
+                    if(prod1[idx] != prod2[idx]) break;
+                    idx++;
+                }
+                if(idx == 0) continue;
+                //部分公共前缀
+                std::vector<int> partFactor(prod1.begin(), prod1.begin() + idx);
+                //包含该前缀的产生式
+                std::vector<std::vector<int>> partProd;
+                std::vector<int> factorPos; //这些产生式在待处理产生式中的下标位置
+                for(int i = 0; i < fact_prod.size(); i++) {
+                    std::vector<int> prod3 = fact_prod[i];
+                    if(prod3.size() < partFactor.size()) continue;
+                    int isOK = true;
+                    int pos = 0;
+                    while (pos < partFactor.size()) {
+                        if(prod3[pos] != partFactor[pos]) {
+                            isOK = false;
+                            break;
+                        }
+                        pos++;
+                    }
+                    if(isOK) {
+                        partProd.push_back(prod3);
+                        factorPos.push_back(i);
+                    }
+                }
+                if(partProd.size() > hasFactor_prod.size()) {
+                    hasFactor_prod.swap(partProd);
+                    hasFactor.swap(partFactor);
+                    hasFactorPos.swap(factorPos);
+                }
+            }
+        }
+        //找不到则直接退出
+        if(hasFactor.empty()) {
+            for (auto prod: fact_prod) {
+                cfg->products.insert(Productions(start, prod));
+            }
+            break;
+        }
+        int newId = CFG::newId();
+        // <start> -> <maxFactor><newId>
+        // <newId> -> XXX | XX
+        std::vector<std::vector<int>> newFactoring_prod = subExtraction(cfg, start, newId, hasFactor, hasFactor_prod);
+        //寻找提取完左因子后的产生式的新部分前缀
+        partPrefixExtraction(cfg, newId, newFactoring_prod);
+        //删除处理完的产生式
+        int ct = 0;
+        for(int it: hasFactorPos) {
+            fact_prod.erase(fact_prod.begin() + it - ct);
+            ct++;
+        }
+    }
+}
+
+CFG *LL::LeftFactorExtraction(const CFG &cfg) {
+    CFG *opg = new CFG();
+    opg->start = cfg.start;
+    opg->nonter = cfg.nonter;
+    opg->ter = cfg.ter;
+
+    for (int nonter: cfg.nonter) {
+        int start = nonter; //当前处理的产生式左边
+        std::vector<std::vector<int>> factoring_productions;    // 正在提取左因子的产生式
+        for (const auto &prod: cfg.products) {
+            if (prod.start == start) {
+                factoring_productions.push_back(prod.grammar);
+            }
+        }
+        if(factoring_productions.empty()) continue;
+        // 寻找公共前缀
+        std::vector<int> maxFactor = *factoring_productions.begin();
+        for(auto prod: factoring_productions) {
+            int idx = 0;
+            while(idx < maxFactor.size() && idx < prod.size()) {
+                if(prod[idx] != maxFactor[idx]) break;
+                idx++;
+            }
+            maxFactor.erase(maxFactor.begin() + idx, maxFactor.end());
+        }
+        //提取公共前缀
+        if(!maxFactor.empty()) {
+            int newId = CFG::newId();
+            // <start> -> <maxFactor><newId>
+            // <newId> -> XXX | XX
+            std::vector<std::vector<int>> newFactoring_prod = subExtraction(opg, start, newId, maxFactor, factoring_productions);
+            //更新待处理的产生式
+            factoring_productions.clear();
+            factoring_productions.swap(newFactoring_prod);
+            //更新需处理的产生式的左边
+            start = newId;
+        }
+        // 寻找部分公共前缀，并取尽量包含更多产生式的公共前缀，再寻找符合该公共前缀的其他产生式
+        partPrefixExtraction(opg, start, factoring_productions);
+    }
+    return opg;
+}
