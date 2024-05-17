@@ -10,10 +10,13 @@ public:
 
     static void LeftFactorExtractionTest01();
 
+    static void LeftFactorExtractionTest02();
+
     static void run() {
         LeftRecurEliminationTest01();
         LeftRecurEliminationTest02();
         LeftFactorExtractionTest01();
+        LeftFactorExtractionTest02();
     }
 };
 

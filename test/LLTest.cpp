@@ -173,3 +173,42 @@ void LLTest::LeftFactorExtractionTest01() {
     cfg->products.insert(Productions(A, prod));
     CFG *res = LL::LeftFactorExtraction(*cfg);
 }
+
+void LLTest::LeftFactorExtractionTest02() {
+    CFG *cfg = new CFG();
+    int S = CFG::newId();
+    int A = CFG::newId();
+    int B = CFG::newId();
+    int a = CFG::newId();
+    int b = CFG::newId();
+    int c = CFG::newId();
+    int d = CFG::newId();
+    int e = CFG::newId();
+    cfg->start = S;
+    cfg->nonter = {S, A, B};
+    cfg->ter = {a, b, c, d, e};
+    // S->aA | aB | abc
+    std::vector<int> prod = {a, A};
+    cfg->products.insert(Productions(S, prod));
+    prod.clear();
+    prod = {a, B};
+    cfg->products.insert(Productions(S, prod));
+    prod.clear();
+    prod = {a, b, c};
+    cfg->products.insert(Productions(S, prod));
+    prod.clear();
+    // A -> b | c
+    prod = {b};
+    cfg->products.insert(Productions(A, prod));
+    prod.clear();
+    prod = {c};
+    cfg->products.insert(Productions(A, prod));
+    prod.clear();
+    //B -> d | e
+    prod = {d};
+    cfg->products.insert(Productions(A, prod));
+    prod.clear();
+    prod = {e};
+    cfg->products.insert(Productions(A, prod));
+    CFG *res = LL::LeftFactorExtraction(*cfg);
+}
