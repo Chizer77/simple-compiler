@@ -38,21 +38,50 @@ public:
     };
 };
 
+/** 表示first集合或follow集合的一行
+ * 非终结符 symbol
+ * 对应集合 st
+ */
+struct SubSet {
+    int symbol;
+    std::unordered_set<int> st;
+
+    struct SubSetHasher final {
+        unsigned long long operator()(const SubSet& set) const{
+            unsigned long long hash = std::hash<int>()(set.symbol);
+            for(int s: set.st) {
+                hash ^= std::hash<int>()(s);
+            }
+            return hash;
+        }
+    };
+};
+
 /**
  * 开始符号 start
  * 非终结符集 nonter
  * 终结符集 ter
  * 产生式集合 products
+ *
+ * first集合 firstSet
+ * follow集合 followSet
  */
 class CFG {
 private:
     //符号标识
     static int SYMBOL_ID;
+
 public:
     int start;
     std::unordered_set<int> nonter;
     std::unordered_set<int> ter;
     std::unordered_set<Productions, Productions::ProductionsHasher> products;
+
+    std::unordered_set<SubSet, SubSet::SubSetHasher> firstSet;
+    std::unordered_set<SubSet, SubSet::SubSetHasher> followSet;
+
+    // # 符号标识
+    static int Terminal_ID;
 
     // 并|符号标识
     static int UNION_ID;

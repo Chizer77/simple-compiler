@@ -271,3 +271,15 @@ CFG *LL::LeftFactorExtraction(const CFG &cfg) {
     }
     return opg;
 }
+
+void LL::FirstSetSolver(CFG &cfg) {
+
+}
+
+void LL::FollowSetSolver(CFG &cfg) {
+
+}
+
+bool LL::isLLFoundation(const CFG &cfg) {
+    return false;
+}

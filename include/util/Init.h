@@ -69,5 +69,6 @@ std::vector<std::string> Token::list = {
 int CFG::SYMBOL_ID = (int)Token::list.size() + 10;
 int CFG::UNION_ID = (int)Token::list.size() + 1;
 int CFG::EMPTY_ID = (int)Token::list.size() + 2;
+int CFG::Terminal_ID = (int)Token::list.size() + 3;
 
 #endif //SIMPLE_COMPILER_INIT_H
