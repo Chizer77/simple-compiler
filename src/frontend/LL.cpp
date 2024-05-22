@@ -4,8 +4,13 @@
 std::unordered_map<int, std::vector<Productions*>>* format(const CFG& cfg) {
     auto *ans = new std::unordered_map<int, std::vector<Productions*>>;
     for (const Productions& productions : cfg.products) {
-        std::vector<Productions*> productions_list;
         std::vector<int> list;
+        std::vector<Productions*> productions_list;
+        auto ans_item = ans->find(productions.start);
+        if(ans_item != ans->end()) {
+            productions_list = ans_item->second;
+            ans->erase(productions.start);
+        }
         for (int grammer : productions.grammar) {
             if (grammer == CFG::UNION_ID) {
                 auto *productions_new = new Productions(productions.start, list);
@@ -17,7 +22,7 @@ std::unordered_map<int, std::vector<Productions*>>* format(const CFG& cfg) {
         }
         auto *productions_new = new Productions(productions.start, list);
         productions_list.push_back(productions_new);
-        ans->insert({productions_new->start, productions_list});
+        ans->insert({productions.start, productions_list});
     }
     return ans;
 }
@@ -50,9 +55,9 @@ CFG* LL::LeftRecurElimination(const CFG& cfg) {
     std::unordered_set<Productions, Productions::ProductionsHasher> ans_1;
     // 记录之前遍历过的 productions
     auto *pre_productions = new std::unordered_map<int, std::vector<Productions*>>();
-    for (auto productions_pair = m_productions->begin(); productions_pair != m_productions->end(); ++productions_pair) {
+    for (auto & m_production : *m_productions) {
         auto entry_productions = new std::vector<Productions*>();
-        for (auto *production : productions_pair->second) {
+        for (auto *production : m_production.second) {
             int rightFirst = production->grammar[0];
             auto it = pre_productions->find(rightFirst);
             if (it == pre_productions->end()) {
@@ -69,7 +74,7 @@ CFG* LL::LeftRecurElimination(const CFG& cfg) {
                 }
             }
         }
-        pre_productions->insert({productions_pair->first, *entry_productions});
+        pre_productions->insert({m_production.first, *entry_productions});
         ans_1.insert(*(reFormat(*entry_productions)));
     }
 
@@ -83,10 +88,10 @@ CFG* LL::LeftRecurElimination(const CFG& cfg) {
     auto m_productions_2 = format(*opg1);
 
     std::unordered_set<Productions, Productions::ProductionsHasher> ans_2;
-    for (auto productions_pair = m_productions_2->begin(); productions_pair != m_productions_2->end(); ++productions_pair) {
+    for (auto & productions_pair : *m_productions_2) {  //遍历每个非终结符
         std::vector<Productions*> no_left_eliminate_productions;
         std::vector<Productions*> left_eliminate_productions;
-        for  (Productions *productions : productions_pair->second) {
+        for  (Productions *productions : productions_pair.second) { //遍历同一非终结符下的产生式
             // 直接递归
             if (productions->grammar[0] == productions->start) {
                 left_eliminate_productions.push_back(productions);
