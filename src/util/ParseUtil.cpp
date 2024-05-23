@@ -4,6 +4,7 @@
 #include "frontend/Nfa.h"
 #include "unordered_map"
 #include "stack"
+#include "iostream"
 
 
 const std::unordered_map<char, int> ParseUtil::priority = {
@@ -56,11 +57,19 @@ std::string ParseUtil::toSuffixR(const std::string& exp) {
         } else if (c == Nfa::LPARENT_STATE) {
             stack.push(c);
         } else if (c == Nfa::RPARENT_STATE) {
-            while (stack.top() != Nfa::LPARENT_STATE) {
+            if(stack.empty()) {
+                std::cerr << "ParseUtil::toSuffixR Error!\n";
+                exit(1);
+            }
+            while (!stack.empty() && stack.top() != Nfa::LPARENT_STATE) {
                 res += stack.top();
                 stack.pop();
             }
-            stack.pop();
+            if(!stack.empty()) stack.pop();
+            else {
+                std::cerr << "ParseUtil::toSuffixR Error!\n";
+                exit(1);
+            }
         } else {
             while (!stack.empty() && priority.at(c) > priority.at(stack.top())) {
                 res += stack.top();

@@ -24,7 +24,10 @@ Nfa* Nfa::Generation(const std::string& exp) {
 }
 
 void Nfa::Kleene() {
-    if (OP_STACK.empty()) exit(1);
+    if (OP_STACK.empty()) {
+        std::cerr << "Nfa generation Error!\n" << std::endl;
+        exit(1);
+    }
     Nfa *n = OP_STACK.top();
     OP_STACK.pop();
 
@@ -55,10 +58,16 @@ void Nfa::Kleene() {
 }
 
 void Nfa::Connection() {
-    if (OP_STACK.empty()) exit(1);
+    if (OP_STACK.empty()) {
+        std::cerr << "Nfa generation Error!\n" << std::endl;
+        exit(1);
+    }
     Nfa *n1 = OP_STACK.top();    //先出来的是后面的那个
     OP_STACK.pop();
-    if (OP_STACK.empty()) exit(1);
+    if (OP_STACK.empty()) {
+        std::cerr << "Nfa generation Error!\n" << std::endl;
+        exit(1);
+    }
     Nfa *n2 = OP_STACK.top();
     OP_STACK.pop();
 
@@ -88,10 +97,16 @@ void Nfa::Connection() {
 }
 
 void Nfa::Union() {
-    if (OP_STACK.empty()) exit(1);
+    if (OP_STACK.empty()) {
+        std::cerr << "Nfa generation Error!\n" << std::endl;
+        exit(1);
+    }
     Nfa *a1 = OP_STACK.top();
     OP_STACK.pop();
-    if (OP_STACK.empty()) exit(1);
+    if (OP_STACK.empty()) {
+        std::cerr << "Nfa generation Error!\n" << std::endl;
+        exit(1);
+    }
     Nfa *a2 = OP_STACK.top();
     OP_STACK.pop();
 

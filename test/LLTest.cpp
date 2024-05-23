@@ -92,7 +92,7 @@ void LLTest::LeftRecurEliminationTest02() {//发现bug:如果要添加多个左�
     std::vector<int> p_list_T = {T, c, F, CFG::UNION_ID, F};
     auto *p_T = new Productions(T, p_list_T);
 
-    // T->i
+    // F->i
     std::vector<int> p_list_F = {id};
     auto *p_F = new Productions(F, p_list_F);
 
@@ -211,4 +211,44 @@ void LLTest::LeftFactorExtractionTest02() {
     prod = {e};
     cfg->products.insert(Productions(A, prod));
     CFG *res = LL::LeftFactorExtraction(*cfg);
+}
+
+void LLTest::test() {
+
+    std::map<int, std::string> m;
+    CFG *cfg = new CFG();
+    int S = CFG::newId();m.insert({S, "S"});
+    int A = CFG::newId();m.insert({A, "A"});
+    int B = CFG::newId();m.insert({B, "B"});
+    int a = CFG::newId();m.insert({a, "a"});
+    int b = CFG::newId();m.insert({b, "b"});
+    int c = CFG::newId();m.insert({c, "c"});
+    m.insert({CFG::UNION_ID, "|"});
+    m.insert({CFG::EMPTY_ID, "空集"});
+    cfg->start = S;
+    cfg->nonter = {A, B, S};
+    cfg->ter = {a, b, c};
+
+    // S -> Bc
+    std::vector<int> prod = {B, c};
+    cfg->products.insert(Productions(S, prod));
+    prod.clear();
+
+    // S->Ab
+    prod = {A, b};
+    cfg->products.insert(Productions(S, prod));
+    prod.clear();
+
+    // B -> Ab
+    prod = {A, b};
+    cfg->products.insert(Productions(B, prod));
+    prod.clear();
+
+    // A -> Sa|b
+    prod = {S, a, CFG::UNION_ID, b};
+    cfg->products.insert(Productions(A, prod));
+    prod.clear();
+
+    auto cfg_new = LL::LeftRecurElimination(*cfg);
+
 }
