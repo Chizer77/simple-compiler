@@ -187,7 +187,10 @@ Dfa* Dfa::Nfa2Dfa(const Nfa& nfa) {
 
     dfa->s0 = Dfa::newId();
     dfa->s.insert(dfa->s0);
-    for(char c: nfa.alpha) dfa->alpha.insert(c);
+    for(char c: nfa.alpha) {
+        if(c == Nfa::EMPTY_STATE) continue;
+        dfa->alpha.insert(c);
+    }
 
     std::unordered_set<Dfa_State, Dfa_State::Dfa_State_Hasher> dfa_states;
     std::queue<Dfa_State> state_queue;
@@ -201,7 +204,6 @@ Dfa* Dfa::Nfa2Dfa(const Nfa& nfa) {
         state_queue.pop();
 
         for (char symbol : dfa->alpha) {
-            if(symbol == Nfa::EMPTY_STATE) continue;
             std::unordered_set<int> next_state = move(nfa, current_state, symbol);
             next_state = epsilonClosure(nfa, next_state);
             int next_id = Dfa::newId();
