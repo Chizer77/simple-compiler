@@ -32,12 +32,9 @@ void FileIO::write(const char *filename, const std::string& s) {
     if(state) {
         //创建目录
         mkdir(names[1].str().c_str());
-        output = fopen(filename, "w");
-        fprintf(output, "%s", s.c_str());
-    }else {
-        std::cerr << "Invalid directory." << std::endl;
-        exit(1);
     }
+    output = fopen(filename, "w");
+    fprintf(output, "%s", s.c_str());
 }
 
 void FileIO::close() {
