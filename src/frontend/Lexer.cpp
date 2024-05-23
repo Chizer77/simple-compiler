@@ -1,16 +1,52 @@
 #include "frontend/Lexer.h"
 #include "util/LexerUtil.h"
+#include "util/FileIO.h"
 
 std::unordered_map<std::string, Token::TokenType> Lexer::keyWordSet;
 
 std::unordered_set<Lexer::lexDfa*, Lexer::lexDfa::lexDfaHasher> Lexer::lexDFASet;
 
-void Lexer::init() {
+void Lexer::init(const char *configFileName) {
     // 初始化关键字集合keyWordSet
     for(Token::TokenType t = Token::VOID; t <= Token::WHILE; t = (Token::TokenType)(t + 1)) {
         keyWordSet[Token::list[t]] = t;
     }
+    FILE* input = fopen(configFileName, "r");
+    if(input != nullptr) {
+        std::string lexDfaTxt = FileIO::read(configFileName);
+        int idx = 0;
+        int op = 0;
+        Token::TokenType type;
+        Dfa *dfa = new Dfa();
+        while(idx < lexDfaTxt.size()) {
+            std::string s;
+            while(lexDfaTxt[idx] != '\n') {
+                s += lexDfaTxt[idx++];
+            }
+            if(op == 6) {
+                lexDFASet.insert(new lexDfa(type, dfa));
+                dfa->s0 = 0;
+                dfa->s.clear();
+                dfa->target.clear();
+                dfa->alpha.clear();
+                dfa->edges.clear();
+                op = 0;
+            }
+            if(op == 0) {
+                int t = 0;
+                int id =
+                while(id)
 
+            }else if(op == 1) {
+                int id = 0;
+                while(id < s.size()) {
+
+                }
+            }
+            idx++;
+            op++;
+        }
+    }
     // 常量
     std::string num = "0";    //含0
     for(int i = 1; i < 10; i++) {
@@ -121,6 +157,37 @@ void Lexer::init() {
     split = LexerUtil::lexUnion(split, "\n");
     Dfa *splitDfa = Dfa::Generation(split);
     lexDFASet.insert(new lexDfa(Token::SPLIT, splitDfa));
+
+    std::string dfaTxt;
+    for(auto lexDfa: lexDFASet) {
+        Token::TokenType token = lexDfa->type;
+        Dfa *dfa = lexDfa->dfa;
+        dfaTxt += std::to_string(token);
+        dfaTxt += '\n';
+        dfaTxt += std::to_string(dfa->s0);
+        dfaTxt += '\n';
+        for(auto s: dfa->s) {
+            dfaTxt += std::to_string(s) + ' ';
+        }
+        dfaTxt += '\n';
+        for(auto tar: dfa->target) {
+            dfaTxt += std::to_string(tar) + ' ';
+        }
+        dfaTxt += '\n';
+        for(auto alp: dfa->alpha) {
+            dfaTxt += alp;
+            dfaTxt += ' ';
+        }
+        dfaTxt += '\n';
+        for(auto edge: dfa->edges) {
+            dfaTxt += std::to_string(edge.start) + ' ';
+            dfaTxt += edge.alpha;
+            dfaTxt += ' ';
+            dfaTxt += std::to_string(edge.target);
+            dfaTxt += '\n';
+        }
+    }
+    FileIO::write(configFileName, dfaTxt);
 }
 
 //对fileStr内容进行分析

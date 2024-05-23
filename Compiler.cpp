@@ -6,6 +6,7 @@
 
 //输入文件input_file, 目标文件target_file
 std::string input_file, target_file;
+const char *configFileName = "config/lexDfaSet.txt";
 
 /***
  * 首先进行编译：
@@ -36,20 +37,20 @@ void parse_args(int argc, char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
-    argc = 5;
-    //以下五个参数会造成内存泄漏，仅进行DEBUG
-    argv[0] = ".\\compiler";
-    argv[1] = "-S";
-    argv[2] = "-o";
-    //由于idea将编译后文件放在cmake-build-debug中，因此需要出该文件夹
-    argv[3] = "../output/out.txt";
-    argv[4] = "../test/example.txt";
+//    argc = 5;
+//    //以下五个参数会造成内存泄漏，仅进行DEBUG
+//    argv[0] = ".\\compiler";
+//    argv[1] = "-S";
+//    argv[2] = "-o";
+//    //由于idea将编译后文件放在cmake-build-debug中，因此需要出该文件夹
+//    argv[3] = "../output/out.txt";
+//    argv[4] = "../test/example.txt";
     parse_args(argc, argv);
     std::cout << "hello world" << std::endl;
     char* fileStr = FileIO::read(input_file.c_str());
 
     std::cout << "Lexer init..." << std::endl;
-    Lexer::init();
+    Lexer::init(configFileName);
     std::cout << "Lexer init Completed." << std::endl;
     auto *lexer = new Lexer();
     lexer->lex(fileStr);

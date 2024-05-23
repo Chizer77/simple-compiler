@@ -1,11 +1,13 @@
 #include <iostream>
 #include <chrono>
+#include <unordered_map>
 #include "../include/util/Init.h"
 #include "TestCenter.h"
 #include "NfaTest.h"
 #include "DfaTest.h"
 #include "LLTest.h"
 #include "frontend/Dfa.h"
+#include "frontend/Lexer.h"
 
 void log(void (*func)()) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -15,6 +17,12 @@ void log(void (*func)()) {
     std::cout << "Completed in " << duration << "ms." << std::endl;
     std::cout << "--------------------------" << std::endl;
 }
+
+struct PrefixDFA : Graph {
+
+    std::unordered_map<int, Productions> I;
+
+};
 
 std::string format(std::string s) {
     std::string ans;
@@ -65,6 +73,7 @@ void out(Graph *nfa) {
     }
     std::cout << "\n\n";
 }
+
 int main() {
 //    std::cout << "NfaTest runs..." << std::endl;
 //    log(NfaTest::run);
@@ -72,20 +81,23 @@ int main() {
 //    log(DfaTest::run);
 //    std::cout << "LLTest runs..." << std::endl;
 //    log(LLTest::run);
-    std::string s;
-    while(true) {
-        std::cout << "input tokens: \n";
-        std::cin >> s;
-        if(s == "-1") break;
-        s = format(s);
-        Nfa *nfa = Nfa::Generation(s);
-        std::cout << "The NFA: \n";
-        out(nfa);
-        std::cout << "Nfa2Dfa: \n";
-        Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
-        out(dfa);
-        std::cout << "DfaMinimize: \n";
-        dfa = Dfa::DfaMinimize(*dfa);
-        out(dfa);
-    }
+
+//    std::string s;
+//    while(true) {
+//        std::cout << "input tokens: \n";
+//        std::cin >> s;
+//        if(s == "-1") break;
+//        s = format(s);
+//        Nfa *nfa = Nfa::Generation(s);
+//        std::cout << "The NFA: \n";
+//        out(nfa);
+//        std::cout << "Nfa2Dfa: \n";
+//        Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
+//        out(dfa);
+//        std::cout << "DfaMinimize: \n";
+//        dfa = Dfa::DfaMinimize(*dfa);
+//        out(dfa);
+//    }
+
+    Lexer::init("config/lexDfaSet.txt");
 }
