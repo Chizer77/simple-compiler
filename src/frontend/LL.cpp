@@ -317,7 +317,50 @@ void LL::FirstSetSolver(CFG &cfg) {
     cfg.firstSet = *set;
 }
 
+
+
 void LL::FollowSetSolver(CFG &cfg) {
+
+    //*加入#号
+
+    while(true){
+        for(int nonter: cfg.nonter){
+            int start = nonter;
+            for (const auto &prod: cfg.products) {
+                if (prod.start == start) {
+                    for(int i = 0; i < prod.grammar.size();i++){
+                        int j = i;
+                        int s = prod.grammar[j];
+                        int next_s = prod.grammar[j+1];
+                        if(cfg.nonter.find(s) != cfg.nonter.end()){//找到一个非终结符
+                            for(;j<prod.grammar.size();j++){
+                                if(cfg.ter.find(next_s) != cfg.ter.end())//非终结符后的终结符
+                                {
+                                    //st.insert(next_s);
+                                }else{break;}
+
+                                if(cfg.nonter.find(next_s) != cfg.nonter.end())//非终结符后的非终结符
+                                {
+                                    //*first集除了空全给
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (const auto &prod: cfg.products) {
+                if (prod.start == start) {
+                    if(cfg.nonter.find(prod.grammar[prod.grammar.size()]) != cfg.nonter.end()){//非终结符的follow给非终结符
+                        //*follow集全给
+                    }
+                }
+            }
+
+        }
+
+        if(true){break;}//*follow集没有变化
+    }
 
 }
 
