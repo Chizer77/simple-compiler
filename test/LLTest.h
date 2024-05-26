@@ -12,11 +12,17 @@ public:
 
     static void LeftFactorExtractionTest02();
 
+    static void FirstSetSolverTest01();
+
+    static void FirstSetSolverTest02();
+
     static void run() {
         LeftRecurEliminationTest01();
         LeftRecurEliminationTest02();
         LeftFactorExtractionTest01();
         LeftFactorExtractionTest02();
+        FirstSetSolverTest01();
+        FirstSetSolverTest02();
     }
 };
 
