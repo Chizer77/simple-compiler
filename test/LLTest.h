@@ -12,9 +12,9 @@ public:
 
     static void LeftFactorExtractionTest02();
 
-    static void FirstSetSolverTest01();
+    static void test();
 
-    static void FirstSetSolverTest02();
+    static void FirstSetSolverTest01();
 
     static void run() {
         LeftRecurEliminationTest01();
@@ -22,7 +22,6 @@ public:
         LeftFactorExtractionTest01();
         LeftFactorExtractionTest02();
         FirstSetSolverTest01();
-        FirstSetSolverTest02();
     }
 };
 

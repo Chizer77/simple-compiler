@@ -46,6 +46,12 @@ struct SubSet {
     int symbol;
     std::unordered_set<int> st;
 
+
+    // 定义 == 运算符
+    bool operator==(const SubSet& ss) const {
+        return st == ss.st;
+    }
+
     struct SubSetHasher final {
         unsigned long long operator()(const SubSet& set) const{
             unsigned long long hash = std::hash<int>()(set.symbol);

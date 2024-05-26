@@ -256,75 +256,52 @@ void LLTest::test() {
 void LLTest::FirstSetSolverTest01(){
     std::map<int, std::string> m;
     CFG *cfg = new CFG();
-    int S = CFG::newId();m.insert({S, "S"});
-    int A = CFG::newId();m.insert({A, "A"});
+    int E = CFG::newId();m.insert({E, "E"});
+    int A= CFG::newId();m.insert({A, "A"});
+    int B = CFG::newId();m.insert({B, "B"});
+    int C = CFG::newId();m.insert({C, "C"});
+    int D = CFG::newId();m.insert({D, "D"});
     int a = CFG::newId();m.insert({a, "a"});
     int b = CFG::newId();m.insert({b, "b"});
     int c = CFG::newId();m.insert({c, "c"});
     int d = CFG::newId();m.insert({d, "d"});
     m.insert({CFG::UNION_ID, "|"});
     m.insert({CFG::EMPTY_ID, "空集"});
-    cfg->start = S;
-    cfg->nonter = {S, A};
+    cfg->start = E;
+    cfg->nonter = {E, A, B, C, D};
     cfg->ter = {a, b, c, d};
 
-    // S->Aa|b
-    std::vector<int> p_list_S = {A, a, CFG::UNION_ID, b};
-    auto *p_S = new Productions(S, p_list_S);
+    // E->CA
+    std::vector<int> p_list_S = {C, A};
+    auto *p_E = new Productions(E, p_list_S);
 
-    // A->Ac|Sd
-    std::vector<int> p_list_A = {A, c, CFG::UNION_ID, S, d};
+    // A->dC|空集
+    std::vector<int> p_list_A = {d, C, CFG::UNION_ID, CFG::EMPTY_ID};
     auto *p_A = new Productions(A, p_list_A);
 
-    std::unordered_set<Productions, Productions::ProductionsHasher> products;
-    products.insert(*p_S);
-    products.insert(*p_A);
-    cfg->products = products;
+    // C->DB
+    std::vector<int> p_list_C = {D, B};
+    auto *p_C = new Productions(C, p_list_C);
 
-    LL::FirstSetSolver(*cfg);
-    for (const auto& item : cfg->firstSet) {
-        printf("first(%s) = ", m.find(item.symbol)->second.c_str());
-        for (auto item_v : item.st) {
-            printf("%s,", m.find(item_v)->second.c_str());
-        }
-        printf("\n");
-    }
-}
+    // B->aDB|空集
+    std::vector<int> p_list_B = {a, D, B, CFG::UNION_ID, CFG::EMPTY_ID};
+    auto *p_B = new Productions(B, p_list_B);
 
-void LLTest::FirstSetSolverTest02(){
-    std::map<int, std::string> m;
-    CFG *cfg = new CFG();
-    int E = CFG::newId();m.insert({E, "E"});
-    int T = CFG::newId();m.insert({T, "T"});
-    int F = CFG::newId();m.insert({F, "F"});
-    int j = CFG::newId();m.insert({j, "j"});
-    int c = CFG::newId();m.insert({c, "c"});
-    int id = CFG::newId();m.insert({id, "id"});
-    m.insert({CFG::UNION_ID, "|"});
-    m.insert({CFG::EMPTY_ID, "空集"});
-    cfg->start = E;
-    cfg->nonter = {E, T, F};
-    cfg->ter = {j, c, id};
-
-    // E->EjT|T
-    std::vector<int> p_list_E = {E, j, T, CFG::UNION_ID, T};
-    auto *p_E = new Productions(E, p_list_E);
-
-    // T->TcF|F
-    std::vector<int> p_list_T = {T, c, F, CFG::UNION_ID, F};
-    auto *p_T = new Productions(T, p_list_T);
-
-    // F->i
-    std::vector<int> p_list_F = {id};
-    auto *p_F = new Productions(F, p_list_F);
+    // D->bEb|c
+    std::vector<int> p_list_D = {b, E, b, CFG::UNION_ID, c};
+    auto *p_D = new Productions(D, p_list_D);
 
     std::unordered_set<Productions, Productions::ProductionsHasher> products;
     products.insert(*p_E);
-    products.insert(*p_T);
-    products.insert(*p_F);
+    products.insert(*p_A);
+    products.insert(*p_B);
+    products.insert(*p_C);
+    products.insert(*p_D);
+
     cfg->products = products;
 
     LL::FirstSetSolver(*cfg);
+    printf("\n");
     for (const auto& item : cfg->firstSet) {
         printf("first(%s) = ", m.find(item.symbol)->second.c_str());
         for (auto item_v : item.st) {
