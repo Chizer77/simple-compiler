@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <map>
 #include <string>
+#include <iostream>
 #include "LLTest.h"
 #include "frontend/LL.h"
 
@@ -311,3 +312,64 @@ void LLTest::FirstSetSolverTest01(){
     }
 }
 
+
+void LLTest::FollowSetSolverTest01(){
+    CFG *cfg = new CFG();
+    int E = CFG::newId();
+    int A = CFG::newId();
+    int B = CFG::newId();
+    int C = CFG::newId();
+    int D = CFG::newId();
+    int a = CFG::newId();
+    int b = CFG::newId();
+    int c = CFG::newId();
+    int d = CFG::newId();
+
+    cfg->start = E;
+    cfg->nonter = {E, A, B, C, D};
+    cfg->ter = {a, b, c, d};
+
+    // E->CA
+    std::vector<int> p_list_S = {C, A};
+    auto *p_E = new Productions(E, p_list_S);
+
+    // A->dC|空集
+    std::vector<int> p_list_A = {d, C, CFG::UNION_ID, CFG::EMPTY_ID};
+    auto *p_A = new Productions(A, p_list_A);
+
+    // C->DB
+    std::vector<int> p_list_C = {D, B};
+    auto *p_C = new Productions(C, p_list_C);
+
+    // B->aDB|空集
+    std::vector<int> p_list_B = {a, D, B, CFG::UNION_ID, CFG::EMPTY_ID};
+    auto *p_B = new Productions(B, p_list_B);
+
+    // D->bEb|c
+    std::vector<int> p_list_D = {b, E, b, CFG::UNION_ID, c};
+    auto *p_D = new Productions(D, p_list_D);
+
+    std::unordered_set<Productions, Productions::ProductionsHasher> products;
+    products.insert(*p_E);
+    products.insert(*p_A);
+    products.insert(*p_B);
+    products.insert(*p_C);
+    products.insert(*p_D);
+
+    cfg->products = products;
+    LL::FirstSetSolver(*cfg);
+    LL::FollowSetSolver(*cfg);
+
+
+    std::cout << std::endl;
+    std::cout << "Follow集合：" << std::endl;
+
+    for(const SubSet& subset : cfg->followSet) {
+        std::cout << "符号: " << subset.symbol << ", ";
+        std::cout << "Follow集: ";
+        for(int s : subset.st) {
+            std::cout << s << " ";
+        }
+        std::cout << std::endl;
+    }
+}
