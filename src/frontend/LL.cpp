@@ -277,17 +277,21 @@ CFG *LL::LeftFactorExtraction(const CFG &cfg) {
     return opg;
 }
 
-void dfsFirst(std::vector<Productions*> &items, std::unordered_map<int, std::vector<int>> &ans, std::unordered_map<int, std::vector<Productions*>> &map, const CFG &cfg) {
+void dfsFirst(std::vector<Productions*> &items, std::unordered_map<int, std::vector<int>> *ans, std::unordered_map<int, std::vector<Productions*>> *map, const CFG &cfg) {
     auto ans_vector = new std::vector<int>;
     for (auto item : items) {
         int rightFirst = item->grammar[0];
         // 非终结符
         if (cfg.ter.find(rightFirst) == cfg.ter.end()) {
-            // 还没完成
-            if (ans.find(rightFirst) == ans.end()) {
-                dfsFirst(map.find(rightFirst)->second, ans, map, cfg);
+            if (rightFirst == CFG::EMPTY_ID) {
+                ans_vector->push_back(rightFirst);
+                break;
             }
-            auto v = ans.find(rightFirst);
+            // 还没完成
+            if (ans->find(rightFirst) == ans->end()) {
+                dfsFirst(map->find(rightFirst)->second, ans, map, cfg);
+            }
+            auto v = ans->find(rightFirst);
             for (auto v_item : v->second) {
                 ans_vector->push_back(v_item);
             }
@@ -296,7 +300,7 @@ void dfsFirst(std::vector<Productions*> &items, std::unordered_map<int, std::vec
             ans_vector->push_back(rightFirst);
         }
     }
-    ans.insert({items[0]->start, *ans_vector});
+    ans->insert({items[0]->start, *ans_vector});
 }
 
 // TODO:free
@@ -304,7 +308,7 @@ void LL::FirstSetSolver(CFG &cfg) {
     auto m = format(cfg);
     auto ans = new std::unordered_map<int, std::vector<int>>;
     for (auto item : *m) {
-        dfsFirst(item.second, *ans, *m, cfg);
+        dfsFirst(item.second, ans, m, cfg);
     }
     auto set = new std::unordered_set<SubSet, SubSet::SubSetHasher>;
     for (auto item : *ans) {
@@ -313,6 +317,7 @@ void LL::FirstSetSolver(CFG &cfg) {
         for (auto item_int : item.second) {
             sub_set->st.insert(item_int);
         }
+        set->insert(*sub_set);
     }
     cfg.firstSet = *set;
 }
