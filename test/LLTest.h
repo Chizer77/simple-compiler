@@ -16,12 +16,15 @@ public:
 
     static void FirstSetSolverTest01();
 
+    static void FollowSetSolverTest01();
+
     static void run() {
         LeftRecurEliminationTest01();
         LeftRecurEliminationTest02();
         LeftFactorExtractionTest01();
         LeftFactorExtractionTest02();
         FirstSetSolverTest01();
+        FollowSetSolverTest01();
     }
 };
 

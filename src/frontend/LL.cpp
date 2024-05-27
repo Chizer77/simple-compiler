@@ -322,49 +322,117 @@ void LL::FirstSetSolver(CFG &cfg) {
     cfg.firstSet = *set;
 }
 
+int is_change(std::unordered_map<int, std::unordered_set<int>>& fol_m,int symbol,int ist){
+    if(fol_m.find(symbol) == fol_m.end()) {
+        // 如果键不存在，创建一个新的unordered_set
+        std::unordered_set<int> newSet;
+        newSet.insert(ist);
+        fol_m[symbol] = newSet;
+        return true;
+    } else {
+        // 如果键存在，直接插入值
+        if(fol_m[symbol].find(ist) == fol_m[symbol].end()){//判断值是否已经有过
+            fol_m[symbol].insert(ist);
+            return true;
+        }else{return false;}
+    }
+
+    return false;
+}
+
+std::unordered_set<int> getSetBySymbol(std::unordered_set<SubSet, SubSet::SubSetHasher>& cfgSet, int symbol) {
+    std::unordered_set<int> Set;
+    for(const auto& subset : cfgSet) {
+        if(subset.symbol == symbol) {
+            Set.insert(subset.st.begin(), subset.st.end());
+        }
+    }
+    return Set;
+}
 
 
 void LL::FollowSetSolver(CFG &cfg) {
+    std::unordered_map<int, std::unordered_set<int>> fol_m;
+    //规则一：加入#号
 
-    //*加入#号
+    bool change = is_change(fol_m,cfg.start,CFG::Terminal_ID);
 
-    while(true){
-        for(int nonter: cfg.nonter){
-            int start = nonter;
+    while(change){
+            change = false;
             for (const auto &prod: cfg.products) {
-                if (prod.start == start) {
                     for(int i = 0; i < prod.grammar.size();i++){
                         int j = i;
                         int s = prod.grammar[j];
                         int next_s = prod.grammar[j+1];
-                        if(cfg.nonter.find(s) != cfg.nonter.end()){//找到一个非终结符
-                            for(;j<prod.grammar.size();j++){
+                        if(cfg.nonter.find(s) != cfg.nonter.end()&& i != prod.grammar.size()){//规则二：找到一个非终结符
                                 if(cfg.ter.find(next_s) != cfg.ter.end())//非终结符后的终结符
                                 {
-                                    //st.insert(next_s);
-                                }else{break;}
-
+                                    change = is_change(fol_m,s,next_s);
+                                }
+                            for(;j<prod.grammar.size();j++){
                                 if(cfg.nonter.find(next_s) != cfg.nonter.end())//非终结符后的非终结符
                                 {
-                                    //*first集除了空全给
+                                    std::unordered_set<int> fir_set;
+                                    fir_set = getSetBySymbol(cfg.firstSet,next_s);
+                                    for(auto const id: fir_set){
+                                        if(id != CFG::EMPTY_ID){
+                                            change = is_change(fol_m,s,id);
+                                        }
+                                    }
+
+                                    if(fir_set.find(CFG::EMPTY_ID) == fir_set.end()){
+                                        break;
+                                    }//first集除了空全给
                                 }
                             }
                         }
+
+                        if(change){
+                            for(auto & it : fol_m){
+                                SubSet Follow{it.first,it.second};
+                                cfg.followSet.insert(Follow);
+                            }
+                        }
+                    }
+
+                int las = prod.grammar.back();
+
+                if(cfg.nonter.find(las) != cfg.nonter.end()){//规则三：非终结符的follow给非终结符
+
+                    std::unordered_set<int> fol_set;
+                    std::unordered_set<int> fir_set;
+
+                    fol_set = getSetBySymbol(cfg.followSet,prod.start);
+
+                    for(auto const id: fol_set){
+                        change = is_change(fol_m,las,id);
+                    }
+
+                    for(int sj = 0; sj < prod.grammar.size();sj++){//非终结符的first集可能存在空
+                        fir_set = getSetBySymbol(cfg.firstSet,las);
+                        int pr_las = prod.grammar[sj - 1];
+
+                        if(fir_set.find(CFG::EMPTY_ID) != fir_set.end()){
+                            if(cfg.nonter.find(pr_las) != cfg.nonter.end()){
+                                for(auto const id : fol_set){
+                                    change = is_change(fol_m,pr_las,id);
+                                }
+                            }
+                        }else{break;}
+
+                    }
+
+                    //follow集全给
+                    if(change){
+                        for(auto & it : fol_m){
+                            SubSet Follow{it.first,it.second};
+                            cfg.followSet.insert(Follow);
+                        }
                     }
                 }
+
             }
 
-            for (const auto &prod: cfg.products) {
-                if (prod.start == start) {
-                    if(cfg.nonter.find(prod.grammar[prod.grammar.size()]) != cfg.nonter.end()){//非终结符的follow给非终结符
-                        //*follow集全给
-                    }
-                }
-            }
-
-        }
-
-        if(true){break;}//*follow集没有变化
     }
 
 }
