@@ -334,32 +334,72 @@ void LLTest::FollowSetSolverTest01(){
     auto *p_E = new Productions(E, p_list_S);
 
     // A->dC|空集
-    std::vector<int> p_list_A = {d, C, CFG::UNION_ID, CFG::EMPTY_ID};
+    std::vector<int> p_list_A = {d, C};
     auto *p_A = new Productions(A, p_list_A);
+
+    // A->空集
+    std::vector<int> p_list_A1 = {CFG::EMPTY_ID};
+    auto *p_A1 = new Productions(A, p_list_A1);
 
     // C->DB
     std::vector<int> p_list_C = {D, B};
     auto *p_C = new Productions(C, p_list_C);
 
-    // B->aDB|空集
-    std::vector<int> p_list_B = {a, D, B, CFG::UNION_ID, CFG::EMPTY_ID};
+    // B->aDB
+    std::vector<int> p_list_B = {a, D, B};
     auto *p_B = new Productions(B, p_list_B);
 
-    // D->bEb|c
-    std::vector<int> p_list_D = {b, E, b, CFG::UNION_ID, c};
+    // B->空集
+    std::vector<int> p_list_B1 = {CFG::EMPTY_ID};
+    auto *p_B1 = new Productions(B, p_list_B1);
+
+    // D->bEb
+    std::vector<int> p_list_D = {b, E, b};
     auto *p_D = new Productions(D, p_list_D);
+
+    // D->c
+    std::vector<int> p_list_D1 = {c};
+    auto *p_D1 = new Productions(D, p_list_D1);
 
     std::unordered_set<Productions, Productions::ProductionsHasher> products;
     products.insert(*p_E);
     products.insert(*p_A);
+    products.insert(*p_A1);
     products.insert(*p_B);
+    products.insert(*p_B1);
     products.insert(*p_C);
     products.insert(*p_D);
+    products.insert(*p_D1);
 
     cfg->products = products;
-    LL::FirstSetSolver(*cfg);
-    LL::FollowSetSolver(*cfg);
 
+    std::unordered_set<SubSet, SubSet::SubSetHasher> f_Set;
+
+    // E first
+    std::unordered_set<int> list_E = {c,b};
+    auto *E_f = new SubSet{E, list_E};
+    // D first
+    std::unordered_set<int> list_D = {c,b};
+    auto *D_f = new SubSet{D, list_D};
+    // A first
+    std::unordered_set<int> list_A = {d,CFG::EMPTY_ID};
+    auto *A_f = new SubSet{A, list_A};
+    // B first
+    std::unordered_set<int> list_B = {a,CFG::EMPTY_ID};
+    auto *B_f = new SubSet{B, list_B};
+    // C first
+    std::unordered_set<int> list_C = {c,b};
+    auto *C_f = new SubSet{C, list_C};
+
+
+    f_Set.insert(*E_f);
+    f_Set.insert(*D_f);
+    f_Set.insert(*A_f);
+    f_Set.insert(*B_f);
+    f_Set.insert(*C_f);
+    cfg->firstSet = f_Set;
+
+    LL::FollowSetSolver(*cfg);
 
     std::cout << std::endl;
     std::cout << "Follow集合：" << std::endl;

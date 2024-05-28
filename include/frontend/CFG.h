@@ -46,7 +46,6 @@ struct SubSet {
     int symbol;
     std::unordered_set<int> st;
 
-
     // 定义 == 运算符
     bool operator==(const SubSet& ss) const {
         return st == ss.st;
@@ -61,6 +60,7 @@ struct SubSet {
             return hash;
         }
     };
+
 };
 
 /**

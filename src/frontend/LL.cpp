@@ -323,21 +323,16 @@ void LL::FirstSetSolver(CFG &cfg) {
 }
 
 int is_change(std::unordered_map<int, std::unordered_set<int>>& fol_m,int symbol,int ist){
-    if(fol_m.find(symbol) == fol_m.end()) {
-        // 如果键不存在，创建一个新的unordered_set
-        std::unordered_set<int> newSet;
-        newSet.insert(ist);
-        fol_m[symbol] = newSet;
+    if(fol_m.find(symbol) == fol_m.end()) {//键不存在
+        fol_m[symbol].insert(ist);
         return true;
     } else {
         // 如果键存在，直接插入值
-        if(fol_m[symbol].find(ist) == fol_m[symbol].end()){//判断值是否已经有过
+        if(fol_m[symbol].find(ist) == fol_m[symbol].end()){//判断值不存在
             fol_m[symbol].insert(ist);
             return true;
         }else{return false;}
     }
-
-    return false;
 }
 
 std::unordered_set<int> getSetBySymbol(std::unordered_set<SubSet, SubSet::SubSetHasher>& cfgSet, int symbol) {
@@ -356,11 +351,11 @@ void LL::FollowSetSolver(CFG &cfg) {
     //规则一：加入#号
 
     bool change = is_change(fol_m,cfg.start,CFG::Terminal_ID);
-
-    while(change){
-            change = false;
+    bool if_change = true;
+    while(if_change){
+            if_change = false;
             for (const auto &prod: cfg.products) {
-                    for(int i = 0; i < prod.grammar.size();i++){
+                    for(int i = 0; i < prod.grammar.size()-1;i++){
                         int j = i;
                         int s = prod.grammar[j];
                         int next_s = prod.grammar[j+1];
@@ -368,6 +363,7 @@ void LL::FollowSetSolver(CFG &cfg) {
                                 if(cfg.ter.find(next_s) != cfg.ter.end())//非终结符后的终结符
                                 {
                                     change = is_change(fol_m,s,next_s);
+                                    if(change){if_change = true;}
                                 }
                             for(;j<prod.grammar.size();j++){
                                 if(cfg.nonter.find(next_s) != cfg.nonter.end())//非终结符后的非终结符
@@ -377,6 +373,7 @@ void LL::FollowSetSolver(CFG &cfg) {
                                     for(auto const id: fir_set){
                                         if(id != CFG::EMPTY_ID){
                                             change = is_change(fol_m,s,id);
+                                            if(change){if_change = true;}
                                         }
                                     }
 
@@ -387,12 +384,6 @@ void LL::FollowSetSolver(CFG &cfg) {
                             }
                         }
 
-                        if(change){
-                            for(auto & it : fol_m){
-                                SubSet Follow{it.first,it.second};
-                                cfg.followSet.insert(Follow);
-                            }
-                        }
                     }
 
                 int las = prod.grammar.back();
@@ -406,35 +397,40 @@ void LL::FollowSetSolver(CFG &cfg) {
 
                     for(auto const id: fol_set){
                         change = is_change(fol_m,las,id);
+                        if(change){if_change = true;}
                     }
 
-                    for(int sj = 0; sj < prod.grammar.size();sj++){//非终结符的first集可能存在空
-                        fir_set = getSetBySymbol(cfg.firstSet,las);
-                        int pr_las = prod.grammar[sj - 1];
-
-                        if(fir_set.find(CFG::EMPTY_ID) != fir_set.end()){
-                            if(cfg.nonter.find(pr_las) != cfg.nonter.end()){
+                    for(int sj = 1; sj < prod.grammar.size();sj++){//非终结符的first集可能存在空
+                        int pr_las = prod.grammar[prod.grammar.size()-sj];
+                        if(cfg.nonter.find(pr_las) != cfg.nonter.end()){
+                            fir_set = getSetBySymbol(cfg.firstSet,las);
+                            if(fir_set.find(CFG::EMPTY_ID) != fir_set.end()){
                                 for(auto const id : fol_set){
                                     change = is_change(fol_m,pr_las,id);
+                                    if(change){if_change = true;}
                                 }
+                                las = pr_las;
                             }
                         }else{break;}
 
                     }
 
                     //follow集全给
-                    if(change){
+                    if(if_change){
                         for(auto & it : fol_m){
                             SubSet Follow{it.first,it.second};
                             cfg.followSet.insert(Follow);
-                        }
-                    }
+                        }}
                 }
 
             }
 
     }
-
+    cfg.followSet.clear();
+    for(auto & it : fol_m){
+        SubSet Follow{it.first,it.second};
+        cfg.followSet.insert(Follow);
+    }
 }
 
 bool LL::isLLFoundation(const CFG &cfg) {
