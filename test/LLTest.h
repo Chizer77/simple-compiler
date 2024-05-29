@@ -20,6 +20,8 @@ public:
 
     static void FollowSetSolverTest02();
 
+    static void FollowSetSolverTest03();
+
     static void run() {
         LeftRecurEliminationTest01();
         LeftRecurEliminationTest02();
@@ -28,6 +30,7 @@ public:
         FirstSetSolverTest01();
         FollowSetSolverTest01();
         FollowSetSolverTest02();
+        FollowSetSolverTest03();
     }
 
 };

@@ -403,7 +403,7 @@ void LL::FollowSetSolver(CFG &cfg) {
                         if(change){if_change = true;}
                     }
 
-                    for(int sj = 1; sj < prod.grammar.size();sj++){//非终结符的first集可能存在空
+                    for(int sj = 1; sj <= prod.grammar.size();sj++){//非终结符的first集可能存在空
                         int pr_las = prod.grammar[prod.grammar.size()-sj];
                         if(cfg.nonter.find(pr_las) != cfg.nonter.end()){
                             fir_set = getSetBySymbol(cfg.firstSet,las);
@@ -417,7 +417,6 @@ void LL::FollowSetSolver(CFG &cfg) {
                         }else{break;}
 
                     }
-
                     //follow集全给
                     if(if_change){
                         for(auto & it : fol_m){
