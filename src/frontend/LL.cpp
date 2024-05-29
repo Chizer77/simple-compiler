@@ -356,16 +356,16 @@ void LL::FollowSetSolver(CFG &cfg) {
             if_change = false;
             for (const auto &prod: cfg.products) {
                     for(int i = 0; i < prod.grammar.size()-1;i++){
-                        int j = i;
-                        int s = prod.grammar[j];
-                        int next_s = prod.grammar[j+1];
+                        int s = prod.grammar[i];
+                        int next_s = prod.grammar[i+1];
                         if(cfg.nonter.find(s) != cfg.nonter.end()&& i != prod.grammar.size()){//规则二：找到一个非终结符
                                 if(cfg.ter.find(next_s) != cfg.ter.end())//非终结符后的终结符
                                 {
                                     change = is_change(fol_m,s,next_s);
                                     if(change){if_change = true;}
                                 }
-                            for(;j<prod.grammar.size();j++){
+                            for(int j = 1;j+i<prod.grammar.size();j++){
+                                next_s = prod.grammar[i+j];
                                 if(cfg.nonter.find(next_s) != cfg.nonter.end())//非终结符后的非终结符
                                 {
                                     std::unordered_set<int> fir_set;
@@ -376,10 +376,13 @@ void LL::FollowSetSolver(CFG &cfg) {
                                             if(change){if_change = true;}
                                         }
                                     }
-
                                     if(fir_set.find(CFG::EMPTY_ID) == fir_set.end()){
                                         break;
                                     }//first集除了空全给
+                                }else{
+                                    change = is_change(fol_m,s,next_s);
+                                    if(change){if_change = true;}
+                                    break;
                                 }
                             }
                         }
@@ -410,7 +413,7 @@ void LL::FollowSetSolver(CFG &cfg) {
                                     if(change){if_change = true;}
                                 }
                                 las = pr_las;
-                            }
+                            }else{break;}
                         }else{break;}
 
                     }

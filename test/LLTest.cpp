@@ -333,7 +333,7 @@ void LLTest::FollowSetSolverTest01(){
     std::vector<int> p_list_S = {C, A};
     auto *p_E = new Productions(E, p_list_S);
 
-    // A->dC|空集
+    // A->dC
     std::vector<int> p_list_A = {d, C};
     auto *p_A = new Productions(A, p_list_A);
 
@@ -397,6 +397,93 @@ void LLTest::FollowSetSolverTest01(){
     f_Set.insert(*A_f);
     f_Set.insert(*B_f);
     f_Set.insert(*C_f);
+    cfg->firstSet = f_Set;
+
+    LL::FollowSetSolver(*cfg);
+
+    std::cout << std::endl;
+    std::cout << "Follow集合：" << std::endl;
+
+    for(const SubSet& subset : cfg->followSet) {
+        std::cout << "符号: " << subset.symbol << ", ";
+        std::cout << "Follow集: ";
+        for(int s : subset.st) {
+            std::cout << s << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+
+void LLTest::FollowSetSolverTest02(){
+    CFG *cfg = new CFG();
+    int S = CFG::newId();
+    int T = CFG::newId();
+    int R = CFG::newId();
+    int a = CFG::newId();
+    int b = CFG::newId();
+    int e = CFG::newId();
+
+    cfg->start = S;
+    cfg->nonter = {S, T, R};
+    cfg->ter = {a, b, e};
+
+    // S->Te
+    std::vector<int> p_list_S = {T,e};
+    auto *p_S = new Productions(S, p_list_S);
+
+    // S->STRb
+    std::vector<int> p_list_S1 = {S,T,R,b};
+    auto *p_S1 = new Productions(S, p_list_S1);
+
+    // T->空
+    std::vector<int> p_list_T1 = {CFG::EMPTY_ID};
+    auto *p_T1 = new Productions(T, p_list_T1);
+
+    // T->R
+    std::vector<int> p_list_T = {R};
+    auto *p_T = new Productions(T, p_list_T);
+
+    // R->a
+    std::vector<int> p_list_R = {a};
+    auto *p_R = new Productions(R, p_list_R);
+
+    // R->空集
+    std::vector<int> p_list_R1 = {CFG::EMPTY_ID};
+    auto *p_R1 = new Productions(R, p_list_R1);
+
+    // R->STT
+    std::vector<int> p_list_R2 = {S,T,T};
+    auto *p_R2 = new Productions(R, p_list_R2);
+
+
+    std::unordered_set<Productions, Productions::ProductionsHasher> products;
+    products.insert(*p_S);
+    products.insert(*p_S1);
+    products.insert(*p_T);
+    products.insert(*p_T1);
+    products.insert(*p_R);
+    products.insert(*p_R1);
+    products.insert(*p_R2);
+
+    cfg->products = products;
+
+    std::unordered_set<SubSet, SubSet::SubSetHasher> f_Set;
+
+    // S first
+    std::unordered_set<int> list_S = {e};
+    auto *S_f = new SubSet{S, list_S};
+    // T first
+    std::unordered_set<int> list_T = {a,e,CFG::EMPTY_ID};
+    auto *T_f = new SubSet{T, list_T};
+    // R first
+    std::unordered_set<int> list_R = {a,e,CFG::EMPTY_ID};
+    auto *R_f = new SubSet{R, list_R};
+
+
+    f_Set.insert(*S_f);
+    f_Set.insert(*T_f);
+    f_Set.insert(*R_f);
     cfg->firstSet = f_Set;
 
     LL::FollowSetSolver(*cfg);
