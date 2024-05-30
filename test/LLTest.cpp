@@ -4,6 +4,7 @@
 #include <iostream>
 #include "LLTest.h"
 #include "frontend/LL.h"
+#include "util/FileIO.h"
 
 void LLTest::LeftRecurEliminationTest01() {
     std::map<int, std::string> m;
@@ -216,42 +217,131 @@ void LLTest::LeftFactorExtractionTest02() {
 
 void LLTest::test() {
 
-    std::map<int, std::string> m;
+//    std::map<int, std::string> m;
+//    CFG *cfg = new CFG();
+//    int S = CFG::newId();m.insert({S, "S"});//53
+//    int A = CFG::newId();m.insert({A, "A"});//54
+//    int B = CFG::newId();m.insert({B, "B"});//55
+//    int a = CFG::newId();m.insert({a, "a"});//56
+//    int b = CFG::newId();m.insert({b, "b"});//57
+//    int c = CFG::newId();m.insert({c, "c"});//58
+//    m.insert({CFG::UNION_ID, "|"});
+//    m.insert({CFG::EMPTY_ID, "空集"});
+//    cfg->start = S;
+//    cfg->nonter = {A, B, S};
+//    cfg->ter = {a, b, c};
+//
+//    // S -> Bc
+//    std::vector<int> prod = {B, c};
+//    cfg->products.insert(Productions(S, prod));
+//    prod.clear();
+//
+//    // S->Ab
+//    prod = {A, b};
+//    cfg->products.insert(Productions(S, prod));
+//    prod.clear();
+//
+//    // B -> Ab
+//    prod = {A, b};
+//    cfg->products.insert(Productions(B, prod));
+//    prod.clear();
+//
+//    // A -> Sa|b
+//    prod = {S, a, CFG::UNION_ID, b};
+//    cfg->products.insert(Productions(A, prod));
+//    prod.clear();
+    std::string s = FileIO::read("../input/grammar.txt");
     CFG *cfg = new CFG();
-    int S = CFG::newId();m.insert({S, "S"});
-    int A = CFG::newId();m.insert({A, "A"});
-    int B = CFG::newId();m.insert({B, "B"});
-    int a = CFG::newId();m.insert({a, "a"});
-    int b = CFG::newId();m.insert({b, "b"});
-    int c = CFG::newId();m.insert({c, "c"});
-    m.insert({CFG::UNION_ID, "|"});
-    m.insert({CFG::EMPTY_ID, "空集"});
-    cfg->start = S;
-    cfg->nonter = {A, B, S};
-    cfg->ter = {a, b, c};
+    std::unordered_map<char, int> mp;   //数字映射
+    std::unordered_map<int, char> remp;
+    int newId = CFG::newId();
+    cfg->start = newId;
+    mp[s[0]] = newId;
+    remp[newId] = s[0];
+    cfg->nonter.insert(cfg->start);
+    int idx = 2;
+    while(idx < s.size()) {
+        std::string line;
+        while(idx < s.size() && s[idx] != '\n') {
+            line += s[idx++];
+        }
+        idx++;
+        Productions prod;
+        if(mp.find(line[0]) != mp.end()) {
+            prod.start = mp[line[0]];
+            cfg->nonter.insert(prod.start);
+        }else {
+            newId = CFG::newId();
+            mp[line[0]] = newId;
+            remp[newId] = line[0];
+            prod.start = newId;
+            cfg->nonter.insert(prod.start);
+        }
+        int id = 2;
+        while (id < line.size()) {
+            if(line[id] == ' ') {
+                prod.grammar.push_back(CFG::UNION_ID);
+            }else if(line[id] == '$') {
+                prod.grammar.push_back(CFG::EMPTY_ID);
+                mp[line[id]] = CFG::EMPTY_ID;
+                remp[CFG::EMPTY_ID] = line[id];
+            }else {
+                int t;
+                if(mp.find(line[id]) == mp.end()) {
+                    t = CFG::newId();
+                    mp[line[id]] = t;
+                    remp[t] = line[id];
+                } else {
+                    t = mp[line[id]];
+                }
+                prod.grammar.push_back(t);
+                if(line[id] >= 'a' && line[id] <= 'z') {
+                    cfg->ter.insert(t);
+                }else if(line[id] >= 'A' && line[id] <= 'Z') {
+                    cfg->nonter.insert(t);
+                }
+            }
+            id++;
+        }
+        cfg->products.insert(prod);
+    }
+    LL::Split(*cfg);
+    //S
+    //S Aa b
+    //A Ac Sd $
 
-    // S -> Bc
-    std::vector<int> prod = {B, c};
-    cfg->products.insert(Productions(S, prod));
-    prod.clear();
-
-    // S->Ab
-    prod = {A, b};
-    cfg->products.insert(Productions(S, prod));
-    prod.clear();
-
-    // B -> Ab
-    prod = {A, b};
-    cfg->products.insert(Productions(B, prod));
-    prod.clear();
-
-    // A -> Sa|b
-    prod = {S, a, CFG::UNION_ID, b};
-    cfg->products.insert(Productions(A, prod));
-    prod.clear();
-
+    //S
+    //S Ab Abc bc
+    //A Bcd Bd Bc ca
+    //B $
     auto cfg_new = LL::LeftRecurElimination(*cfg);
-
+    LL::Split(*cfg_new);
+    cfg_new = LL::LeftFactorExtraction(*cfg_new);
+    //A
+    //A Aaa Aac ccc
+//    LL::FirstSetSolver(*cfg);
+//    LL::FollowSetSolver(*cfg);
+    std::string a;
+    a += remp[cfg_new->start];
+    a += "\n";
+    for(const auto& p: cfg_new->products) {
+        if(remp.find(p.start) == remp.end()) {
+            a += std::to_string(p.start);
+        }else a += remp[p.start];
+        a += " ";
+        for(int g: p.grammar) {
+            if(g == CFG::UNION_ID) {
+                a += "|";
+            }else if(g == CFG::EMPTY_ID) {
+                a += "$";
+            }
+            else if(remp.find(g) == remp.end()) {
+                a += "\"" + std::to_string(g) + "\"";
+            }else a += remp[g];
+        }
+        a += "\n";
+    }
+    FileIO::write("../output/ll.txt", a);
 }
 
 void LLTest::FirstSetSolverTest01(){
@@ -412,4 +502,20 @@ void LLTest::FollowSetSolverTest01(){
         }
         std::cout << std::endl;
     }
+
+    if(!LL::isLLFoundation(*cfg)) std::cout<<"Error!\n";
+
+    for(const auto& it: LL::analysisTable) {
+        std::cout << it.first << "\n";
+        for(const auto& fo: LL::analysisTable[it.first]) {
+            std::cout << fo.first << "     ";
+            for(int k: fo.second) {
+                std::cout << k << ' ';
+            }
+            std::cout << '\n';
+        }
+        std::cout << '\n';
+    }
 }
+
+

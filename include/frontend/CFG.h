@@ -16,7 +16,10 @@ public:
 
     Productions(int s, std::vector<int>& g) {
         this->start = s;
-        g.swap(this->grammar);
+        this->grammar = g;
+    }
+    Productions() {
+        start = 0;
     }
     ~Productions() = default;
 
@@ -26,6 +29,11 @@ public:
             if(p.grammar[i] != grammar[i]) return false;
         }
         return true;
+    }
+
+    Productions& operator = (const Productions & p) {
+        start = p.start;
+        grammar = p.grammar;
     }
     struct ProductionsHasher final {
         unsigned long long operator()(const Productions& p) const{

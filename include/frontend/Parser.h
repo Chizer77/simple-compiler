@@ -10,6 +10,11 @@ public:
      * 通过读入数据初始化语法分析器Parser
      */
     static void init();
+
+    /**
+     * 语法分析
+     */
+     void parse(const std::string& s);
 };
 
 

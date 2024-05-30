@@ -79,8 +79,8 @@ int main() {
 //    log(NfaTest::run);
 //    std::cout << "DfaTest runs..." << std::endl;
 //    log(DfaTest::run);
-//    std::cout << "LLTest runs..." << std::endl;
-//    log(LLTest::run);
+    std::cout << "LLTest runs..." << std::endl;
+    log(LLTest::run);
 
 //    std::string s;
 //    while(true) {
@@ -99,5 +99,5 @@ int main() {
 //        out(dfa);
 //    }
 
-    Lexer::init("config/lexDfaSet.txt");
+//    Lexer::init("config/lexDfaSet.txt");
 }

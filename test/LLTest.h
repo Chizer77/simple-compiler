@@ -6,24 +6,25 @@ class LLTest {
 public:
     static void LeftRecurEliminationTest01();
 
+    static void test();
+
     static void LeftRecurEliminationTest02();
 
     static void LeftFactorExtractionTest01();
 
     static void LeftFactorExtractionTest02();
 
-    static void test();
-
     static void FirstSetSolverTest01();
 
     static void FollowSetSolverTest01();
 
     static void run() {
-        LeftRecurEliminationTest01();
-        LeftRecurEliminationTest02();
-        LeftFactorExtractionTest01();
-        LeftFactorExtractionTest02();
-        FirstSetSolverTest01();
+        test();
+//        LeftRecurEliminationTest01();
+//        LeftRecurEliminationTest02();
+//        LeftFactorExtractionTest01();
+//        LeftFactorExtractionTest02();
+//        FirstSetSolverTest01();
         FollowSetSolverTest01();
     }
 };

@@ -1,28 +1,43 @@
+#include <cstring>
+#include "queue"
 #include "frontend/LL.h"
 #include "unordered_map"
 
-std::unordered_map<int, std::vector<Productions*>>* format(const CFG& cfg) {
-    auto *ans = new std::unordered_map<int, std::vector<Productions*>>;
-    for (const Productions& productions : cfg.products) {
-        std::vector<int> list;
-        std::vector<Productions*> productions_list;
-        auto ans_item = ans->find(productions.start);
-        if(ans_item != ans->end()) {
-            productions_list = ans_item->second;
-            ans->erase(productions.start);
-        }
-        for (int grammer : productions.grammar) {
-            if (grammer == CFG::UNION_ID) {
-                auto *productions_new = new Productions(productions.start, list);
-                productions_list.push_back(productions_new);
+
+std::unordered_map<int, std::unordered_map<int, std::vector<int>>> LL::analysisTable;
+
+
+void LL::Split(CFG& cfg) {
+    std::unordered_set<Productions, Productions::ProductionsHasher> splitProd;
+    std::vector<int> list;
+    for(const Productions& prod: cfg.products) {
+        for(int g: prod.grammar) {
+            if(g == CFG::UNION_ID) {
+                splitProd.insert(Productions(prod.start, list));
                 list.clear();
-            } else {
-                list.push_back(grammer);
+            }else {
+                list.push_back(g);
             }
         }
-        auto *productions_new = new Productions(productions.start, list);
-        productions_list.push_back(productions_new);
-        ans->insert({productions.start, productions_list});
+        if(!list.empty()) {
+            splitProd.insert(Productions(prod.start, list));
+            list.clear();
+        }
+    }
+    cfg.products = splitProd;
+}
+
+std::unordered_map<int, std::vector<Productions*>>* format(const CFG& cfg) {
+    auto *ans = new std::unordered_map<int, std::vector<Productions*>>;
+    for (Productions prod : cfg.products) {
+        std::vector<Productions*> list;
+        auto tmp = ans->find(prod.start);
+        if(tmp != ans->end()) {
+            list = tmp->second;
+            ans->erase(tmp);
+        }
+        list.push_back(new Productions(prod.start, prod.grammar));
+        ans->insert({prod.start, list});
     }
     return ans;
 }
@@ -41,47 +56,96 @@ Productions* reFormat(std::vector<Productions*>& productions_list) {
     return ans;
 }
 
+void exposure(int start, std::vector<int> g, std::unordered_set<Productions, Productions::ProductionsHasher> &ans, std::unordered_map<int, std::vector<Productions*>> &m_productions, std::unordered_set<Productions, Productions::ProductionsHasher> &visited, const CFG& cfg) {
+    std::vector<int> gt(g);
+    if(gt.empty()) { //本身是空的
+        gt.emplace_back(CFG::EMPTY_ID);
+        ans.insert(Productions(start, gt));
+        return;
+    }
+    if(cfg.nonter.find(*gt.begin()) == cfg.nonter.end()) { //首字为终结符或空符号
+        ans.insert(Productions(start, gt));
+        return;
+    }
+    auto pv = m_productions.find(*g.begin())->second;
+    for(auto prod: pv) {
+        gt = g;
+        if(visited.find(*prod) != visited.end()) { //下一条边已跑过
+            ans.insert(Productions(start, gt));
+        }else if(cfg.nonter.find(prod->grammar[0]) == cfg.nonter.end() && prod->grammar[0] != CFG::EMPTY_ID) {   //下条边首字为终结符
+            visited.insert(*prod);
+            gt.erase(gt.begin());
+            gt.insert(gt.begin(), prod->grammar.begin(), prod->grammar.end());
+            ans.insert(Productions(start, gt));
+        }else if(prod->grammar[0] == start) {   //找到左递归
+            visited.insert(*prod);
+            gt.erase(gt.begin());
+            gt.insert(gt.begin(), prod->grammar.begin(), prod->grammar.end());
+            ans.insert(Productions(start, gt));
+        }else if(prod->grammar[0] == CFG::EMPTY_ID) {    //首字为空
+            gt.erase(gt.begin());
+            exposure(start, gt, ans, m_productions, visited, cfg);
+        }else{ //其他非终结符
+            visited.insert(*prod);
+            gt.erase(gt.begin());
+            gt.insert(gt.begin(), prod->grammar.begin(), prod->grammar.end());
+            exposure(start, gt, ans, m_productions, visited, cfg);
+        }
+    }
+}
+
+
 // TODO:free 内存
 CFG* LL::LeftRecurElimination(const CFG& cfg) {
     CFG *opg1 = new CFG();
+    std::unordered_set<Productions, Productions::ProductionsHasher> regProd;
     auto m_productions = format(cfg);
-
+    std::unordered_set<Productions, Productions::ProductionsHasher> visited;
     // 1. 消除间接左递归
     //     * 如同 S -> Aa|b   A -> Ac|Sd
     //     * 会产生  S ==> Aa ==> Sda
     //     * 消除间接左递归变成
     //     * S -> Aa|b
     //     * A -> Ac|Aad|bd
-    std::unordered_set<Productions, Productions::ProductionsHasher> ans_1;
-    // 记录之前遍历过的 productions
-    auto *pre_productions = new std::unordered_map<int, std::vector<Productions*>>();
-    for (auto & m_production : *m_productions) {
-        auto entry_productions = new std::vector<Productions*>();
-        for (auto *production : m_production.second) {
-            int rightFirst = production->grammar[0];
-            auto it = pre_productions->find(rightFirst);
-            if (it == pre_productions->end()) {
-                // 没有间接递归
-                entry_productions->push_back(production);
-            } else {
-                auto pre_list = it->second;
-                production->grammar.erase(production->grammar.begin());
-                for (auto pre : pre_list) {
-                    auto p_vector = new std::vector<int>{production->grammar};
-                    p_vector->insert(p_vector->begin(), pre->grammar.begin(), pre->grammar.end());
-                    auto p_new = new Productions(production->start, *p_vector);
-                    entry_productions->push_back(p_new);
-                }
-            }
+    for(int t: cfg.nonter) {
+        visited.clear();
+        auto pv = m_productions->find(t)->second;
+        for(auto p: pv) {
+            if(p->grammar[0] != CFG::EMPTY_ID) visited.insert(*p);
+            exposure(t, (p->grammar), regProd, *m_productions, visited, cfg);
         }
-        pre_productions->insert({m_production.first, *entry_productions});
-        ans_1.insert(*(reFormat(*entry_productions)));
     }
+
+//    std::unordered_set<Productions, Productions::ProductionsHasher> ans_1;
+//    // 记录之前遍历过的 productions
+//    auto *pre_productions = new std::unordered_map<int, std::vector<Productions*>>();
+//    for (auto & m_prod : *m_productions) {
+//        auto entry_productions = new std::vector<Productions*>();
+//        for (auto *production : m_prod.second) {
+//            int rightFirst = production->grammar[0];
+//            auto it = pre_productions->find(rightFirst);
+//            if (it == pre_productions->end()) {
+//                // 没有间接递归
+//                entry_productions->push_back(production);
+//            } else {
+//                auto pre_list = it->second;
+//                production->grammar.erase(production->grammar.begin());
+//                for (auto pre : pre_list) {
+//                    auto p_vector = new std::vector<int>{production->grammar};
+//                    p_vector->insert(p_vector->begin(), pre->grammar.begin(), pre->grammar.end());
+//                    auto p_new = new Productions(production->start, *p_vector);
+//                    entry_productions->push_back(p_new);
+//                }
+//            }
+//        }
+//        pre_productions->insert({m_prod.first, *entry_productions});
+//        ans_1.insert(*(reFormat(*entry_productions)));
+//    }
 
     opg1->nonter = cfg.nonter;
     opg1->start = cfg.start;
     opg1->ter = cfg.ter;
-    opg1->products = ans_1;
+    opg1->products = regProd;
 
     // 2. 消除直接左递归
     CFG *opg2 = new CFG();
@@ -114,6 +178,7 @@ CFG* LL::LeftRecurElimination(const CFG& cfg) {
             int new_nonter = CFG::newId();
             opg1->nonter.insert(new_nonter);
             for (Productions *productions : no_left_eliminate_productions) {
+                if(productions->grammar[0] == CFG::EMPTY_ID) productions->grammar.erase(productions->grammar.begin());
                 productions->grammar.push_back(new_nonter);
                 res_productions->push_back(productions);
             }
@@ -345,7 +410,6 @@ std::unordered_set<int> getSetBySymbol(std::unordered_set<SubSet, SubSet::SubSet
     return Set;
 }
 
-
 void LL::FollowSetSolver(CFG &cfg) {
     std::unordered_map<int, std::unordered_set<int>> fol_m;
     //规则一：加入#号
@@ -434,5 +498,40 @@ void LL::FollowSetSolver(CFG &cfg) {
 }
 
 bool LL::isLLFoundation(const CFG &cfg) {
-    return false;
+    auto m_p = format(cfg);
+    std::unordered_map<int, std::unordered_set<int>> firstMap, followMap;
+    for(const auto& f: cfg.firstSet) {
+        firstMap[f.symbol] = f.st;
+    }
+    for(const auto& f: cfg.followSet) {
+        followMap[f.symbol] = f.st;
+    }
+    for(const auto& f: cfg.firstSet) {
+        int sp = f.symbol;
+        auto prodSet = m_p->find(sp)->second;
+        std::unordered_set<int> st = f.st;  //sp的first集合
+        for(int t: st) {
+            if(t == CFG::EMPTY_ID) {    //有空则检查follow集合
+                auto follow = followMap.find(sp)->second;
+                for(int fo: follow) {
+                    if(LL::analysisTable[sp].find(fo) != LL::analysisTable[sp].end()) {
+                        return false;
+                    }
+                    std::vector<int> a = {CFG::EMPTY_ID};
+                    LL::analysisTable[sp][fo] = a;
+                }
+                continue;
+            }
+            for(const Productions* prod: prodSet) {
+                if(firstMap[prod->grammar[0]].find(t) != firstMap[prod->grammar[0]].end() || t == prod->grammar[0]) {
+                    if(LL::analysisTable[sp].find(t) != LL::analysisTable[sp].end()) {
+                        return false;
+                    }
+                    std::vector<int> a = prod->grammar;
+                    LL::analysisTable[sp][t] = a;
+                }
+            }
+        }
+    }
+    return true;
 }

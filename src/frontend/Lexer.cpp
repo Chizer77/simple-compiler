@@ -11,42 +11,44 @@ void Lexer::init(const char *configFileName) {
     for(Token::TokenType t = Token::VOID; t <= Token::WHILE; t = (Token::TokenType)(t + 1)) {
         keyWordSet[Token::list[t]] = t;
     }
-    FILE* input = fopen(configFileName, "r");
-    if(input != nullptr) {
-        std::string lexDfaTxt = FileIO::read(configFileName);
-        int idx = 0;
-        int op = 0;
-        Token::TokenType type;
-        Dfa *dfa = new Dfa();
-        while(idx < lexDfaTxt.size()) {
-            std::string s;
-            while(lexDfaTxt[idx] != '\n') {
-                s += lexDfaTxt[idx++];
-            }
-            if(op == 6) {
-                lexDFASet.insert(new lexDfa(type, dfa));
-                dfa->s0 = 0;
-                dfa->s.clear();
-                dfa->target.clear();
-                dfa->alpha.clear();
-                dfa->edges.clear();
-                op = 0;
-            }
-            if(op == 0) {
-                int t = 0;
-                int id =
-                while(id)
-
-            }else if(op == 1) {
-                int id = 0;
-                while(id < s.size()) {
-
-                }
-            }
-            idx++;
-            op++;
-        }
-    }
+    //TODO:可从文件输入C++语言定义NFA
+//    FILE* input = fopen(configFileName, "r");
+//    if(input != nullptr) {
+//        std::string lexDfaTxt = FileIO::read(configFileName);
+//        int idx = 0;
+//        int op = 0;
+//        Token::TokenType type;
+//        Dfa *dfa = new Dfa();
+//        while(idx < lexDfaTxt.size()) {
+//            std::string s;
+//            while(lexDfaTxt[idx] != '\n') {
+//                s += lexDfaTxt[idx++];
+//            }
+//            if(op == 6) {
+//                lexDFASet.insert(new lexDfa(type, dfa));
+//                dfa->s0 = 0;
+//                dfa->s.clear();
+//                dfa->target.clear();
+//                dfa->alpha.clear();
+//                dfa->edges.clear();
+//                op = 0;
+//            }
+//            if(op == 0) {
+//                int t = 0;
+//                int id = 2;
+//                while(id) {
+//
+//                }
+//            }else if(op == 1) {
+//                int id = 0;
+//                while(id < s.size()) {
+//
+//                }
+//            }
+//            idx++;
+//            op++;
+//        }
+//    }
     // 常量
     std::string num = "0";    //含0
     for(int i = 1; i < 10; i++) {

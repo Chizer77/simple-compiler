@@ -10,7 +10,13 @@ public:
     /**
      * 预测分析表
      */
-    std::unordered_map<int, std::unordered_map<int, std::vector<int>>> analysisTable;
+    static std::unordered_map<int, std::unordered_map<int, std::vector<int>>> analysisTable;
+
+    /**
+     * 将或符号去除，转换为单产生式
+     * @param cfg
+     */
+    static void Split(CFG& cfg);
 
     /**
      * TODO:消除左递归
@@ -43,7 +49,7 @@ public:
      * @param cfg 求得first和follow集合的文法对象
      * @return 是否为LL(1)文法，0为否
      */
-    bool isLLFoundation(const CFG &cfg);
+    static bool isLLFoundation(const CFG &cfg);
 };
 
 
