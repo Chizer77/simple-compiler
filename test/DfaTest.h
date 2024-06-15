@@ -20,6 +20,8 @@ public:
 
     static void DfaMinimizeTest003();
 
+    static void LexerTest();
+
     static void run() {
         DfaMinimizeTest01();
         DfaMinimizeTest02();
