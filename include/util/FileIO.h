@@ -13,6 +13,12 @@ public:
     static FILE* output;
 
     /**
+     * 文字间隔和文字换行
+     */
+    static const char fileBlank = '\6';
+    static const char fileNewLine = '\7';
+
+    /**
      * 读取文件路径filename内字符，存入fileStr中，文件路径需存在
      * @param filename 文件路径
      */

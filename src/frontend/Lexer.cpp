@@ -6,49 +6,132 @@ std::unordered_map<std::string, Token::TokenType> Lexer::keyWordSet;
 
 std::unordered_set<Lexer::lexDfa*, Lexer::lexDfa::lexDfaHasher> Lexer::lexDFASet;
 
-void Lexer::init(const char *configFileName) {
+
+// 字符串转int
+int getNum(const std::string& txt) {
+    int ans = 0;
+    for(char i : txt) {
+        ans *= 10;
+        ans += i - '0';
+    }
+    return ans;
+}
+
+void Lexer::init(const std::string& configFileName) {
     // 初始化关键字集合keyWordSet
     for(Token::TokenType t = Token::VOID; t <= Token::WHILE; t = (Token::TokenType)(t + 1)) {
         keyWordSet[Token::list[t]] = t;
     }
-    //TODO:可从文件输入C++语言定义NFA
-//    FILE* input = fopen(configFileName, "r");
-//    if(input != nullptr) {
-//        std::string lexDfaTxt = FileIO::read(configFileName);
-//        int idx = 0;
-//        int op = 0;
-//        Token::TokenType type;
-//        Dfa *dfa = new Dfa();
-//        while(idx < lexDfaTxt.size()) {
-//            std::string s;
-//            while(lexDfaTxt[idx] != '\n') {
-//                s += lexDfaTxt[idx++];
-//            }
-//            if(op == 6) {
-//                lexDFASet.insert(new lexDfa(type, dfa));
-//                dfa->s0 = 0;
-//                dfa->s.clear();
-//                dfa->target.clear();
-//                dfa->alpha.clear();
-//                dfa->edges.clear();
-//                op = 0;
-//            }
-//            if(op == 0) {
-//                int t = 0;
-//                int id = 2;
-//                while(id) {
-//
-//                }
-//            }else if(op == 1) {
-//                int id = 0;
-//                while(id < s.size()) {
-//
-//                }
-//            }
-//            idx++;
-//            op++;
-//        }
-//    }
+    // 从文件输入C++语言定义NFA
+    FILE* input = fopen(configFileName.c_str(), "r");
+    if(input != nullptr) {
+        std::string lexDfaTxt = FileIO::read(configFileName.c_str());
+        int idx = 0;
+        int op = 0;
+        Token::TokenType type;
+        Dfa *dfa = new Dfa();
+        while(idx < lexDfaTxt.size()) {
+            std::string s;
+            if(op == 0) {
+                while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+                    s += lexDfaTxt[idx++];
+                }
+                type = (Token::TokenType)getNum(s);
+                op++;
+                idx++;
+            }else if(op == 1) {
+                while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+                    s += lexDfaTxt[idx++];
+                }
+                dfa->s0 = getNum(s);
+                op++;
+                idx++;
+            }else if(op == 2) {
+                while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+                    s += lexDfaTxt[idx++];
+                }
+                std::string ts;
+                int dfa_s;
+                for(char i : s) {
+                    if(i == FileIO::fileBlank) {
+                        dfa_s = getNum(ts);
+                        dfa->s.insert(dfa_s);
+                        ts.clear();
+                        continue;
+                    }
+                    ts += i;
+                }
+                op++;
+                idx++;
+            }else if(op == 3) {
+                while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+                    s += lexDfaTxt[idx++];
+                }
+                std::string ts;
+                int dfa_tar;
+                for(char i : s) {
+                    if(i == FileIO::fileBlank) {
+                        dfa_tar = getNum(ts);
+                        dfa->target.insert(dfa_tar);
+                        ts.clear();
+                        continue;
+                    }
+                    ts += i;
+                }
+                op++;
+                idx++;
+            }else if(op == 4) {
+                while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+                    s += lexDfaTxt[idx++];
+                }
+                for(char i : s) {
+                    if(i == FileIO::fileBlank) continue;
+                    dfa->alpha.insert(i);
+                }
+                op++;
+                idx++;
+            }else if(op == 5) {
+                while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+                    s += lexDfaTxt[idx++];
+                }
+                int edgeSize = getNum(s);
+                s.clear();
+                for(int i = 0; i < edgeSize; i++) {
+                    idx++;
+                    while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+                        s += lexDfaTxt[idx++];
+                    }
+                    std::string ts;
+                    int tim = 0;
+                    int start, target;
+                    char alpha;
+                    for(char j : s) {
+                        if(j == FileIO::fileBlank) {
+                            if(tim == 0) {
+                                start = getNum(ts);
+                                ts.clear();
+                                tim++;
+                            }else if(tim == 1) {
+                                alpha = ts[0];
+                                ts.clear();
+                                tim++;
+                            }
+                            continue;
+                        }
+                        ts += j;
+                    }
+                    target = getNum(ts);
+                    dfa->edges.insert(Edge(start, target, alpha));
+                    s.clear();
+                }
+                lexDFASet.insert(new lexDfa(type, dfa));
+                dfa = new Dfa();
+                op = 0;
+                idx++;
+            }
+        }
+        return;
+    }
     // 常量
     std::string num = "0";    //含0
     for(int i = 1; i < 10; i++) {
@@ -165,31 +248,34 @@ void Lexer::init(const char *configFileName) {
         Token::TokenType token = lexDfa->type;
         Dfa *dfa = lexDfa->dfa;
         dfaTxt += std::to_string(token);
-        dfaTxt += '\n';
+        dfaTxt += FileIO::fileNewLine;
         dfaTxt += std::to_string(dfa->s0);
-        dfaTxt += '\n';
+        dfaTxt += FileIO::fileNewLine;
         for(auto s: dfa->s) {
-            dfaTxt += std::to_string(s) + ' ';
+            dfaTxt += std::to_string(s) + FileIO::fileBlank;
         }
-        dfaTxt += '\n';
+        dfaTxt += FileIO::fileNewLine;
         for(auto tar: dfa->target) {
-            dfaTxt += std::to_string(tar) + ' ';
+            dfaTxt += std::to_string(tar) + FileIO::fileBlank;
         }
-        dfaTxt += '\n';
+        dfaTxt += FileIO::fileNewLine;
         for(auto alp: dfa->alpha) {
             dfaTxt += alp;
-            dfaTxt += ' ';
+            dfaTxt += FileIO::fileBlank;
         }
-        dfaTxt += '\n';
+        dfaTxt += FileIO::fileNewLine;
+        dfaTxt += std::to_string(dfa->edges.size());
+        dfaTxt += FileIO::fileNewLine;
         for(auto edge: dfa->edges) {
-            dfaTxt += std::to_string(edge.start) + ' ';
+            dfaTxt += std::to_string(edge.start);
+            dfaTxt += FileIO::fileBlank;
             dfaTxt += edge.alpha;
-            dfaTxt += ' ';
+            dfaTxt += FileIO::fileBlank;
             dfaTxt += std::to_string(edge.target);
-            dfaTxt += '\n';
+            dfaTxt += FileIO::fileNewLine;
         }
     }
-    FileIO::write(configFileName, dfaTxt);
+    FileIO::write(configFileName.c_str(), dfaTxt);
 }
 
 //对fileStr内容进行分析

@@ -51,7 +51,7 @@ public:
     /**
      * 初始化keyWordSet和lexDFASet
      */
-    static void init(const char *configFileName);
+    static void init(const std::string& configFileName);
 
     /**
      * 清空keyWordSet和lexDFASet
