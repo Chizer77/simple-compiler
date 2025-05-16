@@ -69,7 +69,6 @@ void LLTest::LeftRecurEliminationTest01() {
     }
 }
 
-
 void LLTest::LeftRecurEliminationTest02() {//发现bug:如果要添加多个左递归，只会new一个新的id
 
     std::map<int, std::string> m;
@@ -215,42 +214,8 @@ void LLTest::LeftFactorExtractionTest02() {
     CFG *res = LL::LeftFactorExtraction(*cfg);
 }
 
-void LLTest::test() {
-
-//    std::map<int, std::string> m;
-//    CFG *cfg = new CFG();
-//    int S = CFG::newId();m.insert({S, "S"});//53
-//    int A = CFG::newId();m.insert({A, "A"});//54
-//    int B = CFG::newId();m.insert({B, "B"});//55
-//    int a = CFG::newId();m.insert({a, "a"});//56
-//    int b = CFG::newId();m.insert({b, "b"});//57
-//    int c = CFG::newId();m.insert({c, "c"});//58
-//    m.insert({CFG::UNION_ID, "|"});
-//    m.insert({CFG::EMPTY_ID, "空集"});
-//    cfg->start = S;
-//    cfg->nonter = {A, B, S};
-//    cfg->ter = {a, b, c};
-//
-//    // S -> Bc
-//    std::vector<int> prod = {B, c};
-//    cfg->products.insert(Productions(S, prod));
-//    prod.clear();
-//
-//    // S->Ab
-//    prod = {A, b};
-//    cfg->products.insert(Productions(S, prod));
-//    prod.clear();
-//
-//    // B -> Ab
-//    prod = {A, b};
-//    cfg->products.insert(Productions(B, prod));
-//    prod.clear();
-//
-//    // A -> Sa|b
-//    prod = {S, a, CFG::UNION_ID, b};
-//    cfg->products.insert(Productions(A, prod));
-//    prod.clear();
-    std::string s = FileIO::read("../input/grammar.txt");
+void LLTest::LeftRecurEliminationInputTest(const std::string& filePath) {
+    std::string s = FileIO::read(filePath.c_str());
     CFG *cfg = new CFG();
     std::unordered_map<char, int> mp;   //数字映射
     std::unordered_map<int, char> remp;

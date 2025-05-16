@@ -1,4 +1,3 @@
-#include <cstring>
 #include "queue"
 #include "frontend/LL.h"
 #include "unordered_map"
@@ -101,7 +100,7 @@ CFG* LL::LeftRecurElimination(const CFG& cfg) {
     std::unordered_set<Productions, Productions::ProductionsHasher> regProd;
     auto m_productions = format(cfg);
     std::unordered_set<Productions, Productions::ProductionsHasher> visited;
-    // 1. 消除间接左递归
+    // 1. 暴露间接左递归
     //     * 如同 S -> Aa|b   A -> Ac|Sd
     //     * 会产生  S ==> Aa ==> Sda
     //     * 消除间接左递归变成
@@ -115,32 +114,6 @@ CFG* LL::LeftRecurElimination(const CFG& cfg) {
             exposure(t, (p->grammar), regProd, *m_productions, visited, cfg);
         }
     }
-
-//    std::unordered_set<Productions, Productions::ProductionsHasher> ans_1;
-//    // 记录之前遍历过的 productions
-//    auto *pre_productions = new std::unordered_map<int, std::vector<Productions*>>();
-//    for (auto & m_prod : *m_productions) {
-//        auto entry_productions = new std::vector<Productions*>();
-//        for (auto *production : m_prod.second) {
-//            int rightFirst = production->grammar[0];
-//            auto it = pre_productions->find(rightFirst);
-//            if (it == pre_productions->end()) {
-//                // 没有间接递归
-//                entry_productions->push_back(production);
-//            } else {
-//                auto pre_list = it->second;
-//                production->grammar.erase(production->grammar.begin());
-//                for (auto pre : pre_list) {
-//                    auto p_vector = new std::vector<int>{production->grammar};
-//                    p_vector->insert(p_vector->begin(), pre->grammar.begin(), pre->grammar.end());
-//                    auto p_new = new Productions(production->start, *p_vector);
-//                    entry_productions->push_back(p_new);
-//                }
-//            }
-//        }
-//        pre_productions->insert({m_prod.first, *entry_productions});
-//        ans_1.insert(*(reFormat(*entry_productions)));
-//    }
 
     opg1->nonter = cfg.nonter;
     opg1->start = cfg.start;
@@ -368,7 +341,7 @@ void dfsFirst(std::vector<Productions*> &items, std::unordered_map<int, std::vec
     ans->insert({items[0]->start, *ans_vector});
 }
 
-// TODO:free
+// TODO:free 内存
 void LL::FirstSetSolver(CFG &cfg) {
     auto m = format(cfg);
     auto ans = new std::unordered_map<int, std::vector<int>>;
@@ -486,7 +459,8 @@ void LL::FollowSetSolver(CFG &cfg) {
                         for(auto & it : fol_m){
                             SubSet Follow{it.first,it.second};
                             cfg.followSet.insert(Follow);
-                        }}
+                        }
+                    }
                 }
 
             }

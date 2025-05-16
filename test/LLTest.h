@@ -6,8 +6,6 @@ class LLTest {
 public:
     static void LeftRecurEliminationTest01();
 
-    static void test();
-
     static void LeftRecurEliminationTest02();
 
     static void LeftFactorExtractionTest01();
@@ -22,13 +20,19 @@ public:
 
     static void FollowSetSolverTest03();
 
+    /**
+     * 左递归文本输入
+     * @param filePath
+     */
+    static void LeftRecurEliminationInputTest(const std::string& filePath);
+
     static void run() {
-        test();
-//        LeftRecurEliminationTest01();
-//        LeftRecurEliminationTest02();
-//        LeftFactorExtractionTest01();
-//        LeftFactorExtractionTest02();
-//        FirstSetSolverTest01();
+//        LeftRecurEliminationInputTest("../input/grammar.txt");
+        LeftRecurEliminationTest01();
+        LeftRecurEliminationTest02();
+        LeftFactorExtractionTest01();
+        LeftFactorExtractionTest02();
+        FirstSetSolverTest01();
         FollowSetSolverTest01();
         FollowSetSolverTest02();
         FollowSetSolverTest03();
