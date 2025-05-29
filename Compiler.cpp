@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
     configFileName = "../config/lexDfaSet.txt";
     parse_args(argc, argv);
     std::cout << "hello world" << std::endl;
-    char* fileStr = FileIO::read(input_file.c_str());
+    char *fileStr = FileIO::read(input_file.c_str());
 
     std::cout << "Lexer init..." << std::endl;
     Lexer::init(configFileName);

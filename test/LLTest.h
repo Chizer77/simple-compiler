@@ -24,7 +24,7 @@ public:
      * 左递归文本输入
      * @param filePath
      */
-    static void LeftRecurEliminationInputTest(const std::string& filePath);
+    static void LeftRecurEliminationInputTest(const std::string &filePath);
 
     static void run() {
 //        LeftRecurEliminationInputTest("../input/grammar.txt");

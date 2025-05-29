@@ -14,7 +14,7 @@ public:
     /**
      * 语法分析
      */
-     void parse(const std::string& s);
+    void parse(const std::string &s);
 };
 
 

@@ -10,10 +10,13 @@
 class ParseUtil {
 private:
     static const std::unordered_map<char, int> priority;
-    static std::string format(const std::string& exp);
-    static std::string toSuffixR(const std::string& exp);
+
+    static std::string format(const std::string &exp);
+
+    static std::string toSuffixR(const std::string &exp);
+
 public:
-    static std::string toSuffix(const std::string& exp);
+    static std::string toSuffix(const std::string &exp);
 };
 
 #endif //SIMPLE_COMPILER_PARSEUTIL_H

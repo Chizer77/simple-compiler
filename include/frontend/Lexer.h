@@ -15,20 +15,21 @@ class Lexer {
 private:
     struct lexDfa {
         Token::TokenType type = Token::STR_CON;
-        Dfa* dfa{};
+        Dfa *dfa{};
 
-        bool operator ==(const lexDfa& ld) const {
+        bool operator==(const lexDfa &ld) const {
             return type == ld.type;
         }
 
         struct lexDfaHasher final {
-            unsigned long long operator()(const lexDfa* ld) const{
+            unsigned long long operator()(const lexDfa *ld) const {
                 return std::hash<int>()(ld->type);
             }
         };
 
         lexDfa() = default;
-        lexDfa(Token::TokenType t, Dfa* d) {
+
+        lexDfa(Token::TokenType t, Dfa *d) {
             type = t;
             dfa = d;
         }
@@ -42,7 +43,7 @@ private:
     /**
      * 语法DFA集合
      */
-    static std::unordered_set<lexDfa*, lexDfa::lexDfaHasher> lexDFASet;
+    static std::unordered_set<lexDfa *, lexDfa::lexDfaHasher> lexDFASet;
 
 public:
 
@@ -51,7 +52,7 @@ public:
     /**
      * 初始化keyWordSet和lexDFASet
      */
-    static void init(const std::string& configFileName);
+    static void init(const std::string &configFileName);
 
     /**
      * 清空keyWordSet和lexDFASet
@@ -72,7 +73,7 @@ public:
      * 对fileStr内容进行分析，生成记号流并存入tokenList
      * @param fileStr 待分析程序代码
      */
-    void lex(const std::string& fileStr);
+    void lex(const std::string &fileStr);
 
 };
 

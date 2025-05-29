@@ -7,7 +7,7 @@ std::ostream &operator<<(std::ostream &ostream, const Token &token) {
 }
 
 std::ostream &operator<<(std::ostream &ostream, const TokenList &tokenList) {
-    for(Token *token: tokenList.tokens) {
+    for (Token *token: tokenList.tokens) {
         ostream << *token;
     }
     return ostream;

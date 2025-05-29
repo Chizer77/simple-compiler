@@ -22,6 +22,7 @@ public:
     std::unordered_set<Edge, Edge::EdgeHasher> edges;
 
     Graph() = default;
+
     ~Graph() {
         s.clear();
         alpha.clear();

@@ -14,31 +14,34 @@ public:
     int start;
     std::vector<int> grammar;
 
-    Productions(int s, std::vector<int>& g) {
+    Productions(int s, std::vector<int> &g) {
         this->start = s;
         this->grammar = g;
     }
+
     Productions() {
         start = 0;
     }
+
     ~Productions() = default;
 
-    bool operator == (const Productions & p) const {
+    bool operator==(const Productions &p) const {
         if (start != p.start) return false;
-        for(int i = 0; i < p.grammar.size(); i++) {
-            if(p.grammar[i] != grammar[i]) return false;
+        for (int i = 0; i < p.grammar.size(); i++) {
+            if (p.grammar[i] != grammar[i]) return false;
         }
         return true;
     }
 
-    Productions& operator = (const Productions & p) {
+    Productions &operator=(const Productions &p) {
         start = p.start;
         grammar = p.grammar;
     }
+
     struct ProductionsHasher final {
-        unsigned long long operator()(const Productions& p) const{
+        unsigned long long operator()(const Productions &p) const {
             unsigned long long hash = std::hash<int>()(p.start);
-            for(int g: p.grammar) {
+            for (int g: p.grammar) {
                 hash ^= std::hash<int>()(g);
             }
             return hash;
@@ -55,14 +58,14 @@ struct SubSet {
     std::unordered_set<int> st;
 
     // 定义 == 运算符
-    bool operator==(const SubSet& ss) const {
+    bool operator==(const SubSet &ss) const {
         return st == ss.st;
     }
 
     struct SubSetHasher final {
-        unsigned long long operator()(const SubSet& set) const{
+        unsigned long long operator()(const SubSet &set) const {
             unsigned long long hash = std::hash<int>()(set.symbol);
-            for(int s: set.st) {
+            for (int s: set.st) {
                 hash ^= std::hash<int>()(s);
             }
             return hash;
@@ -107,4 +110,5 @@ public:
         return SYMBOL_ID++;
     }
 };
+
 #endif //SIMPLE_COMPILER_CFG_H

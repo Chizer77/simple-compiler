@@ -3,7 +3,7 @@
 #include <regex>
 #include <direct.h>
 
-char* FileIO::read(const char *filename) {
+char *FileIO::read(const char *filename) {
     input = fopen(filename, "r");
     if (input == nullptr) {
         //输出到标准错误的ostream对象
@@ -23,13 +23,13 @@ char* FileIO::read(const char *filename) {
     return fileStr;
 }
 
-void FileIO::write(const char *filename, const std::string& s) {
+void FileIO::write(const char *filename, const std::string &s) {
     //拆分文件路径
     std::match_results<std::string::const_iterator> names;
     std::regex Pattern("(^.+\/)(.+).", std::regex_constants::extended);
     std::string fileString = std::string(filename);
     bool state = std::regex_search(fileString, names, Pattern);
-    if(state) {
+    if (state) {
         //创建目录
         mkdir(names[1].str().c_str());
     }

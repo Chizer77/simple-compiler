@@ -16,7 +16,7 @@ public:
      * @param s2
      * @return s1 并 s2
      */
-    static std::string lexUnion(const std::string& s1, const std::string& s2) {
+    static std::string lexUnion(const std::string &s1, const std::string &s2) {
         std::string s = s1;
         s += Nfa::UNION_STATE;
         s += s2;
@@ -29,7 +29,7 @@ public:
      * @param s2
      * @return s1 与 s2
      */
-    static std::string lexConnection(const std::string& s1, const std::string& s2) {
+    static std::string lexConnection(const std::string &s1, const std::string &s2) {
         std::string s = s1;
         s += Nfa::CONNECTION_STATE;
         s += s2;
@@ -41,7 +41,7 @@ public:
      * @param s1
      * @return s1 闭包符号
      */
-    static std::string lexKleene(const std::string& s1) {
+    static std::string lexKleene(const std::string &s1) {
         std::string s = s1;
         s += Nfa::KLEENE_STATE;
         return s;
@@ -52,7 +52,7 @@ public:
      * @param s1
      * @return ( s1 )
      */
-    static std::string  lexBrace(const std::string& s1) {
+    static std::string lexBrace(const std::string &s1) {
         std::string s;
         s += Nfa::LPARENT_STATE;
         s += s1;

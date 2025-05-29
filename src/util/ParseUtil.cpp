@@ -8,10 +8,10 @@
 
 
 const std::unordered_map<char, int> ParseUtil::priority = {
-        {Nfa::KLEENE_STATE, 0},
+        {Nfa::KLEENE_STATE,     0},
         {Nfa::CONNECTION_STATE, 1},
-        {Nfa::UNION_STATE, 2},
-        {Nfa::LPARENT_STATE, 3}
+        {Nfa::UNION_STATE,      2},
+        {Nfa::LPARENT_STATE,    3}
 };
 
 /**
@@ -19,7 +19,7 @@ const std::unordered_map<char, int> ParseUtil::priority = {
  * @param exp 初始正规式
  * @return 转换为后缀正规式
  */
-std::string ParseUtil::toSuffix(const std::string& exp) {
+std::string ParseUtil::toSuffix(const std::string &exp) {
     return toSuffixR(format(exp));
 }
 
@@ -28,11 +28,11 @@ bool isVaild(char c) {
     return (c > 31 && c < 127) || c == 9 || c == 10;
 }
 
-std::string ParseUtil::format(const std::string& exp) {
+std::string ParseUtil::format(const std::string &exp) {
     std::string str = exp;
     for (size_t i = 1; i < str.length(); i++) {
         char c = str[i];
-        char cPre = str[i-1];
+        char cPre = str[i - 1];
         if (c == Nfa::LPARENT_STATE) {
             if (isVaild(cPre) || cPre == Nfa::KLEENE_STATE || cPre == Nfa::RPARENT_STATE) {
                 str.insert(i, 1, Nfa::CONNECTION_STATE);
@@ -48,16 +48,16 @@ std::string ParseUtil::format(const std::string& exp) {
     return str;
 }
 
-std::string ParseUtil::toSuffixR(const std::string& exp) {
+std::string ParseUtil::toSuffixR(const std::string &exp) {
     std::stack<char> stack;
     std::string res;
-    for (char c : exp) {
+    for (char c: exp) {
         if (isVaild(c)) {
             res += c;
         } else if (c == Nfa::LPARENT_STATE) {
             stack.push(c);
         } else if (c == Nfa::RPARENT_STATE) {
-            if(stack.empty()) {
+            if (stack.empty()) {
                 std::cerr << "ParseUtil::toSuffixR Error!\n";
                 exit(1);
             }
@@ -65,7 +65,7 @@ std::string ParseUtil::toSuffixR(const std::string& exp) {
                 res += stack.top();
                 stack.pop();
             }
-            if(!stack.empty()) stack.pop();
+            if (!stack.empty()) stack.pop();
             else {
                 std::cerr << "ParseUtil::toSuffixR Error!\n";
                 exit(1);

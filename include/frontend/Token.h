@@ -85,6 +85,7 @@ public:
     static std::vector<std::string> list;
 
     Token(TokenType type, std::string cont) : token_type(type), content(std::move(cont)) {}
+
     ~Token() = default;
 
     /**
@@ -106,11 +107,11 @@ public:
         tokens.push_back(token);
     }
 
-    Token* front() {
+    Token *front() {
         return tokens.front();
     }
 
-    Token* back() {
+    Token *back() {
         return tokens.back();
     }
 
@@ -124,8 +125,8 @@ public:
 
     std::string toString() {
         std::string s;
-        for(Token *token: tokens) {
-            s += "<" + Token::list[token->token_type]  + " " + token->content + ">\n";
+        for (Token *token: tokens) {
+            s += "<" + Token::list[token->token_type] + " " + token->content + ">\n";
         }
         return s;
     }

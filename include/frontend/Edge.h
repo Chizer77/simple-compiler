@@ -19,21 +19,24 @@ public:
         this->target = t;
         this->alpha = c;
     }
+
     ~Edge() = default;
 
-    bool operator <(const Edge & e) const {
+    bool operator<(const Edge &e) const {
         if (start == e.start) return target < e.target;
         return start < e.start;
     }
-    bool operator == (const Edge & e) const {
+
+    bool operator==(const Edge &e) const {
         if (start == e.start && target == e.target && alpha == e.alpha) return true;
         return false;
     }
 
     struct EdgeHasher final {
-        unsigned long long operator()(const Edge& e) const{
+        unsigned long long operator()(const Edge &e) const {
             return std::hash<int>()(e.start) ^ std::hash<int>()(e.target) ^ std::hash<char>()(e.alpha);
         }
     };
 };
+
 #endif //SIMPLE_COMPILER_EDGE_H

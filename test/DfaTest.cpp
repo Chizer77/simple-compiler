@@ -121,12 +121,12 @@ void DfaTest::Nfa2DfaTest01() {
     Nfa *nfa = Nfa::Generation("(a|b)^b");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     int i = 0;
-    for (Edge edge : dfa->edges) {
+    for (Edge edge: dfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
     printf("初态：%d   ", dfa->s0);
     printf("终态：");
-    for (int target : dfa->target) {
+    for (int target: dfa->target) {
         printf("%d、", target);
     }
     printf("\n");
@@ -140,12 +140,12 @@ void DfaTest::Nfa2DfaTest02() {
     Nfa *nfa = Nfa::Generation("(a|b)^(aa|bb)(a|b)^");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     int i = 0;
-    for (Edge edge : dfa->edges) {
+    for (Edge edge: dfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
     printf("初态：%d   ", dfa->s0);
     printf("终态：");
-    for (int target : dfa->target) {
+    for (int target: dfa->target) {
         printf("%d、", target);
     }
     printf("\n");
@@ -159,12 +159,12 @@ void DfaTest::Nfa2DfaTest03() {
     Nfa *nfa = Nfa::Generation("a^(a|b)b^");
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     int i = 0;
-    for (Edge edge : dfa->edges) {
+    for (Edge edge: dfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
     printf("初态：%d   ", dfa->s0);
     printf("终态：");
-    for (int target : dfa->target) {
+    for (int target: dfa->target) {
         printf("%d、", target);
     }
     printf("\n");
@@ -179,12 +179,12 @@ void DfaTest::DfaMinimizeTest001() {
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     Dfa *sdfa = Dfa::DfaMinimize(*dfa);
     int i = 0;
-    for (Edge edge : sdfa->edges) {
+    for (Edge edge: sdfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
     printf("初态：%d   ", sdfa->s0);
     printf("终态：");
-    for (int target : sdfa->target) {
+    for (int target: sdfa->target) {
         printf("%d、", target);
     }
     printf("\n");
@@ -200,12 +200,12 @@ void DfaTest::DfaMinimizeTest002() {
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     Dfa *sdfa = Dfa::DfaMinimize(*dfa);
     int i = 0;
-    for (Edge edge : sdfa->edges) {
+    for (Edge edge: sdfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
     printf("初态：%d   ", sdfa->s0);
     printf("终态：");
-    for (int target : sdfa->target) {
+    for (int target: sdfa->target) {
         printf("%d、", target);
     }
     printf("\n");
@@ -221,12 +221,12 @@ void DfaTest::DfaMinimizeTest003() {
     Dfa *dfa = Dfa::Nfa2Dfa(*nfa);
     Dfa *sdfa = Dfa::DfaMinimize(*dfa);
     int i = 0;
-    for (Edge edge : sdfa->edges) {
+    for (Edge edge: sdfa->edges) {
         printf("edge%d start:%d target:%d alpha:%c\n", i++, edge.start, edge.target, edge.alpha);
     }
     printf("初态：%d   ", sdfa->s0);
     printf("终态：");
-    for (int target : sdfa->target) {
+    for (int target: sdfa->target) {
         printf("%d、", target);
     }
     printf("\n");
@@ -239,18 +239,18 @@ void DfaTest::DfaMinimizeTest003() {
 std::string format(std::string s) {
     std::string ans;
     int idx = 0;
-    while(idx < s.size()) {
-        if(s[idx] == '|') {
+    while (idx < s.size()) {
+        if (s[idx] == '|') {
             ans += Nfa::UNION_STATE;
-        }else if(s[idx] == '*') {
+        } else if (s[idx] == '*') {
             ans += Nfa::KLEENE_STATE;
-        }else if(s[idx] == '.') {
+        } else if (s[idx] == '.') {
             ans += Nfa::CONNECTION_STATE;
-        }else if(s[idx] == '(') {
+        } else if (s[idx] == '(') {
             ans += Nfa::LPARENT_STATE;
-        }else if(s[idx] == ')'){
+        } else if (s[idx] == ')') {
             ans += Nfa::RPARENT_STATE;
-        }else {
+        } else {
             ans += s[idx];
         }
         idx++;
@@ -260,27 +260,27 @@ std::string format(std::string s) {
 
 void out(Graph *nfa) {
     std::cout << "S: \n";
-    for(auto it: nfa->s) {
+    for (auto it: nfa->s) {
         std::cout << it << ' ';
     }
     std::cout << "\n";
     std::cout << "S0: \n" << nfa->s0 << std::endl;
     std::cout << "Targets: \n";
-    for(auto it: nfa->target) {
+    for (auto it: nfa->target) {
         std::cout << it << ' ';
     }
     std::cout << "\n";
     std::cout << "Alpha: \n";
-    for(auto it: nfa->alpha) {
-        if(it == Nfa::EMPTY_STATE) std::cout << "ε" << ' ';
+    for (auto it: nfa->alpha) {
+        if (it == Nfa::EMPTY_STATE) std::cout << "ε" << ' ';
         else std::cout << it << ' ';
     }
     std::cout << "\n";
     std::cout << "Edges: \n";
-    for(auto it: nfa->edges) {
+    for (auto it: nfa->edges) {
         std::string c;
         c = it.alpha;
-        if(it.alpha == Nfa::EMPTY_STATE) c = "ε";
+        if (it.alpha == Nfa::EMPTY_STATE) c = "ε";
         std::cout << it.start << "--" << c << "-->" << it.target << '\n';
     }
     std::cout << "\n\n";
@@ -288,10 +288,10 @@ void out(Graph *nfa) {
 
 void DfaTest::LexerTest() {
     std::string s;
-    while(true) {
+    while (true) {
         std::cout << "input tokens: \n";
         std::cin >> s;
-        if(s == "-1") break;
+        if (s == "-1") break;
         s = format(s);
         Nfa *nfa = Nfa::Generation(s);
         std::cout << "The NFA: \n";

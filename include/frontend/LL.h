@@ -16,21 +16,21 @@ public:
      * 将或符号去除，转换为单产生式
      * @param cfg
      */
-    static void Split(CFG& cfg);
+    static void Split(CFG &cfg);
 
     /**
      * 消除左递归
      * @param cfg 文法对象
      * @return 消除左递归后的文法CFG对象
      */
-    static CFG* LeftRecurElimination(const CFG& cfg);
+    static CFG *LeftRecurElimination(const CFG &cfg);
 
     /**
      * 提取左因子
      * @param cfg 文法对象
      * @return 提取左因子后的文法CFG对象
      */
-    static CFG* LeftFactorExtraction(const CFG& cfg);
+    static CFG *LeftFactorExtraction(const CFG &cfg);
 
     /**
      * 求First集合，即求出原文法对象中的firstSet

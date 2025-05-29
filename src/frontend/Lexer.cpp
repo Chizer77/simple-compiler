@@ -4,56 +4,56 @@
 
 std::unordered_map<std::string, Token::TokenType> Lexer::keyWordSet;
 
-std::unordered_set<Lexer::lexDfa*, Lexer::lexDfa::lexDfaHasher> Lexer::lexDFASet;
+std::unordered_set<Lexer::lexDfa *, Lexer::lexDfa::lexDfaHasher> Lexer::lexDFASet;
 
 
 // 字符串转int
-int getNum(const std::string& txt) {
+int getNum(const std::string &txt) {
     int ans = 0;
-    for(char i : txt) {
+    for (char i: txt) {
         ans *= 10;
         ans += i - '0';
     }
     return ans;
 }
 
-void Lexer::init(const std::string& configFileName) {
+void Lexer::init(const std::string &configFileName) {
     // 初始化关键字集合keyWordSet
-    for(Token::TokenType t = Token::VOID; t <= Token::WHILE; t = (Token::TokenType)(t + 1)) {
+    for (Token::TokenType t = Token::VOID; t <= Token::WHILE; t = (Token::TokenType) (t + 1)) {
         keyWordSet[Token::list[t]] = t;
     }
     // 从文件输入C++语言定义NFA
-    FILE* input = fopen(configFileName.c_str(), "r");
-    if(input != nullptr) {
+    FILE *input = fopen(configFileName.c_str(), "r");
+    if (input != nullptr) {
         std::string lexDfaTxt = FileIO::read(configFileName.c_str());
         int idx = 0;
         int op = 0;
         Token::TokenType type;
         Dfa *dfa = new Dfa();
-        while(idx < lexDfaTxt.size()) {
+        while (idx < lexDfaTxt.size()) {
             std::string s;
-            if(op == 0) {
-                while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+            if (op == 0) {
+                while (idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
                     s += lexDfaTxt[idx++];
                 }
-                type = (Token::TokenType)getNum(s);
+                type = (Token::TokenType) getNum(s);
                 op++;
                 idx++;
-            }else if(op == 1) {
-                while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+            } else if (op == 1) {
+                while (idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
                     s += lexDfaTxt[idx++];
                 }
                 dfa->s0 = getNum(s);
                 op++;
                 idx++;
-            }else if(op == 2) {
-                while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+            } else if (op == 2) {
+                while (idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
                     s += lexDfaTxt[idx++];
                 }
                 std::string ts;
                 int dfa_s;
-                for(char i : s) {
-                    if(i == FileIO::fileBlank) {
+                for (char i: s) {
+                    if (i == FileIO::fileBlank) {
                         dfa_s = getNum(ts);
                         dfa->s.insert(dfa_s);
                         ts.clear();
@@ -63,14 +63,14 @@ void Lexer::init(const std::string& configFileName) {
                 }
                 op++;
                 idx++;
-            }else if(op == 3) {
-                while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+            } else if (op == 3) {
+                while (idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
                     s += lexDfaTxt[idx++];
                 }
                 std::string ts;
                 int dfa_tar;
-                for(char i : s) {
-                    if(i == FileIO::fileBlank) {
+                for (char i: s) {
+                    if (i == FileIO::fileBlank) {
                         dfa_tar = getNum(ts);
                         dfa->target.insert(dfa_tar);
                         ts.clear();
@@ -80,38 +80,38 @@ void Lexer::init(const std::string& configFileName) {
                 }
                 op++;
                 idx++;
-            }else if(op == 4) {
-                while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+            } else if (op == 4) {
+                while (idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
                     s += lexDfaTxt[idx++];
                 }
-                for(char i : s) {
-                    if(i == FileIO::fileBlank) continue;
+                for (char i: s) {
+                    if (i == FileIO::fileBlank) continue;
                     dfa->alpha.insert(i);
                 }
                 op++;
                 idx++;
-            }else if(op == 5) {
-                while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+            } else if (op == 5) {
+                while (idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
                     s += lexDfaTxt[idx++];
                 }
                 int edgeSize = getNum(s);
                 s.clear();
-                for(int i = 0; i < edgeSize; i++) {
+                for (int i = 0; i < edgeSize; i++) {
                     idx++;
-                    while(idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
+                    while (idx < lexDfaTxt.size() && lexDfaTxt[idx] != FileIO::fileNewLine) {
                         s += lexDfaTxt[idx++];
                     }
                     std::string ts;
                     int tim = 0;
                     int start, target;
                     char alpha;
-                    for(char j : s) {
-                        if(j == FileIO::fileBlank) {
-                            if(tim == 0) {
+                    for (char j: s) {
+                        if (j == FileIO::fileBlank) {
+                            if (tim == 0) {
                                 start = getNum(ts);
                                 ts.clear();
                                 tim++;
-                            }else if(tim == 1) {
+                            } else if (tim == 1) {
                                 alpha = ts[0];
                                 ts.clear();
                                 tim++;
@@ -134,11 +134,11 @@ void Lexer::init(const std::string& configFileName) {
     }
     // 常量
     std::string num = "0";    //含0
-    for(int i = 1; i < 10; i++) {
+    for (int i = 1; i < 10; i++) {
         num = LexerUtil::lexUnion(num, std::to_string(i));
     }
     std::string num_ep0 = std::to_string(1);    //不含0
-    for(int i = 2; i < 10; i++) {
+    for (int i = 2; i < 10; i++) {
         num_ep0 = LexerUtil::lexUnion(num_ep0, std::to_string(i));
     }
     num = LexerUtil::lexBrace(num);
@@ -155,13 +155,13 @@ void Lexer::init(const std::string& configFileName) {
 
     // 变量标识符（未限定长度不超过32个字符）
     std::string lowercase = "a";
-    for(int i = 'b'; i <= 'z'; i++) {
+    for (int i = 'b'; i <= 'z'; i++) {
         char c = static_cast<char>(i);
         std::string tmp(1, c);
         lowercase = LexerUtil::lexUnion(lowercase, tmp);
     }
     std::string uppercase = "A";
-    for(int i = 'B'; i <= 'Z'; i++) {
+    for (int i = 'B'; i <= 'Z'; i++) {
         char c = static_cast<char>(i);
         std::string tmp(1, c);
         uppercase = LexerUtil::lexUnion(uppercase, tmp);
@@ -171,7 +171,7 @@ void Lexer::init(const std::string& configFileName) {
     initial = LexerUtil::lexBrace(initial);
     std::string other = LexerUtil::lexUnion(lowercase, uppercase);
     other = LexerUtil::lexUnion(other, "_");
-    for(int i = 0; i <= 9; i++) {
+    for (int i = 0; i <= 9; i++) {
         other = LexerUtil::lexUnion(other, std::to_string(i));
     }
     other = LexerUtil::lexBrace(other);
@@ -209,24 +209,24 @@ void Lexer::init(const std::string& configFileName) {
 
     // 条件运算符Operator
     // 单目
-    Dfa * ltDfa = Dfa::Generation("<");
+    Dfa *ltDfa = Dfa::Generation("<");
     lexDFASet.insert(new lexDfa(Token::LT, ltDfa));
-    Dfa * gtDfa = Dfa::Generation(">");
+    Dfa *gtDfa = Dfa::Generation(">");
     lexDFASet.insert(new lexDfa(Token::GT, gtDfa));
     Dfa *notDfa = Dfa::Generation("!");
     lexDFASet.insert(new lexDfa(Token::NOT, notDfa));
     // 双目
-    Dfa * landDfa = Dfa::Generation("&&");
+    Dfa *landDfa = Dfa::Generation("&&");
     lexDFASet.insert(new lexDfa(Token::LAND, landDfa));
-    Dfa * lorDfa = Dfa::Generation("||");
+    Dfa *lorDfa = Dfa::Generation("||");
     lexDFASet.insert(new lexDfa(Token::LOR, lorDfa));
-    Dfa * leDfa = Dfa::Generation("<=");
+    Dfa *leDfa = Dfa::Generation("<=");
     lexDFASet.insert(new lexDfa(Token::LE, leDfa));
-    Dfa * geDfa = Dfa::Generation(">=");
+    Dfa *geDfa = Dfa::Generation(">=");
     lexDFASet.insert(new lexDfa(Token::GE, geDfa));
-    Dfa * eqDfa = Dfa::Generation("==");
+    Dfa *eqDfa = Dfa::Generation("==");
     lexDFASet.insert(new lexDfa(Token::EQ, eqDfa));
-    Dfa * neDfa = Dfa::Generation("!=");
+    Dfa *neDfa = Dfa::Generation("!=");
     lexDFASet.insert(new lexDfa(Token::NE, neDfa));
 
     // ,
@@ -244,29 +244,29 @@ void Lexer::init(const std::string& configFileName) {
     lexDFASet.insert(new lexDfa(Token::SPLIT, splitDfa));
 
     std::string dfaTxt;
-    for(auto lexDfa: lexDFASet) {
+    for (auto lexDfa: lexDFASet) {
         Token::TokenType token = lexDfa->type;
         Dfa *dfa = lexDfa->dfa;
         dfaTxt += std::to_string(token);
         dfaTxt += FileIO::fileNewLine;
         dfaTxt += std::to_string(dfa->s0);
         dfaTxt += FileIO::fileNewLine;
-        for(auto s: dfa->s) {
+        for (auto s: dfa->s) {
             dfaTxt += std::to_string(s) + FileIO::fileBlank;
         }
         dfaTxt += FileIO::fileNewLine;
-        for(auto tar: dfa->target) {
+        for (auto tar: dfa->target) {
             dfaTxt += std::to_string(tar) + FileIO::fileBlank;
         }
         dfaTxt += FileIO::fileNewLine;
-        for(auto alp: dfa->alpha) {
+        for (auto alp: dfa->alpha) {
             dfaTxt += alp;
             dfaTxt += FileIO::fileBlank;
         }
         dfaTxt += FileIO::fileNewLine;
         dfaTxt += std::to_string(dfa->edges.size());
         dfaTxt += FileIO::fileNewLine;
-        for(auto edge: dfa->edges) {
+        for (auto edge: dfa->edges) {
             dfaTxt += std::to_string(edge.start);
             dfaTxt += FileIO::fileBlank;
             dfaTxt += edge.alpha;
@@ -279,15 +279,15 @@ void Lexer::init(const std::string& configFileName) {
 }
 
 //对fileStr内容进行分析
-void Lexer::lex(const std::string& fileStr) {
+void Lexer::lex(const std::string &fileStr) {
     int idx = 0;
     int size = (int) fileStr.size();
-    while(idx < size) {
+    while (idx < size) {
         // 最长匹配原则
         std::string maxToken;
         Token::TokenType maxTokenType;
         int maxLen = 0;
-        for(auto lexDfa: lexDFASet) {
+        for (auto lexDfa: lexDFASet) {
             Dfa *dfa = lexDfa->dfa;
             Token::TokenType type = lexDfa->type;
             //当前字符位置pos, 当前记号token
@@ -296,11 +296,11 @@ void Lexer::lex(const std::string& fileStr) {
             //当前结点位置now
             int now = dfa->s0;
             bool isContinue = true;
-            while(isContinue) {
+            while (isContinue) {
                 isContinue = false;
-                if(pos >= size) break;
-                for(Edge e: dfa->edges) {
-                    if(e.start == now && e.alpha == fileStr[pos]) {
+                if (pos >= size) break;
+                for (Edge e: dfa->edges) {
+                    if (e.start == now && e.alpha == fileStr[pos]) {
                         now = e.target;
                         token.push_back(e.alpha);
                         pos++;
@@ -309,9 +309,9 @@ void Lexer::lex(const std::string& fileStr) {
                     }
                 }
             }
-            if(dfa->target.find(now) != dfa->target.end()) {
-                if(maxLen < token.size()) {
-                    maxLen = (int)token.size();
+            if (dfa->target.find(now) != dfa->target.end()) {
+                if (maxLen < token.size()) {
+                    maxLen = (int) token.size();
                     maxToken = token;
                     maxTokenType = type;
                 }
@@ -319,15 +319,15 @@ void Lexer::lex(const std::string& fileStr) {
         }
 
         auto ident = keyWordSet.find(maxToken);
-        if(ident != keyWordSet.end()) {
+        if (ident != keyWordSet.end()) {
             tokenList.append(new Token(ident->second, maxToken));
             idx += maxLen;
-        }else if(maxTokenType == Token::IDENT && maxLen > 32) { // 限定变量长度不超过32个字符
+        } else if (maxTokenType == Token::IDENT && maxLen > 32) { // 限定变量长度不超过32个字符
             tokenList.append(new Token(maxTokenType, maxToken.substr(0, 32)));
             idx += 32;
-        }else if(maxTokenType == Token::SPLIT) {
+        } else if (maxTokenType == Token::SPLIT) {
             idx += maxLen;
-        }else {
+        } else {
             tokenList.append(new Token(maxTokenType, maxToken));
             idx += maxLen;
         }
@@ -335,7 +335,7 @@ void Lexer::lex(const std::string& fileStr) {
 }
 
 void Lexer::destroy() {
-    for(auto it: lexDFASet) {
+    for (auto it: lexDFASet) {
         free(it->dfa);
         free(it);
     }

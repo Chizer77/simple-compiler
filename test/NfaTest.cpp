@@ -39,7 +39,7 @@ void NfaTest::kleeneTest01() {
     assert(opa->s.size() == 4);
 
     std::vector<int> v;
-    for(int ts: opa->s) v.emplace_back(ts);
+    for (int ts: opa->s) v.emplace_back(ts);
     sort(v.begin(), v.end());
 
     assert(opa->alpha.size() == 2);
@@ -74,7 +74,7 @@ void NfaTest::concatenationTest01() {
     assert(opa->s.size() == 4);
 
     std::vector<int> v;
-    for(int ts: opa->s) v.emplace_back(ts);
+    for (int ts: opa->s) v.emplace_back(ts);
     sort(v.begin(), v.end());
 
     char empty_state = Nfa::EMPTY_STATE;
@@ -106,7 +106,7 @@ void NfaTest::unionTest01() {
     assert(opa->s.size() == 6);
 
     std::vector<int> v;
-    for(int ts: opa->s) v.emplace_back(ts);
+    for (int ts: opa->s) v.emplace_back(ts);
     sort(v.begin(), v.end());
 
     char empty_state = Nfa::EMPTY_STATE;

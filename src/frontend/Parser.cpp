@@ -5,6 +5,6 @@ void Parser::init() {
 
 }
 
-void Parser::parse(const std::string& s) {
+void Parser::parse(const std::string &s) {
 
 }

@@ -3,17 +3,24 @@
 #include "util/ParseUtil.h"
 #include "string"
 
-Nfa* Nfa::Generation(const std::string& exp) {
+Nfa *Nfa::Generation(const std::string &exp) {
     std::string parseExp = ParseUtil::toSuffix(exp);
-    for(char c : parseExp) {
+    for (char c: parseExp) {
         switch (c) {
-            case Nfa::KLEENE_STATE: Kleene();break;
-            case Nfa::CONNECTION_STATE: Connection();break;
-            case Nfa::UNION_STATE: Union();break;
-            default: NfaInit(c);
+            case Nfa::KLEENE_STATE:
+                Kleene();
+                break;
+            case Nfa::CONNECTION_STATE:
+                Connection();
+                break;
+            case Nfa::UNION_STATE:
+                Union();
+                break;
+            default:
+                NfaInit(c);
         }
     }
-    if(OP_STACK.empty() || OP_STACK.size() > 1) {
+    if (OP_STACK.empty() || OP_STACK.size() > 1) {
         std::cerr << "Nfa generation Error!\n" << std::endl;
         exit(1);
     }
@@ -36,23 +43,23 @@ void Nfa::Kleene() {
 
     Nfa *nnfa = new Nfa();
 
-    for(int ns: n->s) nnfa->s.insert(ns);
+    for (int ns: n->s) nnfa->s.insert(ns);
     nnfa->s.insert(s);
     nnfa->s.insert(t);
 
     char empty_state = EMPTY_STATE;
-    for(char c: n->alpha) nnfa->alpha.insert(c);
+    for (char c: n->alpha) nnfa->alpha.insert(c);
     nnfa->alpha.insert(empty_state);
 
     nnfa->s0 = s;
 
     nnfa->target.insert(t);
 
-    for(Edge e: n->edges) nnfa->edges.insert(e);
+    for (Edge e: n->edges) nnfa->edges.insert(e);
     nnfa->edges.insert(Edge(s, n->s0, empty_state));
     nnfa->edges.insert(Edge(s, t, empty_state));
-    for(int tar: n->target) nnfa->edges.insert(Edge(tar, t, empty_state));
-    for(int tar: n->target) nnfa->edges.insert(Edge(tar, n->s0, empty_state));
+    for (int tar: n->target) nnfa->edges.insert(Edge(tar, t, empty_state));
+    for (int tar: n->target) nnfa->edges.insert(Edge(tar, n->s0, empty_state));
     OP_STACK.push(nnfa);
     free(n);
 }
@@ -73,22 +80,22 @@ void Nfa::Connection() {
 
     Nfa *nnfa = new Nfa();
 
-    for(int ns: n1->s) nnfa->s.insert(ns);
-    for(int ns: n2->s) nnfa->s.insert(ns);
+    for (int ns: n1->s) nnfa->s.insert(ns);
+    for (int ns: n2->s) nnfa->s.insert(ns);
 
-    for(char c: n1->alpha) nnfa->alpha.insert(c);
-    for(char c: n2->alpha) nnfa->alpha.insert(c);
+    for (char c: n1->alpha) nnfa->alpha.insert(c);
+    for (char c: n2->alpha) nnfa->alpha.insert(c);
     char empty_state = EMPTY_STATE;
     nnfa->alpha.insert(empty_state);
 
     nnfa->s0 = n2->s0;
 
-    for(int tar: n1->target) nnfa->target.insert(tar);
+    for (int tar: n1->target) nnfa->target.insert(tar);
 
-    for(Edge e: n1->edges) nnfa->edges.insert(e);
-    for(Edge e: n2->edges) nnfa->edges.insert(e);
-    for(int tar:n2->target) {
-        nnfa->edges.insert(Edge(tar,n1->s0, empty_state));
+    for (Edge e: n1->edges) nnfa->edges.insert(e);
+    for (Edge e: n2->edges) nnfa->edges.insert(e);
+    for (int tar: n2->target) {
+        nnfa->edges.insert(Edge(tar, n1->s0, empty_state));
     }
 
     OP_STACK.push(nnfa);
@@ -114,13 +121,13 @@ void Nfa::Union() {
     int t = Nfa::newId();
 
     Nfa *fina = new Nfa();
-    for(int as: a1->s) fina->s.insert(as);
-    for(int as: a2->s) fina->s.insert(as);
+    for (int as: a1->s) fina->s.insert(as);
+    for (int as: a2->s) fina->s.insert(as);
     fina->s.insert(s);
     fina->s.insert(t);
 
-    for(char ap: a1->alpha) fina->alpha.insert(ap);
-    for(char ap: a2->alpha) fina->alpha.insert(ap);
+    for (char ap: a1->alpha) fina->alpha.insert(ap);
+    for (char ap: a2->alpha) fina->alpha.insert(ap);
     char empty_state = EMPTY_STATE;
     fina->alpha.insert(empty_state);
 
@@ -128,13 +135,13 @@ void Nfa::Union() {
 
     fina->target.insert(t);
 
-    for(Edge e: a1->edges) fina->edges.insert(e);
-    for(Edge e: a2->edges) fina->edges.insert(e);
+    for (Edge e: a1->edges) fina->edges.insert(e);
+    for (Edge e: a2->edges) fina->edges.insert(e);
     fina->edges.insert(Edge(s, a1->s0, empty_state));
     fina->edges.insert(Edge(s, a2->s0, empty_state));
 
-    for(int tar: a1->target) fina->edges.insert(Edge(tar, t, empty_state));
-    for(int tar: a2->target) fina->edges.insert(Edge(tar, t, empty_state));
+    for (int tar: a1->target) fina->edges.insert(Edge(tar, t, empty_state));
+    for (int tar: a2->target) fina->edges.insert(Edge(tar, t, empty_state));
     OP_STACK.push(fina);
     free(a1);
     free(a2);

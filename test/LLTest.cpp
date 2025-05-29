@@ -9,12 +9,18 @@
 void LLTest::LeftRecurEliminationTest01() {
     std::map<int, std::string> m;
     CFG *cfg = new CFG();
-    int S = CFG::newId();m.insert({S, "S"});
-    int A = CFG::newId();m.insert({A, "A"});
-    int a = CFG::newId();m.insert({a, "a"});
-    int b = CFG::newId();m.insert({b, "b"});
-    int c = CFG::newId();m.insert({c, "c"});
-    int d = CFG::newId();m.insert({d, "d"});
+    int S = CFG::newId();
+    m.insert({S, "S"});
+    int A = CFG::newId();
+    m.insert({A, "A"});
+    int a = CFG::newId();
+    m.insert({a, "a"});
+    int b = CFG::newId();
+    m.insert({b, "b"});
+    int c = CFG::newId();
+    m.insert({c, "c"});
+    int d = CFG::newId();
+    m.insert({d, "d"});
     m.insert({CFG::UNION_ID, "|"});
     m.insert({CFG::EMPTY_ID, "空集"});
     cfg->start = S;
@@ -33,52 +39,60 @@ void LLTest::LeftRecurEliminationTest01() {
     products.insert(*p_S);
     products.insert(*p_A);
     cfg->products = products;
+    LL::Split(*cfg);
     auto cfg_new = LL::LeftRecurElimination(*cfg);
     printf("\n非终结符：\n");
-    for (int i : cfg_new->nonter) {
+    for (int i: cfg_new->nonter) {
         auto iter = m.find(i);
         if (iter != m.end()) {
             printf("%s ", iter->second.c_str());
         } else {
-            printf("%d ", iter->first);
+            // 新的非终结符
+            printf("%d ", i);
         }
     }
     printf("\n终结符：\n");
-    for (int i : cfg_new->ter) {
+    for (int i: cfg_new->ter) {
         auto iter = m.find(i);
         printf("%s ", iter->second.c_str());
     }
     printf("\nProductions：\n");
-    for (const Productions& p : cfg_new->products) {
+    for (const Productions &p: cfg_new->products) {
         auto iter = m.find(p.start);
         if (iter != m.end()) {
             printf("%s ", iter->second.c_str());
         } else {
-            printf("%d ", iter->first);
+            printf("%d ", p.start);
         }
         printf("-> ");
-        for (int i : p.grammar) {
+        for (int i: p.grammar) {
             auto iter_2 = m.find(i);
             if (iter_2 != m.end()) {
                 printf("%s ", iter_2->second.c_str());
-            } else  {
-                printf("%d ", iter_2->first);
+            } else {
+                printf("%d ", i);
             }
         }
         printf("\n");
     }
 }
 
-void LLTest::LeftRecurEliminationTest02() {//发现bug:如果要添加多个左递归，只会new一个新的id
+void LLTest::LeftRecurEliminationTest02() {
 
     std::map<int, std::string> m;
     CFG *cfg = new CFG();
-    int E = CFG::newId();m.insert({E, "E"});
-    int T = CFG::newId();m.insert({T, "T"});
-    int F = CFG::newId();m.insert({F, "F"});
-    int j = CFG::newId();m.insert({j, "j"});
-    int c = CFG::newId();m.insert({c, "c"});
-    int id = CFG::newId();m.insert({id, "id"});
+    int E = CFG::newId();
+    m.insert({E, "E"});
+    int T = CFG::newId();
+    m.insert({T, "T"});
+    int F = CFG::newId();
+    m.insert({F, "F"});
+    int j = CFG::newId();
+    m.insert({j, "j"});
+    int c = CFG::newId();
+    m.insert({c, "c"});
+    int id = CFG::newId();
+    m.insert({id, "id"});
     m.insert({CFG::UNION_ID, "|"});
     m.insert({CFG::EMPTY_ID, "空集"});
     cfg->start = E;
@@ -102,36 +116,37 @@ void LLTest::LeftRecurEliminationTest02() {//发现bug:如果要添加多个左�
     products.insert(*p_T);
     products.insert(*p_F);
     cfg->products = products;
+    LL::Split(*cfg);
     auto cfg_new = LL::LeftRecurElimination(*cfg);
     printf("\n非终结符：\n");
-    for (int i : cfg_new->nonter) {
+    for (int i: cfg_new->nonter) {
         auto iter = m.find(i);
         if (iter != m.end()) {
             printf("%s ", iter->second.c_str());
         } else {
-            printf("%d ", iter->first);
+            printf("%d ", i);
         }
     }
     printf("\n终结符：\n");
-    for (int i : cfg_new->ter) {
+    for (int i: cfg_new->ter) {
         auto iter = m.find(i);
         printf("%s ", iter->second.c_str());
     }
     printf("\nProductions：\n");
-    for (const Productions& p : cfg_new->products) {
+    for (const Productions &p: cfg_new->products) {
         auto iter = m.find(p.start);
         if (iter != m.end()) {
             printf("%s ", iter->second.c_str());
         } else {
-            printf("%d ", iter->first);
+            printf("%d ", p.start);
         }
         printf("-> ");
-        for (int i : p.grammar) {
+        for (int i: p.grammar) {
             auto iter_2 = m.find(i);
             if (iter_2 != m.end()) {
                 printf("%s ", iter_2->second.c_str());
-            } else  {
-                printf("%d ", iter_2->first);
+            } else {
+                printf("%d ", i);
             }
         }
         printf("\n");
@@ -214,7 +229,7 @@ void LLTest::LeftFactorExtractionTest02() {
     CFG *res = LL::LeftFactorExtraction(*cfg);
 }
 
-void LLTest::LeftRecurEliminationInputTest(const std::string& filePath) {
+void LLTest::LeftRecurEliminationInputTest(const std::string &filePath) {
     std::string s = FileIO::read(filePath.c_str());
     CFG *cfg = new CFG();
     std::unordered_map<char, int> mp;   //数字映射
@@ -225,17 +240,17 @@ void LLTest::LeftRecurEliminationInputTest(const std::string& filePath) {
     remp[newId] = s[0];
     cfg->nonter.insert(cfg->start);
     int idx = 2;
-    while(idx < s.size()) {
+    while (idx < s.size()) {
         std::string line;
-        while(idx < s.size() && s[idx] != '\n') {
+        while (idx < s.size() && s[idx] != '\n') {
             line += s[idx++];
         }
         idx++;
         Productions prod;
-        if(mp.find(line[0]) != mp.end()) {
+        if (mp.find(line[0]) != mp.end()) {
             prod.start = mp[line[0]];
             cfg->nonter.insert(prod.start);
-        }else {
+        } else {
             newId = CFG::newId();
             mp[line[0]] = newId;
             remp[newId] = line[0];
@@ -244,15 +259,15 @@ void LLTest::LeftRecurEliminationInputTest(const std::string& filePath) {
         }
         int id = 2;
         while (id < line.size()) {
-            if(line[id] == ' ') {
+            if (line[id] == ' ') {
                 prod.grammar.push_back(CFG::UNION_ID);
-            }else if(line[id] == '$') {
+            } else if (line[id] == '$') {
                 prod.grammar.push_back(CFG::EMPTY_ID);
                 mp[line[id]] = CFG::EMPTY_ID;
                 remp[CFG::EMPTY_ID] = line[id];
-            }else {
+            } else {
                 int t;
-                if(mp.find(line[id]) == mp.end()) {
+                if (mp.find(line[id]) == mp.end()) {
                     t = CFG::newId();
                     mp[line[id]] = t;
                     remp[t] = line[id];
@@ -260,9 +275,9 @@ void LLTest::LeftRecurEliminationInputTest(const std::string& filePath) {
                     t = mp[line[id]];
                 }
                 prod.grammar.push_back(t);
-                if(line[id] >= 'a' && line[id] <= 'z') {
+                if (line[id] >= 'a' && line[id] <= 'z') {
                     cfg->ter.insert(t);
-                }else if(line[id] >= 'A' && line[id] <= 'Z') {
+                } else if (line[id] >= 'A' && line[id] <= 'Z') {
                     cfg->nonter.insert(t);
                 }
             }
@@ -289,38 +304,46 @@ void LLTest::LeftRecurEliminationInputTest(const std::string& filePath) {
     std::string a;
     a += remp[cfg_new->start];
     a += "\n";
-    for(const auto& p: cfg_new->products) {
-        if(remp.find(p.start) == remp.end()) {
+    for (const auto &p: cfg_new->products) {
+        if (remp.find(p.start) == remp.end()) {
             a += std::to_string(p.start);
-        }else a += remp[p.start];
+        } else a += remp[p.start];
         a += " ";
-        for(int g: p.grammar) {
-            if(g == CFG::UNION_ID) {
+        for (int g: p.grammar) {
+            if (g == CFG::UNION_ID) {
                 a += "|";
-            }else if(g == CFG::EMPTY_ID) {
+            } else if (g == CFG::EMPTY_ID) {
                 a += "$";
-            }
-            else if(remp.find(g) == remp.end()) {
+            } else if (remp.find(g) == remp.end()) {
                 a += "\"" + std::to_string(g) + "\"";
-            }else a += remp[g];
+            } else a += remp[g];
         }
         a += "\n";
     }
     FileIO::write("../output/ll.txt", a);
 }
 
-void LLTest::FirstSetSolverTest01(){
+void LLTest::FirstSetSolverTest01() {
     std::map<int, std::string> m;
     CFG *cfg = new CFG();
-    int E = CFG::newId();m.insert({E, "E"});
-    int A= CFG::newId();m.insert({A, "A"});
-    int B = CFG::newId();m.insert({B, "B"});
-    int C = CFG::newId();m.insert({C, "C"});
-    int D = CFG::newId();m.insert({D, "D"});
-    int a = CFG::newId();m.insert({a, "a"});
-    int b = CFG::newId();m.insert({b, "b"});
-    int c = CFG::newId();m.insert({c, "c"});
-    int d = CFG::newId();m.insert({d, "d"});
+    int E = CFG::newId();
+    m.insert({E, "E"});
+    int A = CFG::newId();
+    m.insert({A, "A"});
+    int B = CFG::newId();
+    m.insert({B, "B"});
+    int C = CFG::newId();
+    m.insert({C, "C"});
+    int D = CFG::newId();
+    m.insert({D, "D"});
+    int a = CFG::newId();
+    m.insert({a, "a"});
+    int b = CFG::newId();
+    m.insert({b, "b"});
+    int c = CFG::newId();
+    m.insert({c, "c"});
+    int d = CFG::newId();
+    m.insert({d, "d"});
     m.insert({CFG::UNION_ID, "|"});
     m.insert({CFG::EMPTY_ID, "空集"});
     cfg->start = E;
@@ -358,9 +381,9 @@ void LLTest::FirstSetSolverTest01(){
 
     LL::FirstSetSolver(*cfg);
     printf("\n");
-    for (const auto& item : cfg->firstSet) {
+    for (const auto &item: cfg->firstSet) {
         printf("first(%s) = ", m.find(item.symbol)->second.c_str());
-        for (auto item_v : item.st) {
+        for (auto item_v: item.st) {
             printf("%s,", m.find(item_v)->second.c_str());
         }
         printf("\n");
@@ -368,7 +391,7 @@ void LLTest::FirstSetSolverTest01(){
 }
 
 
-void LLTest::FollowSetSolverTest01(){
+void LLTest::FollowSetSolverTest01() {
     CFG *cfg = new CFG();
     int E = CFG::newId();
     int A = CFG::newId();
@@ -431,19 +454,19 @@ void LLTest::FollowSetSolverTest01(){
     std::unordered_set<SubSet, SubSet::SubSetHasher> f_Set;
 
     // E first
-    std::unordered_set<int> list_E = {c,b};
+    std::unordered_set<int> list_E = {c, b};
     auto *E_f = new SubSet{E, list_E};
     // D first
-    std::unordered_set<int> list_D = {c,b};
+    std::unordered_set<int> list_D = {c, b};
     auto *D_f = new SubSet{D, list_D};
     // A first
-    std::unordered_set<int> list_A = {d,CFG::EMPTY_ID};
+    std::unordered_set<int> list_A = {d, CFG::EMPTY_ID};
     auto *A_f = new SubSet{A, list_A};
     // B first
-    std::unordered_set<int> list_B = {a,CFG::EMPTY_ID};
+    std::unordered_set<int> list_B = {a, CFG::EMPTY_ID};
     auto *B_f = new SubSet{B, list_B};
     // C first
-    std::unordered_set<int> list_C = {c,b};
+    std::unordered_set<int> list_C = {c, b};
     auto *C_f = new SubSet{C, list_C};
 
 
@@ -459,22 +482,22 @@ void LLTest::FollowSetSolverTest01(){
     std::cout << std::endl;
     std::cout << "Follow集合：" << std::endl;
 
-    for(const SubSet& subset : cfg->followSet) {
+    for (const SubSet &subset: cfg->followSet) {
         std::cout << "符号: " << subset.symbol << ", ";
         std::cout << "Follow集: ";
-        for(int s : subset.st) {
+        for (int s: subset.st) {
             std::cout << s << " ";
         }
         std::cout << std::endl;
     }
 
-    if(!LL::isLLFoundation(*cfg)) std::cout<<"Error!\n";
+    if (!LL::isLLFoundation(*cfg)) std::cout << "Error!\n";
 
-    for(const auto& it: LL::analysisTable) {
+    for (const auto &it: LL::analysisTable) {
         std::cout << it.first << "\n";
-        for(const auto& fo: LL::analysisTable[it.first]) {
+        for (const auto &fo: LL::analysisTable[it.first]) {
             std::cout << fo.first << "     ";
-            for(int k: fo.second) {
+            for (int k: fo.second) {
                 std::cout << k << ' ';
             }
             std::cout << '\n';
@@ -484,9 +507,7 @@ void LLTest::FollowSetSolverTest01(){
 }
 
 
-
-
-void LLTest::FollowSetSolverTest02(){
+void LLTest::FollowSetSolverTest02() {
     CFG *cfg = new CFG();
     int S = CFG::newId();
     int T = CFG::newId();
@@ -500,11 +521,11 @@ void LLTest::FollowSetSolverTest02(){
     cfg->ter = {a, b, e};
 
     // S->Te
-    std::vector<int> p_list_S = {T,e};
+    std::vector<int> p_list_S = {T, e};
     auto *p_S = new Productions(S, p_list_S);
 
     // S->STRb
-    std::vector<int> p_list_S1 = {S,T,R,b};
+    std::vector<int> p_list_S1 = {S, T, R, b};
     auto *p_S1 = new Productions(S, p_list_S1);
 
     // T->空
@@ -524,7 +545,7 @@ void LLTest::FollowSetSolverTest02(){
     auto *p_R1 = new Productions(R, p_list_R1);
 
     // R->STT
-    std::vector<int> p_list_R2 = {S,T,T};
+    std::vector<int> p_list_R2 = {S, T, T};
     auto *p_R2 = new Productions(R, p_list_R2);
 
 
@@ -545,10 +566,10 @@ void LLTest::FollowSetSolverTest02(){
     std::unordered_set<int> list_S = {e};
     auto *S_f = new SubSet{S, list_S};
     // T first
-    std::unordered_set<int> list_T = {a,e,CFG::EMPTY_ID};
+    std::unordered_set<int> list_T = {a, e, CFG::EMPTY_ID};
     auto *T_f = new SubSet{T, list_T};
     // R first
-    std::unordered_set<int> list_R = {a,e,CFG::EMPTY_ID};
+    std::unordered_set<int> list_R = {a, e, CFG::EMPTY_ID};
     auto *R_f = new SubSet{R, list_R};
 
 
@@ -562,17 +583,17 @@ void LLTest::FollowSetSolverTest02(){
     std::cout << std::endl;
     std::cout << "Follow集合：" << std::endl;
 
-    for(const SubSet& subset : cfg->followSet) {
+    for (const SubSet &subset: cfg->followSet) {
         std::cout << "符号: " << subset.symbol << ", ";
         std::cout << "Follow集: ";
-        for(int s : subset.st) {
+        for (int s: subset.st) {
             std::cout << s << " ";
         }
         std::cout << std::endl;
     }
 }
 
-void LLTest::FollowSetSolverTest03(){
+void LLTest::FollowSetSolverTest03() {
     CFG *cfg = new CFG();
     int S = CFG::newId();
     int T = CFG::newId();
@@ -588,11 +609,11 @@ void LLTest::FollowSetSolverTest03(){
     cfg->ter = {a, b, d, e};
 
     // S->eT
-    std::vector<int> p_list_S = {e,T};
+    std::vector<int> p_list_S = {e, T};
     auto *p_S = new Productions(S, p_list_S);
 
     // S->RT
-    std::vector<int> p_list_S1 = {R,T};
+    std::vector<int> p_list_S1 = {R, T};
     auto *p_S1 = new Productions(S, p_list_S1);
 
     // T->空集
@@ -600,11 +621,11 @@ void LLTest::FollowSetSolverTest03(){
     auto *p_T1 = new Productions(T, p_list_T1);
 
     // T->DR
-    std::vector<int> p_list_T = {D,R};
+    std::vector<int> p_list_T = {D, R};
     auto *p_T = new Productions(T, p_list_T);
 
     // R->dR
-    std::vector<int> p_list_R = {d,R};
+    std::vector<int> p_list_R = {d, R};
     auto *p_R = new Productions(R, p_list_R);
 
     // R->空集
@@ -616,7 +637,7 @@ void LLTest::FollowSetSolverTest03(){
     auto *p_D = new Productions(D, p_list_D);
 
     // D->bd
-    std::vector<int> p_list_D1 = {b,d};
+    std::vector<int> p_list_D1 = {b, d};
     auto *p_D1 = new Productions(D, p_list_D1);
 
 
@@ -635,16 +656,16 @@ void LLTest::FollowSetSolverTest03(){
     std::unordered_set<SubSet, SubSet::SubSetHasher> f_Set;
 
     // S first
-    std::unordered_set<int> list_S = {a,b,d,e,CFG::EMPTY_ID};
+    std::unordered_set<int> list_S = {a, b, d, e, CFG::EMPTY_ID};
     auto *S_f = new SubSet{S, list_S};
     // T first
-    std::unordered_set<int> list_T = {a,b,CFG::EMPTY_ID};
+    std::unordered_set<int> list_T = {a, b, CFG::EMPTY_ID};
     auto *T_f = new SubSet{T, list_T};
     // R first
-    std::unordered_set<int> list_R = {d,CFG::EMPTY_ID};
+    std::unordered_set<int> list_R = {d, CFG::EMPTY_ID};
     auto *R_f = new SubSet{R, list_R};
     // D first
-    std::unordered_set<int> list_D = {a,b};
+    std::unordered_set<int> list_D = {a, b};
     auto *D_f = new SubSet{D, list_D};
 
     f_Set.insert(*S_f);
@@ -658,10 +679,10 @@ void LLTest::FollowSetSolverTest03(){
     std::cout << std::endl;
     std::cout << "Follow集合：" << std::endl;
 
-    for(const SubSet& subset : cfg->followSet) {
+    for (const SubSet &subset: cfg->followSet) {
         std::cout << "符号: " << subset.symbol << ", ";
         std::cout << "Follow集: ";
-        for(int s : subset.st) {
+        for (int s: subset.st) {
             std::cout << s << " ";
         }
         std::cout << std::endl;
